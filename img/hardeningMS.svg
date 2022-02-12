@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1060"
+   sodipodi:docname="hardeningMS.svg"
+   inkscape:version="1.1.1 (c3084ef, 2021-09-22)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1062"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.66368547"
+     inkscape:cx="363.87719"
+     inkscape:cy="540.16551"
+     inkscape:window-width="1312"
+     inkscape:window-height="969"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g869" />
+  <defs
+     id="defs1057" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g873"
+       transform="matrix(0.97601397,0,0,0.91672347,1.9668586,24.126964)">
+      <rect
+         id="svgEditorBackground"
+         x="0"
+         y="0"
+         width="100%"
+         height="100%"
+         style="fill:none;stroke:none" />
+      <g
+         id="e7_layer">
+        <ellipse
+           id="e8_circle"
+           cx="105.41576"
+           cy="73.162819"
+           style="fill:#ffff00;stroke:#000000;stroke-width:2.05958px"
+           rx="20.782331%"
+           ry="20.410994%" />
+        <g
+           id="g869">
+          <rect
+             x="24.5%"
+             y="24%"
+             style="fill:#bc8f8f;stroke:#000000;stroke-width:2px"
+             id="e9_rectangle"
+             width="51%"
+             height="50%" />
+          <text
+             style="font-size:99.0646px;font-family:Arial;fill:#000000;stroke-width:0.660431"
+             x="107.03235"
+             y="145.96535"
+             id="e11_texte"
+             dominant-baseline="middle"
+             text-anchor="middle"
+             transform="scale(1.0071523,0.99289848)">H</text>
+        </g>
+        <rect
+           x="15.000001%"
+           y="68.800003%"
+           style="fill:#bc8f8f;stroke:#000000;stroke-width:2px"
+           id="e10_rectangle"
+           width="70%"
+           height="10%" />
+      </g>
+    </g>
+  </g>
+</svg>

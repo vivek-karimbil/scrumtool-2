@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="240px" height="360px" viewBox="0 0 240 360" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <rect id="svgEditorBackground" x="0" y="0" width="240" height="360" style="fill: none; stroke: none;"/>
+  <g style="fill:rosybrown; stroke:black; vector-effect:non-scaling-stroke;stroke-width:1px;" id="g-1" transform="matrix(1.67967, 0, 0, 1.98702, 11.578126, 63.163074)">
+    <g style="fill:rosybrown; stroke:black; vector-effect:non-scaling-stroke;stroke-width:1px;" id="g-2" transform="matrix(1, 0, 0, 1, -5.116961, 5.301315)">
+      <path d="M17.778 0c-5.4 0-9.778 4.378-9.778 9.778v108.445c0 5.4 4.378 9.778 9.778 9.778h84.445c5.4 0 9.778-4.378 9.778-9.778v-86.222h-22.222c-5.4 0-9.778-4.378-9.778-9.778v-22.222h-62.222z"/>
+    </g>
+    <path d="M 21.239 -0.546 C 15.839 -0.546 11.461 3.832 11.461 9.232 L 11.461 117.677 C 11.461 123.077 15.839 127.455 21.239 127.455 L 105.684 127.455 C 111.084 127.455 115.462 123.077 115.462 117.677 L 115.462 31.455 L 93.24 31.455 C 87.84 31.455 83.462 27.077 83.462 21.677 L 83.462 -0.545 L 21.24 -0.545 Z"/>
+  </g>
+  <g style="fill:rosybrown; stroke:black; vector-effect:non-scaling-stroke;stroke-width:1px;" id="e1_shape" transform="matrix(1.67967, 0, 0, 1.98702, 32.905689, 52.536842)">
+    <path d="M17.778 0c-5.4 0-9.778 4.378-9.778 9.778v108.445c0 5.4 4.378 9.778 9.778 9.778h84.445c5.4 0 9.778-4.378 9.778-9.778v-86.222h-22.222c-5.4 0-9.778-4.378-9.778-9.778v-22.222h-62.222z"/>
+    <path d="M88 0v24h24z"/>
+  </g>
+  <path d="M 49.772 -47.983 H 100.167 V 55.466 H 200.954 V 107.191 H 100.167 V 210.64 H 49.772 V 107.191 H -51.015 V 55.466 H 49.772 Z" style="fill: rgb(216, 216, 216);" transform="matrix(0.700967, 0.713194, -0.713194, 0.700967, 122.160583, 75.346367)" bx:shape="cross -51.015 -47.983 251.969 258.623 51.725 50.395 0.5 1@bb90c177"/>
+</svg>

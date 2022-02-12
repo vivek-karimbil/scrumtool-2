@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <g style="">
+    <title>Callender</title>
+    <rect x="45.031" y="89.039" width="337.567" height="287.35" style="fill: rgb(146, 130, 130);">
+      <title>Paper</title>
+    </rect>
+    <path d="M 79.614 31.636 C 80.007 13.367 118.846 10.776 119.217 32.099 L 119.698 108.745 C 118.105 132.781 79.623 130.205 79.161 108.18 L 79.614 31.636 Z" style="fill: rgb(216, 216, 216); stroke: rgb(255, 255, 255); stroke-width: 9px;"/>
+    <path d="M 306.22 35.178 C 306.613 16.909 345.452 14.318 345.823 35.641 L 346.304 112.287 C 344.711 136.323 306.229 133.747 305.767 111.722 L 306.22 35.178 Z" style="fill: rgb(216, 216, 216); stroke: rgb(255, 255, 255); stroke-width: 9px;"/>
+    <g style="">
+      <rect x="63.246" y="153.21" width="47.567" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="121.488" y="153.134" width="52.87" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="185.762" y="152.92" width="53.087" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="251.202" y="153.307" width="51.885" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="315.14" y="153.47" width="50.858" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="63.283" y="209.446" width="47.567" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="121.525" y="209.37" width="52.87" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="185.799" y="209.156" width="53.087" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="251.239" y="209.543" width="51.885" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="315.177" y="209.706" width="50.858" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="62.427" y="265.62" width="47.567" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="120.669" y="265.544" width="52.87" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="184.943" y="265.33" width="53.087" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="250.383" y="265.717" width="51.885" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="314.321" y="265.88" width="50.858" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="61.921" y="318.428" width="47.567" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="120.163" y="318.352" width="52.87" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="184.437" y="318.138" width="53.087" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="249.877" y="318.525" width="51.885" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+      <rect x="313.815" y="318.688" width="50.858" height="44.348" style="fill: rgb(216, 216, 216);">
+        <title>Date</title>
+      </rect>
+    </g>
+  </g>
+  <g>
+    <title>Clock</title>
+    <rect x="342.174" y="234.63" width="56.659" height="30.457" style="stroke: rgb(255, 255, 255); stroke-width: 9px; fill: rgb(255, 255, 255);"/>
+    <circle style="fill: rgb(216, 216, 216); stroke: rgb(255, 255, 255); stroke-width: 13.0019px;" cx="374.712" cy="351.988" r="115.477" transform="matrix(0.92566, 0, 0, 0.925393, 24.396542, 35.857933)" bx:origin="0.51 0.492"/>
+    <rect x="343.602" y="241.107" width="54.703" height="28.905" style="stroke: rgb(255, 255, 255); fill: rgb(216, 216, 216); stroke-width: 0px;"/>
+    <line style="stroke-width: 26px; stroke-linecap: round; stroke: rgb(146, 130, 130);" x1="372.604" y1="276.812" x2="372.827" y2="364.971"/>
+    <line style="stroke-width: 26px; stroke-linecap: round; stroke: rgb(146, 130, 130);" x1="372.727" y1="366.713" x2="422.539" y2="402.629"/>
+  </g>
+</svg>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 500 500"
+   version="1.1"
+   id="svg1541"
+   sodipodi:docname="savefile.svg"
+   inkscape:version="1.1.1 (c3084ef, 2021-09-22)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:bx="https://boxy-svg.com">
+  <defs
+     id="defs1545" />
+  <sodipodi:namedview
+     id="namedview1543"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="1.534"
+     inkscape:cx="250"
+     inkscape:cy="250"
+     inkscape:window-width="1312"
+     inkscape:window-height="969"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g1537" />
+  <g
+     id="g1539">
+    <title
+       id="title1509">Writebook</title>
+    <g
+       style=""
+       id="g1521">
+      <title
+         id="title1511">Book</title>
+      <path
+         d="M 141.751 34.478 C 95.805 34.898 80.448 46.749 79.562 87.58 L 78.505 389.491 C 78.508 426.81 77.72 456.462 130.942 458.028 L 379.808 459.056 C 392.203 458.996 395.062 457.349 395.264 441.383 L 397.751 49.307 C 397.392 37.712 395.037 34.824 383.074 35.319 L 141.751 34.478 Z"
+         style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0); stroke-width: 5px;"
+         transform="matrix(0.999986, -0.005372, 0.005372, 0.999986, -1.322196, 1.282783)"
+         id="path1515">
+        <title
+           id="title1513">Cover</title>
+      </path>
+      <path
+         d="M 377.797 373.572 L 377.791 439.634 L 126.557 437.986 C 72.903 422.75 104.72 366.26 128.475 373.006 L 377.797 373.572 Z"
+         style="fill: rgb(255, 255, 255); stroke: rgb(0, 0, 0); stroke-width: 5px;"
+         id="path1519">
+        <title
+           id="title1517">Pages</title>
+      </path>
+    </g>
+    <g
+       id="g1537">
+      <title
+         id="title1523">Pencil</title>
+      <g
+         id="g1633"
+         transform="matrix(1.7187495,0,0,1.6973182,-360.79056,-173.62685)">
+        <path
+           d="m 472.552,224.276 c 0,44.149 -36.086,79.938 -80.599,79.938 -44.514,0 -80.6,-35.789 -80.6,-79.938 0,-44.148 36.086,-79.938 80.6,-79.938 44.513,0 80.599,35.79 80.599,79.938 z"
+           style="fill:#ffffff;stroke-width:5px"
+           id="path1525" />
+        <path
+           d="m 392.67893,222.34896 m -62.0444,-70.47992 a 95.213247,92.27974 90 1 0 124.0888,140.95983 92.27974,95.213247 0 1 0 -124.0888,-140.95983 z m 62.0444,70.47992 M 349.5605,173.36817 a 64.130809,66.169482 0 0 1 86.23686,97.96157 64.130809,66.169482 0 0 1 -86.23686,-97.96157 z"
+           style="fill:#d8d8d8;stroke:#000000;stroke-width:5.02493px"
+           bx:shape="ring 999.014 486.777 64.819 64.819 93.27 93.27 1@32884a5b"
+           id="path1527" />
+        <g
+           id="g1535">
+          <title
+             id="title1529">Pencil</title>
+          <path
+             d="m 369.599,225.698 40.669,-41.351 c 3.239,-2.86 8.292,-2.401 10.903,-0.287 l 10.603,10.237 c 3.396,3.047 2.967,8.882 0.298,11.943 l -40.988,42.059 z"
+             style="fill:#d8d8d8;stroke:#000000;stroke-width:5px"
+             id="path1531" />
+          <polygon
+             style="fill:#d8d8d8;stroke:#000000;stroke-width:5px"
+             points="354.403,263.495 362.166,233.419 383.582,255.645 "
+             id="polygon1533" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
