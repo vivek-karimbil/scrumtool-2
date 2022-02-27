@@ -23,6 +23,9 @@
                 <img id="developer" class="menuicon person" src="img/developer.svg"/>
             </div>
             <div class="item">
+                <img id="lead" class="menuicon person" src="img/lead.svg"/>
+            </div>
+            <div class="item">
                 <img id="tester" class="menuicon person" src="img/tester.svg"/>
             </div>
         </div>
@@ -30,7 +33,7 @@
     </div>
 
     <div id="scheduleDiv">
-        <div id="msschedule">
+        <div class="leftDiv">
             <div id="msTypes" class="projectComponent">
                 <div class="item">
                     <img id="development" class="menuicon milestone" src="img/devsprint.svg"/>
@@ -42,7 +45,7 @@
             <div id="milestones" class="dropzone droplist schedule"></div>
         </div>
 
-        <div id="blackoutDiv">
+        <div class="rightDiv">
             <div id="blackouts" class="projectComponent">
                 <div class="item">
                     <img id="blackoutImg" class="menuicon blackout" src="img/blackout.svg"/>
@@ -52,17 +55,98 @@
         </div>
     </div>
 
+    <div id="defaultsDiv">
+        <div id="weekDiv" class="leftDiv">
+            <div class="weeksetup">
+                <div id="daytypes" class="projectComponent">
+                    <div class="item">
+                        <img id="workday" class="menuicon daytype" src="img/workday.svg"/>
+                    </div>
+                    <div class="item">
+                        <img id="holiday" class="menuicon daytype" src="img/holiday.svg"/>
+                    </div>
+                </div>
+                <div id="week" class="dropzone droplist weekdays">
+                    <div id="d1" class="weekday" data-value="1"><div class="dow">Mon</div></div>
+                    <div id="d2" class="weekday" data-value="2"><div class="dow">Tue</div></div>
+                    <div id="d3" class="weekday" data-value="3"><div class="dow">Wed</div></div>
+                    <div id="d4" class="weekday" data-value="4"><div class="dow">Thu</div></div>
+                    <div id="d5" class="weekday" data-value="5"><div class="dow">Fri</div></div>
+                    <div id="d6" class="weekday" data-value="6"><div class="dow">Sat</div></div>
+                    <div id="d0" class="weekday" data-value="0"><div class="dow">Sun</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rightDiv">
+            <div id="blackouts" class="projectComponent">
+                <div class="item">
+                    <img class="menuIcon undraggable" src="img/edit.svg"
+                        style="height: 40px; margin-bottom: 10px; margin-top: 10px;"/>
+                </div>
+            </div>    
+            <div id="values">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr class="parameters">
+                        <td class="capacitySetting" colspan="2"
+                            style="border-bottom: 3px solid #666; border-right: 3px solid #666;">
+                            <table>
+                                <tr>
+                                    <td class="rowLabel">
+                                        <img class="undraggable" src="img/capacity.svg" style="height: 75px;"/>
+                                    </td>
+                                    <td class="capacitySetting">
+                                        <img class="undraggable" src="img/developer.svg"/>
+                                        <input id="lead" class="default"
+                                            style="text-align: right; width: 4ch;"
+                                            data-path="defaults.capacity.lead">%
+                                    </td>
+                                    <td class="capacitySetting">
+                                        <img class="undraggable" src="img/lead.svg"/>
+                                        <input id="developer" class="default"
+                                            style="text-align: right; width: 4ch;"
+                                            data-path="defaults.capacity.developer">%
+                                    </td>        
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="capacitySetting" style="border-bottom: 3px solid #666;">
+                            <img src="img/estimate.svg" class="rowLabel undraggable" style="max-height: 78px;"/>
+                            <input id="estimate" class="default"
+                                style="text-align: right; width: 3ch;"
+                                data-path="defaults.estimate">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="capacitySetting" style="border-right: 3px solid #666;">
+                            <img class="rowLabel undraggable" src="img/holiday.svg" style="width: 100px; height: 75px; margin-left: 3px;" alt="Time off">
+                            <input id="vacation" class="default"
+                                style="text-align: right; width: 5ch;"
+                                data-path="defaults.capacity.vacation"> / <img src="img/devsprint.svg" style="height: 25px;">
+                        </td>
+                        <td class="capacitySetting" style="border-right: 3px solid #666;">
+                            <img class="rowLabel undraggable" src="img/priority.svg" style="width: 100px; height: 75px; margin-left: 3px;" alt="Time off">
+                            <select name="priority" id="priority" class="default"></select>
+                        </td>
+                        <td class="capacitySetting">
+                            <img class="rowLabel undraggable" src="img/measure.svg" style="width: 100px; height: 75px;" alt="Time off">
+                            <select name="size" id="size" class="default"></select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
     <div id="teamForm" class="modal" style="display: none;">
         <div class="modal-container">
             <div class="container">
                 <div onclick="document.getElementById('teamForm').style.display='none'" class="minbutton">×</div>
-                <div>&nbsp;</div>
-                <div><input id="name" class="teamData" placeholder="Name"></div>
-                <div id="roles">
-                    <input id="developer" type="radio" name="role" checked/>
-                    <label id="developer" for="developer">Developer</label>
-                    <input id="lead" type="radio" name="role"/>
-                    <label id="lead"for="lead">Lead</label>
+                <div class="formDescription">Role:</div>
+                <div class="field">
+                    <span>Name</span>
+                    <input id="name" class="teamData" placeholder="Name">
                 </div>
                 <button id="yes">Save</button>
                 <button id="no">Discard</button>
@@ -111,56 +195,6 @@
                 <button id="yes">Save</button>
                 <button id="no">Discard</button>
             </div>
-        </div>
-    </div>
-
-    <div id="defaults">
-        <div class="editorsettings">
-            <div class="header">Tracking Days</div>
-            <table>
-                <tr><td>Mon</td><td>Tue</td><td>Wed</td><td>Thu</td><td>Fri</td><td>Sat</td><td>Sun</td></tr>
-                <tr>
-                    <td><input type="checkbox" id="mon" checked></td>
-                    <td><input type="checkbox" id="tue"></td>
-                    <td><input type="checkbox" id="wed" checked></td>
-                    <td><input type="checkbox" id="thu"></td>
-                    <td><input type="checkbox" id="fri" checked></td>
-                    <td><input type="checkbox" id="sat"></td>
-                    <td><input type="checkbox" id="sun"></td>
-                </tr>
-            </table>
-        </div>
-        <div class="editorsettings">
-            <div class="header">Weekly Holidays</div>
-            <table>
-                <tr><td>Mon</td><td>Tue</td><td>Wed</td><td>Thu</td><td>Fri</td><td>Sat</td><td>Sun</td></tr>
-                <tr>
-                    <td><input type="checkbox" id="mon_off"></td>
-                    <td><input type="checkbox" id="tue_off"></td>
-                    <td><input type="checkbox" id="wed_off"></td>
-                    <td><input type="checkbox" id="thu_off"></td>
-                    <td><input type="checkbox" id="fri_off"></td>
-                    <td><input type="checkbox" id="sat_off" checked></td>
-                    <td><input type="checkbox" id="sun_off" checked></td>
-                </tr>
-            </table>
-        </div>
-        <div class="editorsettings">
-            <div class="header">Capacity Defaults</div>
-            <div class="parameters">Lead:<input id="lead" style="text-align: right; width: 4ch;" value="40">%
-            Developer: <input id="developer" style="text-align: right; width: 4ch;" value="80">%
-            <br/>Vacation:<input id="vacation" style="text-align: right; width: 3ch;" value="2"> days per sprint</div>
-        </div>
-        <div class="editorsettings">
-            <div class="header">Sprint Settings</div>
-            <div class="parameters">Workdays per week:<input id="workdaysPerWeek" style="width: 2ch;" value="5">
-            <br/><label for="role">Default Role:</label><select name="role" id="role"></select></div>
-        </div>
-        <div class="editorsettings">
-            <div class="header">Task Defaults</div>
-            <div class="parameters">Estimate:<input id="estimate" style="width: 4ch; text-align: right;" value="1">
-            <label for="priority">Priority:</label><select name="priority" id="priority"></select>
-            <label for="size">Size:</label><select name="size" id="size"></select></div>
         </div>
     </div>
 
@@ -242,7 +276,7 @@
 </div>
 
 <div id="scheduleScreen" style="display: none;">
-    <div id="projectscheduleeditor" style="display: flex; width: 100%">
+    <div id="projectScheduleEditor" style="display: flex; width: 100%">
         <span id="backlogsummary" style="display: none;">
             <div id="backlogicon" class="divheader">
                 <div class="divheader">
@@ -275,17 +309,24 @@
                     <th class="boardtitle">Complete</th>
                 </tr>
             </thead>
-            <tbody id="msrows">
-            </tbody>
+            <tbody id="milestones"></tbody>
         </table>
     </div>
 
-    <div id="milestoneeditor" style="display: none; width: 100%;">
+    <div id="milestoneEditor" style="display: none; width: 100%;">
         <div style="width: 100%;">
             <div class="return" style="display: flex; float: right;" onclick="showMilestones()">
                 <img class="undraggable" style="width: 170px;" src="img/sprints.svg"/>
             </div>
-            <span id="msicon" style="display: flex;"></span>
+            <span id="msicon" style="display: table-cell;"></span>
+            <span id="msicon" style="display: table-cell; width: 100px; padding-left: 50px;">
+                <img id="developer" class="menuicon person undraggable selected" src="img/developer.svg"
+                    onclick="showDeveloperVeiw()">
+            </span>
+            <span id="msicon" style="display: table-cell;">
+                <img id="tester" class="menuicon person undraggable" src="img/tester.svg"
+                    onclick="showTesterView()">
+            </span>
         </div>
         <table id="devtasklist" class="mslayout">
             <colgroup>
@@ -303,9 +344,19 @@
                     <th class="boardtitle">Complete</th>
                 </tr>
             </thead>
-            <tbody id="msrows"></tbody>
+            <tbody id="developer">
+            </tbody>
+            <tbody id="tester" style="display: none;">
+            </tbody>
         </table>
         <table id="msbacklog" class="mslayout">
+            <colgroup>
+                <col span="1">
+                <col span="4">
+            </colgroup>
+            <tbody></tbody>
+         </table>
+         <table id="qabacklog" class="mslayout" style="display: none;">
             <colgroup>
                 <col span="1">
                 <col span="4">
@@ -435,15 +486,13 @@
     const statuses = ["task", "inprogress", "totest", "done" ];
     var dragged;
     var defaults = {
-        "burndownDays": [1, 3, 5],
         "capacity": { "developer": 80, "lead": 40, "vacation": 1 },
         "estimate": 3,
         "priority": "nicetohave",
         "size": "stone",
         "sprintLenth": 2,
-        "role": "developer",
-        "weeklyHolidays": [ 0, 6],
-        "workdaysPerWeek": 5
+        "burndownDays": [1, 3, 5],
+        "weeklyHolidays": [0, 6]
     };
     var dragDropList = {
         // Droppin object class in bin or other item to create item or insert item in list
@@ -462,6 +511,10 @@
         "requirement": [
             { "target": "backlog", "handler": "addArtifact('workItem', event.target)" },
             { "target": "workItem", "handler": "insertArtifact('div#requirements', dragged, dropzone, '.' + 'requirement')" }
+        ],
+        "daytype": [
+            { "target": "weekdays", "handler": "addArtifact('dayOfWeek', event.target)" },
+            { "target": "dayOfWeek", "handler": "addArtifact('dayOfWeek', event.target)" }
         ],
         "newtask": [
             { "target": "status", "handler": "addArtifact('newTask', event.target)" },
@@ -484,6 +537,10 @@
             { "target": "holidayWeeks", "handler": "moveChildToEnd(dragged, event.target)" },
             { "target": "holidayWeek", "handler": "moveChildBefore(dragged, event.target)" }
         ],
+        "dayOfWeek": [
+            { "target": "weekdays", "handler": "moveChildTo(dragged, event.target)" },
+            { "target": "dayOfWeek", "handler": "moveChildTo(dragged, event.target)" }
+        ],
         "workItem": [
             { "target": "backlog", "handler": "moveChildToEnd(dragged, event.target)" },
             { "target": "workItem", "handler": "moveChildBefore(dragged, event.target)" }
@@ -497,6 +554,7 @@
         "teamMember": "itemTemplate",
         "scheduleMS": "itemTemplate",
         "holidayWeek": "itemTemplate",
+        "dayOfWeek": "itemTemplate",
         "workItem": "itemTemplate",
         "backlogitem": "reqtTemplate",
         "newTask": "reqtTemplate"
@@ -509,6 +567,22 @@
             var milestones = this.getMilestones();
             var lastMS = milestones[milestones.length - 1];
             return this.getMilestone(lastMS).getEndDate();
+        },
+        getBurndownDays: function() {
+            var burndownDays = [];
+            document.querySelectorAll("#weekDiv .weekday #workday")
+                .forEach(w => {
+                    burndownDays.push(+w.closest(".weekday").getAttribute("data-value"));
+                });
+            return burndownDays;
+        },
+        getWeeklyHolidays: function() {
+            var weeklyHolidays = [];
+            document.querySelectorAll("#weekDiv .weekday #holiday")
+                .forEach(w => {
+                    weeklyHolidays.push(+w.closest(".weekday").getAttribute("data-value"));
+                });
+            return weeklyHolidays;
         },
         getMilestone: function(ms) {
             return {
@@ -532,10 +606,20 @@
                     var selector = "#mslist #" + this.id.replace(/\./, "\\.") + " .newTask";
                     return Array.from(document.querySelectorAll(selector));
                 },
+                getUnassignedDeveloper: function() {
+                    return this.getTasks().filter(t => {
+                        developer = project.getTask(t.id).getData().developer;
+                        return developer == null || developer == ''; })
+                },
+                getUnassignedTester: function() {
+                    return this.getTasks().filter(t => {
+                        tester = project.getTask(t.id).getData().tester;
+                        return tester == null || tester == ''; })
+                },
                 getTrackingDates: function() {
                     var date = new Date(this.getStartDate());
                     var endDate = this.getEndDate();
-                    var burndownDays = defaults.burndownDays;
+                    var burndownDays = project.getBurndownDays();
                     var trackingDates = [];
                     while (date < endDate) {
                         burndownDays.forEach(d => {
@@ -705,7 +789,8 @@
             this.getBlackoutWeeks().forEach(w => {
                 if (!w) return;
                 var d = new Date(w);
-                for (i = 0; i < defaults.workdaysPerWeek; i++) {
+                var workdaysPerWeek = 7 - defaults.weeklyHolidays.length;
+                for (i = 0; i < workdaysPerWeek; i++) {
                     holidays.push(new Date(d));
                     d.setDate(d.getDate() + 1);
                 }
@@ -715,7 +800,7 @@
         getTrackingDates: function() {
             var date = new Date(this.getStartDate());
             var endDate = this.getEndDate();
-            var burndownDays = defaults.burndownDays;
+            var burndownDays = project.getBurndownDays();
             var trackingDates = [];
             while (date < endDate) {
                 burndownDays.forEach(d => {
@@ -736,31 +821,19 @@
                 getData: function() {
                     return getJSONData(document.querySelector("#" + this.id.replace(/\./, "\\.")));
                 },
-                getEstimate: function() {
+                getSize: function() {
                     var data = this.getData();
                     var sizes = [...document.querySelector("#estimateTemplate")
                         .content.querySelectorAll("input")].map(s => s.id).filter(d => data[d]);
                     if (sizes.length == 0) return 0;
-                    var size = sizes[sizes.length - 1];
-                    return +document.querySelector("#estimateTemplate").content.querySelector("input#" + size).value;
+                    return sizes[sizes.length - 1];
                 },
-                getFirstEffortData: function() {
-                    var startDate = project.getStartDate();
-                    var endDDate = project.getEndDate();
-                    var task = document.querySelector("#" + this.id.replace(/\./, "\\."));
-                    var data = getJSONData(task);
-                    var estimate = this.getEstimate();
-                    while (startDate < endDDate) {
-                        var effort = data["dt_" + (startDate.toISOString().slice(0,10).replace(/-/g,""))];
-                        if (effort)
-                            return parseInt(effort);
-                        startDate.setDate(startDate.getDate() + 1);
-                    }
-                    return estimate;
+                getEstimate: function() {
+                    return +document.querySelector("#estimateTemplate").content
+                        .querySelector("input#" + this.getSize()).value;
                 },
                 getProjectBurndown: function() {
-                    var remainingEffort = this.getFirstEffortData();
-                    if (!remainingEffort) remainingEffort = 0;
+                    var remainingEffort = this.getEstimate();
                     var startDate = project.getStartDate();
                     var endDate = project.getEndDate();
                     var task = document.querySelector("#" + this.id.replace(/\./, "\\."));
@@ -842,7 +915,7 @@
             var blackoutDays = this.getBlackoutDays();
             if (blackoutDays.filter(d => d.getDate() == date.getDate()).length > 0) return true;
             var dow = date.getDay();
-            return defaults.weeklyHolidays.filter(d => d == dow).length > 0;
+            return project.getWeeklyHolidays().filter(d => d == dow).length > 0;
         }
     }
 
@@ -879,6 +952,16 @@
                 clearProjectData();
                 var data = JSON.parse(reader.result);
                 for (var d in data.projectInfo) {
+                    if (d == "burndownDays" || d == "weeklyHolidays") {
+                        var daytype = d == "burndownDays" ? "workday" : "holiday";
+                        data.projectInfo[d].forEach(i => {
+                            var day = [...document.querySelectorAll("#week .weekday")]
+                                .filter(d => d.getAttribute("data-value") == i)[0];
+                                dragged = document.querySelector("img#" + daytype);
+                                addArtifact('dayOfWeek', day);
+                        });
+                        continue;
+                    }
                     var input = document.querySelector("#projectInfo input#" + d);
                     if (input)
                         input.value = data.projectInfo[d];
@@ -987,6 +1070,10 @@
             form.style.display = "none";
         });
     });
+    // Defaults
+    document.querySelectorAll("input.default").forEach(d => {
+        d.value = eval(d.getAttribute("data-path"));
+    });
     document.querySelectorAll("div#estimate").forEach(d => {
         var estimate = document.getElementById("estimateTemplate");
         d.appendChild(estimate.content.cloneNode(true));
@@ -1007,6 +1094,18 @@
         role.selected = d.checked;
         document.querySelector("select#role").appendChild(role);
     });
+    document.querySelectorAll("#week .weekday").forEach(d => {
+        var value = +d.getAttribute("data-value");
+        if (defaults.burndownDays.includes(value) || defaults.weeklyHolidays.includes(value)) {
+            var daytype = defaults.burndownDays.includes(value) ? "workday" : "holiday";
+            dragged = document.querySelector("img#" + daytype);
+            addArtifact('dayOfWeek', d);
+            var edit = d.querySelector(".edit");
+            edit.parentNode.removeChild(edit);
+            edit = d.querySelector(".itemName");
+            edit.parentNode.removeChild(edit);
+        }
+    })
     document.querySelector("#estimateTemplate").content.querySelectorAll("input").forEach(d => {
         var label = d.parentNode.querySelector("label#" + d.id);
         var estimate = document.createElement("option");
@@ -1015,6 +1114,7 @@
         estimate.selected = d.checked;
         document.querySelector("select#size").appendChild(estimate);
     });
+    // Drag and drop handlers
     document.addEventListener("dragstart", function(event) {
     dragged = event.target;
     }, false);
@@ -1045,10 +1145,14 @@
         minholder.querySelector(".displayed").style.display = "none";
         target.closest("tr").querySelectorAll("td:not(.msicon)").forEach(c => c.style.display = "");
     }
+    function setDefaults() {
+        console.log("I an here");
+    }
     function clearProjectData() {
         document.querySelectorAll("#projectInfo input").forEach(f => f.value = "");
-        document.querySelectorAll(".droplist").forEach(d => d.innerHTML = "");
-        document.querySelector("#mslist #msrows").innerHTML = "";
+        document.querySelectorAll(".droplist:not(.weekdays)").forEach(d => d.innerHTML = "");
+        document.querySelectorAll(".droplist .weekday .item").forEach(w => w.parentNode.removeChild(w));
+        document.querySelector("#mslist #milestones").innerHTML = "";
         document.querySelector("#backlog #list").innerHTML = "";
     }
     function callFuntion(functionName, params) {
@@ -1153,6 +1257,12 @@
         var lastClass = child.classList.length - 1;
         callFuntion("onmovechildbefore_" + child.classList[lastClass], droppedOn);
     }
+    function moveChildTo(child, droppedOn) {
+        if (child.closest(".weekday") == droppedOn.closest(".weekday")) return;
+        var weekday = droppedOn.closest(".weekday");
+        weekday.querySelectorAll(":not(.dow)").forEach(n => n.parentNode.removeChild(n));
+        weekday.appendChild(child);
+    }
     function editForm(event) {
         var item = event.target.closest(".item");
         var id = item.id;
@@ -1175,8 +1285,11 @@
         });
         form.style.display = 'block';
         form.querySelector('#yes').onclick = function (event) {
-            saveFormData(item, form);
-            callFuntion("onedit_" + itemClass, document.getElementById(id));
+            document.querySelectorAll("#" + id.replace(/\./, "\\.")).forEach(i => {
+                saveFormData(i, form);
+                callFuntion("onedit_" + itemClass, i);
+            });
+            clearFormData(form);
         };
         form.querySelector('#no').onclick = function (event) {
             form.style.display = 'none';
@@ -1192,10 +1305,11 @@
         if (event.target.closest("table").id == "mslist")
             milestone = event.target.closest("tr");
         if (event.target.closest("table").id == "devtasklist")
-            milestone = document.querySelector("#milestoneeditor .scheduleMS");
+            milestone = document.querySelector("#milestoneEditor .scheduleMS");
         form.style.display = 'block';
         form.querySelector("#taskbrief").innerHTML = data.name;
-        form.querySelector("#estimate").innerHTML = data.estimate;
+        form.querySelector("#estimate").innerHTML = project.getTask(id).getSize() + " ("
+            + project.getTask(id).getEstimate() + ")";
         form.querySelector(".milestones").id = milestone.id;
         form.querySelector(".milestones").innerHTML = project.getMilestone(milestone).getData().name;
         var mserrors = [];
@@ -1203,12 +1317,18 @@
             return burnDownEditError(form, "Set Milestone lengths:<br/>" + mserrors.join("<br/>"));
         showBurndown(item, form);
         form.querySelector('#yes').onclick = function (event) {
-            console.log("Supposed to save");
-            saveFormData(item, form);
+            document.querySelectorAll("#" + id.replace(/\./, "\\.")).forEach(i => saveFormData(i, form));
+            clearFormData(form);
         };
         form.querySelector('#no').onclick = function (event) {
             form.style.display = 'none';
         };
+    }
+    function clearFormData(form) {
+        form.querySelectorAll("input").forEach(f => {
+            if (f.type == "text" || f.type == "date" || f.type == "week")
+                f.value = '';
+        });
     }
     function saveFormData(item, form) {
         returnData = {};
@@ -1221,13 +1341,28 @@
             }
             if (f.type == "text" || f.type == "date" || f.type == "week")  {
                 value = f.value;
-                f.value = '';
             }
             returnData[f.id] = value;
         });
         item.querySelector("#data").innerText = JSON.stringify(returnData);
         if (returnData.name.length) item.querySelector(".itemName").innerText = returnData.name;
         form.style.display = 'none';
+    }
+    function showDeveloperVeiw() {
+        document.querySelector("#milestoneEditor #tester").classList.remove("selected");
+        document.querySelector("#milestoneEditor #developer").classList.add("selected");
+        document.querySelector("#milestoneEditor tbody#developer").style.display = "";
+        document.querySelector("#milestoneEditor tbody#tester").style.display = "none";
+        document.querySelector("#milestoneEditor #msbacklog").style.display = "";
+        document.querySelector("#milestoneEditor #qabacklog").style.display = "none";
+    }
+    function showTesterView() {
+        document.querySelector("#milestoneEditor #developer").classList.remove("selected");
+        document.querySelector("#milestoneEditor #tester").classList.add("selected");
+        document.querySelector("#milestoneEditor tbody#developer").style.display = "none";
+        document.querySelector("#milestoneEditor tbody#tester").style.display = "";
+        document.querySelector("#milestoneEditor #msbacklog").style.display = "none";
+        document.querySelector("#milestoneEditor #qabacklog").style.display = "";
     }
     function showBurndown(requirement, form) {
         var id = form.querySelector(".milestones").id;
@@ -1250,8 +1385,8 @@
                 msdate.setDate(msdate.getDate() + 1);
                 tr.appendChild(td);
             }
-            for(var d = 0; d < defaults.burndownDays.length; d++) {
-                var day = defaults.burndownDays[d];
+            for(var d = 0; d < project.getBurndownDays().length; d++) {
+                var day = project.getBurndownDays()[d];
                 var bdDate = new Date(msStartDate);
                 bdDate.setDate(bdDate.getDate() + (week * 7) + day - 1);
                 var id = "dt_" + (bdDate.toISOString().slice(0,10).replace(/-/g,""));
@@ -1308,26 +1443,27 @@
         }
         return data;
     }
-    function setDeveloper(task, cell) {
+    function assignTask(task, cell, role) { // "role" is "developer" or "tester" or ""
         // Set the name of the developer of the task
         var data = getJSONData(task);
-        var developer = "";
+        var assignee = "";
         var closestTable = cell.closest("table");
         if (closestTable.id == "mslist") {
-            developer = data["developer"];
-            if (developer && developer.length > 0) developer = developer[0].developer;
+            assignee = data[role];
+            if (assignee && assignee.length > 0) assignee = assignee[0][assignee];
         }
         if (closestTable.id == "devtasklist") {
-            developer = cell.closest("tr").querySelector("td div").id;
+            assignee = cell.closest("tr").querySelector("td div").id;
         }
-        if (closestTable.id == "msbacklog") {
-            developer = "";
+        if (closestTable.id == "msbacklog" || closestTable.id == "qabacklog") {
+            assignee = "";
         }
-        data["developer"] = developer;
+        data[role] = assignee;
         return data;
     }
     function appendDraggedTask(task, cell) {
-        task.querySelector("#data").innerText = JSON.stringify(setDeveloper(task, cell));
+        var role = cell.closest("tbody").id;
+        task.querySelector("#data").innerText = JSON.stringify(assignTask(task, cell, role));
         if (cell.classList.contains("done")) {
             // If date is after end of project, record as done date
         }
@@ -1337,7 +1473,7 @@
         var tableID = cell.closest("table").id;
         // If task was moved in MS editor screen, clone task to project editor screen
         if (tableID == "devtasklist") {
-            var data = setDeveloper(task, cell);
+            var data = assignTask(task, cell, role);
             var taskCopy = task.cloneNode(true);
             taskCopy.querySelector(".burndown").onclick = editBurndown;
             taskCopy.querySelector(".edit").onclick = editForm;
@@ -1347,7 +1483,27 @@
                 msRow = oldTask.closest("tr");
                 oldTask.remove();
                 msRow.querySelector("." + Array.from(cell.classList).join('.')).appendChild(taskCopy);
+                var status = statuses.filter(f => cell.classList.contains(f))[0];
+                document.querySelectorAll("#" + task.id.replace(/\./, "\\.")).forEach(t => {
+                    var destination = t.closest("tr").querySelector("." + status);
+                    destination.appendChild(t);
+                });
             }
+        }
+        if (cell.classList.contains("done")) { // set remaining effort to 0
+            var msid = cell.closest("tr").id;
+            if (msid == '')
+                msid = cell.closest("#milestoneEditor").querySelector(".scheduleMS").id;
+            var statusDate = new Date();
+            var projectStart = project.getStartDate();
+            if (statusDate < projectStart) statusDate = projectStart;
+            var msEndDate = project.getMilestone({ id: msid }).getEndDate();
+            if (statusDate > msEndDate) statusDate = msEndDate;
+            var dt = "dt_" + (statusDate.toISOString().slice(0,10).replace(/-/g,""));
+            var data = getJSONData(task);
+            data[dt] = "0";
+            document.querySelectorAll("#" + task.id.replace(/\./, "\\."))
+                .forEach(t => t.querySelector("#data").innerText = JSON.stringify(data));
         }
     }
     function initFormData(formSelector, params) {
@@ -1365,16 +1521,18 @@
     }
     function editMileStone(milestone) {
         // Hide the Project scedule editor (table of milestones)
-        document.querySelector("#projectscheduleeditor").style.display = "none";
-        var mseditor = document.querySelector("#milestoneeditor");
+        document.querySelector("#projectScheduleEditor").style.display = "none";
+        var mseditor = document.querySelector("#milestoneEditor");
         // Clear the previous MS editing session
         document.querySelector("#msicon").innerHTML = '';
-        mseditor.querySelector("#msrows").innerHTML = '';
+        mseditor.querySelector("tbody#developer").innerHTML = '';
+        mseditor.querySelector("tbody#tester").innerHTML = '';
         mseditor.querySelector("#msbacklog tbody").innerHTML = '';
+        mseditor.querySelector("#qabacklog tbody").innerHTML = '';
         // Put header icon on top
         document.querySelector("#msicon").appendChild(milestone.closest(".scheduleMS").cloneNode(true));
-        // For each developer, create a row
-        document.querySelectorAll('#teamDiv #team #developer').forEach(dev => {
+        // For each team member, create a row in developer or tester table
+        document.querySelectorAll('#teamDiv #team .teamMember').forEach(dev => {
             var msrow = document.querySelector("#msTemplate").content.cloneNode(true);
             msrow.querySelector(".msicon").innerHTML = "";
             var devwidget = dev.closest(".teamMember").cloneNode(true);
@@ -1382,14 +1540,18 @@
             var controls = devwidget.querySelector(".controls");
             controls.parentElement.removeChild(controls);
             msrow.querySelector(".msicon").appendChild(devwidget);
-            mseditor.querySelector("#msrows").appendChild(msrow);
+            var role = dev.classList.contains("developer") ? "developer" : "tester";
+            mseditor.querySelector("tbody#" + role).appendChild(msrow);
         });
-        // List unassigned tasks at end: for all columns in this row
+        // List tasks at end: for all columns in milestone row
         var msrequirements = milestone.closest("tr").cloneNode(true);
+        var qarequirements = milestone.closest("tr").cloneNode(true);
         msrequirements.id = "unassigned";
         document.querySelector("#msbacklog tbody").appendChild(msrequirements);
+        document.querySelector("#qabacklog tbody").appendChild(qarequirements);
         // Clear contents of first cell with MS icon
         msrequirements.querySelector("td").innerText = "";
+        qarequirements.querySelector("td").innerText = "";
         // Copy cell widths
         var columns = document.querySelectorAll("#devtasklist tr th");
         var ncolumns = columns.length;
@@ -1399,8 +1561,12 @@
             if (columns[i].style.width) {
                 column.style.width = columns[i].style.width;
             }
+            var column = qarequirements.querySelector("tr td:nth-child(" + (i + 1) + ")");
+            if (columns[i].style.width) {
+                column.style.width = columns[i].style.width;
+            }
         }
-        // For each task status
+        // For each task status, move tasks to developer row
         document.querySelectorAll("#msbacklog td:not(.msicon)").forEach(status => {
             // Get the column status to search for the right column in the table above
             var columnStatus = statuses.filter(s => status.classList.contains(s))[0];
@@ -1409,8 +1575,9 @@
                 task.querySelector(".burndown").onclick = editBurndown;
                 task.querySelector(".edit").onclick = editForm;
                 task.querySelector(".delete").onclick = deleteItem;
-                var developer = getJSONData(task).developer;
-                if (developer) {
+                var data = getJSONData(task);
+                var developer = data.developer;
+                if (developer && developer != '') {
                     var devRow = document.querySelector("#devtasklist #" + developer.replace(/\./, "\\."))
                         .closest("tr");
                     devRow.querySelector("." + columnStatus).appendChild(task);
@@ -1418,17 +1585,60 @@
             });
         });
         mseditor.style.display = "";
+        document.querySelectorAll("#qabacklog td:not(.msicon)").forEach(status => {
+            // Get the column status to search for the right column in the table above
+            var columnStatus = statuses.filter(s => status.classList.contains(s))[0];
+            // For each task in status column
+            status.querySelectorAll(".taskbrief").forEach(task => {
+                task.querySelector(".burndown").onclick = editBurndown;
+                task.querySelector(".edit").onclick = editForm;
+                task.querySelector(".delete").onclick = deleteItem;
+                var data = getJSONData(task);
+                var tester = data.tester;
+                if (tester && tester != '') {
+                    var devRow = document.querySelector("#devtasklist #" + tester.replace(/\./, "\\."))
+                        .closest("tr");
+                    devRow.querySelector("." + columnStatus).appendChild(task);
+                }
+            });
+        });
     }
     function showMilestones() {
-        document.querySelector("#projectscheduleeditor").style.display = "flex";
-        document.querySelector("#milestoneeditor").style.display = "none";
+        document.querySelector("#projectScheduleEditor").style.display = "flex";
+        document.querySelector("#milestoneEditor").style.display = "none";
     }
-    function onadd_teamMember(params) {
-        var role = params.querySelector("img").id;
-        params.classList.add(role);
+    function onadd_backlogitem(params) {
+        params.querySelector(".itemName").innerText = dragged.innerText.trim();
+        params.classList.remove("backlogitem");
+        params.classList.add("newTask");
+        params.querySelector(".burndown").onclick = editBurndown;
+        initFormData("#requirementsForm", params)
+    }
+    function onadd_dayOfWeek(params) {
+        var dropzone = params.closest(".weekday");
+        dropzone.querySelector(".dayOfWeek").style.display = "inline-block";
+        dropzone.querySelector(".dayOfWeek").style.removeProperty("width");
+    }
+    function onadd_newTask(params) {
+        var role = params.closest("tbody").id;
         var data = getJSONData(params);
-        data.role = role;
+        data[defaults.priority] = true;
+        data[defaults.size] = true;
+        params.querySelector(".burndown").onclick = editBurndown;
         params.querySelector("#data").innerText = JSON.stringify(data);
+        var dropTable = params.closest("table");
+        if (dropTable.id == "devtasklist") {
+            var milestone = params.closest("#milestoneEditor").querySelector(".scheduleMS");
+            var msRow = document.querySelector("#scheduleScreen #" + milestone.id.replace(/\./, "\\."));
+            var status = [...params.closest("td").classList].filter(f => statuses.filter(s => s == f).length)[0];
+            var data = assignTask(params, params.closest("td"), role);
+            params.querySelector("#data").innerText = JSON.stringify(data);
+            var taskCopy = params.cloneNode(true);
+            taskCopy.querySelector(".burndown").onclick = editBurndown;
+            taskCopy.querySelector(".edit").onclick = editForm;
+            taskCopy.querySelector(".delete").onclick = deleteItem;
+            msRow.querySelector("." + status).appendChild(taskCopy);
+        }
     }
     function onadd_scheduleMS(params) {
         var mstype = params.querySelector(".menuIcon").id;
@@ -1439,7 +1649,7 @@
         params.querySelector("#data").innerText = JSON.stringify(data);
         if (mstype != 'development') return;
         // Add development MS to tracking tab
-        var msrows = document.querySelector("#msrows");
+        var devMilestones = document.querySelector("#mslist #milestones");
         var msnode = params.cloneNode(true);
         msnode.draggable = false;
         msnode.classList.remove("dragable");
@@ -1451,38 +1661,14 @@
         var msdiv = document.querySelector("#msTemplate").content.cloneNode(true);
         msdiv.querySelector(".msrequirements").id = params.id;
         msdiv.querySelector(".msicon").appendChild(msnode);
-        msrows.appendChild(msdiv);
+        devMilestones.appendChild(msdiv);
     }
-    function oninsert_milestones(params) {
-        onadd_scheduleMS(params);
-        var devMSList = devMilestones();
-        var scheduledMilestones = document.querySelectorAll("#msrows .msrequirements");
-        if (devMSList.length != scheduledMilestones.length) console.log("Data in schedule tab out of sync");
-        for (i = 0; i < devMSList.length; i++) {
-            if (devMSList[i].id != scheduledMilestones[i].id) {
-                var correctRow = Array.from(scheduledMilestones).filter(r => r.id == devMSList[i].id);
-                console.log("Mismatch in row", i, devMSList[i].id, scheduledMilestones[i].id);
-                scheduledMilestones[i].parentNode.insertBefore(scheduledMilestones[i], correctRow[0]);
-                scheduledMilestones = document.querySelectorAll("#msrows .msrequirements");
-            }
-        }
-    }
-    function onmovetoend_scheduleMS(params) {
-        console.log("onmovetoend_scheduleMS", params);
-        var msno = 0;
-        document.querySelectorAll("#scheduleDiv #itemImage #development").forEach(img => {
-            var msid1 = img.closest(".scheduleMS").id.replace(/\./, "\\.");
-            var tr1 = document.querySelectorAll("#scheduleScreen .mslayout tr.msrequirements")[msno];
-            var msid2 = tr1.querySelector(".scheduleMS").id.replace(/\./, "\\.");
-            if (msid2 != msid1) {
-                tr1 = document.querySelectorAll("#scheduleScreen #" + msid1)[0].closest("tr");
-                tr2 = document.querySelectorAll("#scheduleScreen #" + msid2)[0].closest("tr");
-                console.log("Exchange", tr1.querySelector(".itemName").innerText, "-", tr2.querySelector(".itemName").innerText)
-                var parent = tr1.parentNode;
-                parent.insertBefore(tr1, tr2);
-            }
-            msno++;
-        });
+    function onadd_teamMember(params) {
+        var role = params.querySelector("img").id;
+        params.classList.add(role);
+        var data = getJSONData(params);
+        data.role = role;
+        params.querySelector("#data").innerText = JSON.stringify(data);
     }
     function onadd_workItem(params) {
         var requirements = document.querySelector("#scheduleScreen #backlog #list");
@@ -1504,28 +1690,36 @@
         var reqt = requirements.querySelector("#" + params.id.replace(/\./, "\\."));
         reqt.innerText = params.querySelector(".itemName").innerText;
     }
-    function onadd_newTask(params) {
-        var data = getJSONData(params);
-        data[defaults.priority] = true;
-        data[defaults.size] = true;
-        params.querySelector(".burndown").onclick = editBurndown;
-        params.querySelector("#data").innerText = JSON.stringify(data);
-        var dropTable = params.closest("table");
-        if (dropTable.id == "devtasklist") {
-            var milestone = params.closest("#milestoneEditor").querySelector(".scheduleMS");
-            var msRow = document.querySelector("#scheduleScreen #" + milestone.id.replace(/\./, "\\."));
-            var status = [...params.closest("td").classList].filter(f => statuses.filter(s => s == f).length)[0];
-            var data = setDeveloper(params, params.closest("td"));
-            params.querySelector("#data").innerText = JSON.stringify(data);
-            msRow.querySelector("." + status).appendChild(params.cloneNode(true));
+    function oninsert_milestones(params) {
+        onadd_scheduleMS(params);
+        var devMSList = devMilestones();
+        var scheduledMilestones = document.querySelectorAll("#developer .msrequirements");
+        if (devMSList.length != scheduledMilestones.length) console.log("Data in schedule tab out of sync");
+        for (i = 0; i < devMSList.length; i++) {
+            if (devMSList[i].id != scheduledMilestones[i].id) {
+                var correctRow = Array.from(scheduledMilestones).filter(r => r.id == devMSList[i].id);
+                console.log("Mismatch in row", i, devMSList[i].id, scheduledMilestones[i].id);
+                scheduledMilestones[i].parentNode.insertBefore(scheduledMilestones[i], correctRow[0]);
+                scheduledMilestones = document.querySelectorAll("#developer .msrequirements");
+            }
         }
     }
-    function onadd_backlogitem(params) {
-        params.querySelector(".itemName").innerText = dragged.innerText.trim();
-        params.classList.remove("backlogitem");
-        params.classList.add("newTask");
-        params.querySelector(".burndown").onclick = editBurndown;
-        initFormData("#requirementsForm", params)
+    function onmovetoend_scheduleMS(params) {
+        console.log("onmovetoend_scheduleMS", params);
+        var msno = 0;
+        document.querySelectorAll("#scheduleDiv #itemImage #development").forEach(img => {
+            var msid1 = img.closest(".scheduleMS").id.replace(/\./, "\\.");
+            var tr1 = document.querySelectorAll("#scheduleScreen .mslayout tr.msrequirements")[msno];
+            var msid2 = tr1.querySelector(".scheduleMS").id.replace(/\./, "\\.");
+            if (msid2 != msid1) {
+                tr1 = document.querySelectorAll("#scheduleScreen #" + msid1)[0].closest("tr");
+                tr2 = document.querySelectorAll("#scheduleScreen #" + msid2)[0].closest("tr");
+                console.log("Exchange", tr1.querySelector(".itemName").innerText, "-", tr2.querySelector(".itemName").innerText)
+                var parent = tr1.parentNode;
+                parent.insertBefore(tr1, tr2);
+            }
+            msno++;
+        });
     }
     function initForm_milestones(params) {
         var capacitydata = params[0].querySelector(".capacitydata");
@@ -1565,8 +1759,12 @@
         })
     }
     function initForm_requirements(params) {
-        console.log("Editing requirements form");
         params[0].querySelector(".container").style.width = "500px";
+    }
+    function initForm_team(params) {
+        var id = params.filter(t => typeof(t) == 'string' && t.match(/^team/))[0];
+        var role = project.getDeveloper(id).getData().role;
+        document.querySelector(".formDescription").innerText = "Role: " + role;
     }
     function projectToJSON() {
         var json = {
@@ -1581,6 +1779,8 @@
         document.querySelectorAll("#projectInfo input").forEach (v => {
             json.projectInfo[v.id] = v.value;
         });
+        json.projectInfo.burndownDays = project.getBurndownDays();
+        json.projectInfo.weeklyHolidays = project.getWeeklyHolidays();
         document.querySelectorAll("#defaults input").forEach (v => {
             if (v.type == 'checkbox')
                 json.projectInfo[v.id] = v.checked;
@@ -1642,7 +1842,7 @@
             document.querySelector("#selectMS").selectedOptions[0].value
             : milestones[0];
 		var margin = {top: 20, right: 20, bottom: 30, left: 40},
-            width = 600,
+            width = "50%",
             height = 500;
 		
 		// Set up left and right screen halves
@@ -1693,11 +1893,17 @@
             var height = 500;
 
             // Sum of effort in all reqts on day 1 
-            var burndown = [];
+            var burndown = [{
+                week: "Start",
+                total: total[0].effort,
+                target: project.getMilestone(ms).getCapacity()
+             }];
+             var today = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
             project.getMilestone(ms).getTrackingDates().forEach(d => {
                 var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
                 var week = d.toDateString().split(" ")[1] + " " + d.getDate();
-                var totalValue = total.filter(t => t.date == dt)[0].effort;
+                var totalValue = +dt.substr(3) <= +today ?
+                    total.filter(t => t.date == dt)[0].effort : 0;
                 var targetValue = target.filter(t => t.date == dt)[0].effort;
                 burndown.push({ week: week, total: totalValue, target: targetValue });
             });
@@ -1992,20 +2198,27 @@
 		if (!ms) return;
         var projectBurndown = project.getBurndown();
         var targetBurndown = project.getTargetBurndown();
+        var today = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
 		var burndown = project.getTrackingDates().map(d => {
             var dt = d.toDateString().split(" ");
             var dtIndex = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
+            var efforts = projectBurndown.filter(d => d.date == dtIndex && +dtIndex.substr(3) <= +today);
             return {
                 date: dt[1] + " " + dt[2],
-                effort: projectBurndown.filter(d => d.date == dtIndex)[0].effort,
+                effort: efforts.length ? efforts[0].effort : 0,
                 target: targetBurndown.filter(d => d.date == dtIndex)[0].effort
             }
         });
+        burndown.unshift({
+            date: "Start",
+            effort: project.getTasks().map(t => project.getTask(t.id).getEstimate()).reduce((a, b) => a + b),
+            target: targetBurndown[0].effort
+        })
 		
 		var ymax = burndown.reduce((a,b) => Math.max(a.effort, a.target) > Math.max(b.effort, b.target) ? a : b);
         ymax = ymax.effort > ymax.target ? ymax.effort : ymax.target;
 		
-		var margin = {top: 20, right: 20, bottom: 30, left: 40},
+		var margin = {top: 20, right: 20, bottom: 50, left: 40},
             width = 900,
             height = 500;
 		  
@@ -2046,7 +2259,12 @@
 		g.append("g")
             .attr("class", "axis axis--x")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(xScale));
+            .call(d3.axisBottom(xScale))
+            .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-1.0em")
+            .attr("dy", "-.5em")
+            .attr("transform", "rotate(-90)");
 		// axis-y
 		g.append("g")
             .attr("class", "axis axis--y")
@@ -2063,7 +2281,7 @@
             .attr("width", xScale.bandwidth())
             .attr("height", function(d) { return height - yScale(d.effort); })
             .attr("class", "plainbar bar1");
-		// labels on the bar chart
+		// labels on top of the bar
 		bar.append("text")
             .attr("dy", "1.3em")
             .attr("x", function(d) { return xScale(d.date) + xScale.bandwidth() / 2; })
@@ -2155,6 +2373,7 @@
 		function drawGraphs() {
             var milestones = project.getDevMilestones();
             if (milestones.length == 0) return;
+            var today = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
             var ms = document.querySelector("#selectMS") ?
                 document.querySelector("#selectMS").selectedOptions[0].value
                 : milestones[0].id;
@@ -2162,7 +2381,8 @@
             var taskData = project.getMilestone(milestone).getTasks().map(t => {
                 return {
                     name: project.getTask(t.id).getData().name,
-                    burndown: project.getTask(t.id).getMSBurndown(milestone)
+                    burndown: project.getTask(t.id).getMSBurndown(milestone),
+                    estimate: project.getTask(t.id).getEstimate()
                 }
             });
             var trackingDates = project.getMilestone(milestone).getTrackingDates();
@@ -2170,13 +2390,18 @@
                 var dtParts = d.toDateString().split(" ");
                 var data = { group: dtParts[1] + " " + dtParts[2] };
                 dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
-                taskData.forEach(t => data[t.name] = t.burndown.filter(b => b.date == dt)[0].effort);
+                taskData.forEach(t => data[t.name] = +dt.substr(3) <= today ?
+                    t.burndown.filter(b => b.date == dt)[0].effort : 0);
                 return data;
-            })
+            });
+            var initData = { group: "Start" };
+            taskData.forEach(t => initData[t.name] = t.estimate);
+            fdata.unshift(initData);
             drawPaper(project, milestone, leftGraph, "Feature Burndown", fdata);
 
+            var trackingDates = project.getMilestone(milestone).getTrackingDates();
+            trackingDates.unshift(project.getMilestone(milestone).getStartDate());
             var msBurndown = project.getDevelopers().map(d => {
-                var trackingDates = project.getMilestone(milestone).getTrackingDates();
                 var taskData = project.getDeveloper(d).getTasksForMS(milestone.id)
                     .map(t => project.getTask(t.id).getMSBurndown(milestone));
                 var developerBurndown = trackingDates.map(d => {
@@ -2190,17 +2415,28 @@
                     assigned: developerBurndown
                 }
             });
+            taskData = project.getMilestone(milestone).getUnassignedDeveloper()
+                .map(t => project.getTask(t.id).getMSBurndown(milestone));
+            taskBurndown = trackingDates.map(d => {
+                var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
+                var taskList = taskData.map(r => r.filter(s => s.date == dt)[0].effort);
+                var effort = taskList.length > 0 ? taskList.reduce((a, b) => a + b) : 0;
+                return { date: dt, effort: effort }
+            });
+            msBurndown.push({ developer: "Unassigned", assigned: taskBurndown });
             var udata = trackingDates.map(d => {
                 var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
                 var dtParts = d.toDateString().split(" ");
                 var data = { group: dtParts[1] + " " + dtParts[2] }
-                project.getDevelopers().forEach(developer => {
-                    var devname = project.getDeveloper(developer).getData().name;
+                msBurndown.map(m => m.developer).forEach(developer => {
+                    var devname = developer != "Unassigned" ?
+                        project.getDeveloper(developer).getData().name : "Unassigned";
                     data[devname] = msBurndown.filter(m => m.developer == developer)[0]
                         .assigned.filter(a => a.date == dt)[0].effort
                 });
                 return data;
             });
+            udata[0].group = "Start";
             drawPaper(project, milestone, rightGraph, "Developer Burndown", udata);
 		}
 		
@@ -2303,10 +2539,9 @@
                         var remaining = d.data[key];
                         tooltip.transition().duration(200).style("opacity", .9);
                         var tip = "<b>" + title.split(" ")[0] + ":</b> "  + key + "<br><b>Remaining:</b> " + remaining + " days";
-                        console.log(d);
                         tooltip.html(tip)
                         .style("left", (event.pageX) + "px")
-                        .style("top", (event.pageY - 28) + "px");
+                        .style("top", (event.pageY - 8) + "px");
                     })
                     .on("mouseout", function(d) {
                         tooltip.transition().duration(500).style("opacity", 0);			  // enter a second time = loop subgroup per subgroup to add all rectangles

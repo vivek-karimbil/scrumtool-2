@@ -13,10 +13,6 @@
 #scheduleScreen #backlogsummary {
     border: 3px solid #666;
 }
-#blackoutDiv {
-    float: left;
-    width: 40%;
-}
 .boardtitle {
     background-color: peachpuff;
     border: 3px solid #666;
@@ -45,6 +41,19 @@
 }
 .capacitydata td input {
     text-align: center;
+}
+.capacitySetting {
+    width: 150px;
+    vertical-align: top;
+}
+.capacitySetting img {
+    max-height: 75px;
+    vertical-align: middle;
+}
+.rowLabel {
+    width: 100px;
+    display: inline-block;
+    background-color: gainsboro;
 }
 .container {
     -webkit-text-size-adjust: 100%;
@@ -82,7 +91,7 @@
     gap: 10px;
     grid-template-columns: repeat(5, 1fr);
     min-height: 100px;
-    height: fit-content;
+    fit-content;
 }
 .editorsettings {
     border: 3px solid #666;
@@ -98,6 +107,10 @@
     margin-top: 0;
     background-color: gainsboro;
     font-weight: bold;
+}
+.formDescription {
+    margin-top: 3ch;
+    font-size: large;
 }
 .graphType {
     background-color: darkgray;
@@ -133,6 +146,11 @@
 .itemDescription {
     margin: 10px;
     text-align: left;
+}
+.leftDiv {
+    float: left;
+    min-width: 60%;
+    margin-right: 15px;
 }
 .menuButton {
 	text-align: center;
@@ -181,12 +199,12 @@
 	background-color: rgba(0,0,0,0.8);
 	display: block;
 }
-#msbacklog {
+#msbacklog, #qabacklog {
     border: none;
     height: 500px;
     table-layout: fixed;
 }
-#msbacklog td {
+#msbacklog td, #qabacklog td {
     border: none;
     vertical-align: top;
 }
@@ -196,11 +214,6 @@
     margin-left: 10px;
     margin-bottom: 10px;
     width: 100%;
-}
-#msschedule {
-    float: left;
-    min-width: 60%;
-    margin-right: 15px;
 }
 .notecontrol {
     width: 35px;
@@ -247,7 +260,11 @@
 #requirements {
     grid-template-columns: repeat(10, 1fr);
 }
-#scheduleDiv {
+.rightDiv {
+    float: left;
+    width: 40%;
+}
+#scheduleDiv, #defaultsDiv {
     display: flex;
     width: 100%;
 }
@@ -259,6 +276,10 @@
 #scheduleTable {
     width: 100%;
     border-width: 2px;
+}
+.selected {
+    border: 2px solid #666;
+    border-radius: 5px;
 }
 .slot {
     border: 3px solid #666;
@@ -279,7 +300,8 @@
     background-color: rosybrown;
     border-radius: 0;
     display: inline-block;
-    margin: 5px;
+    margin: 1.5%;
+    vertical-align: top;
     width: 45%;
 }
 .taskcontrols img {
@@ -288,12 +310,6 @@
 .taskcorner {
     height: 50px;
     vertical-align: top;
-}
-td {
-    /* padding: 10px; */
-}
-.teamData    {
-    margin-bottom: 5px;
 }
 #teamDiv    {
     width: 100%;
@@ -322,6 +338,22 @@ td {
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+}
+.weekday {
+    text-align: center;
+    font-family: sans-serif;
+    font-size: larger;
+    background-color: aquamarine;
+    margin: 3px;
+}
+.weeksetup #week {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+}
+#values {
+    border: 3px solid #666;
+    width: 100%;
+    display: inline-block;
 }
 .bar1 { fill: steelblue; }
 .bar2 { fill: deepskyblue; }
