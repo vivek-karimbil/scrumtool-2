@@ -1930,10 +1930,6 @@
                 var daytype = defaults.burndownDays.includes(value) ? "workday" : "holiday";
                 dragged = document.querySelector("img#" + daytype);
                 addArtifact('dayOfWeek', d);
-                var edit = d.querySelector(".edit");
-                edit.parentNode.removeChild(edit);
-                edit = d.querySelector(".itemName");
-                edit.parentNode.removeChild(edit);
             }
         })
         document.querySelector("#estimateTemplate").content.querySelectorAll("input").forEach(d => {
@@ -2482,6 +2478,10 @@
         var dropzone = params.closest(".weekday");
         dropzone.querySelector(".dayOfWeek").style.display = "inline-block";
         dropzone.querySelector(".dayOfWeek").style.removeProperty("width");
+        var edit = dropzone.querySelector(".edit");
+        edit.parentNode.removeChild(edit);
+        edit = dropzone.querySelector(".itemName");
+        edit.parentNode.removeChild(edit);
     }
     function onadd_newTask(params) {
         var role = params.closest("tbody").id;
