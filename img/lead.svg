@@ -3,7 +3,7 @@
    viewBox="0 0 400 550"
    version="1.1"
    id="svg1541"
-   sodipodi:docname="developer.svg"
+   sodipodi:docname="lead.svg"
    inkscape:version="1.1.1 (c3084ef, 2021-09-22)"
    width="400"
    height="550"
@@ -22,11 +22,11 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      showgrid="false"
-     inkscape:zoom="1.1619553"
-     inkscape:cx="239.6822"
-     inkscape:cy="231.07601"
-     inkscape:window-width="1312"
-     inkscape:window-height="969"
+     inkscape:zoom="1.2238918"
+     inkscape:cx="6.9450584"
+     inkscape:cy="332.54574"
+     inkscape:window-width="1792"
+     inkscape:window-height="996"
      inkscape:window-x="0"
      inkscape:window-y="25"
      inkscape:window-maximized="0"
@@ -45,11 +45,17 @@
         <path
            d="M 80,16 C 80,24.837 72.837,32 64,32 55.163,32 48,24.837 48,16 48,7.164 55.163,0 64,0 72.837,0 80,7.163 80,16 Z"
            id="path1020"
-           style="fill:#ead0c5;fill-opacity:1" />
+           sodipodi:nodetypes="sssss"
+           style="fill:#eacfc5;fill-opacity:1" />
+        <path
+           d="M 80.837716,15.827172 C 79.448712,15.1939 77.299914,14.508591 74.33726,13.9816 71.374605,13.454609 67.598095,13.085936 62.953664,13.085936 c -9.288859,0 -14.135899,1.531137 -15.752195,2.741236 C 46.76109,7.004887 55.483884,-0.38829073 64.019592,-0.17282828 72.5553,0.04263417 78.703922,4.4289022 80.496051,12.602486 c 2.789715,1.535637 8.634495,4.456703 8.127928,6.013224 -0.382962,1.176722 -5.297587,-1.913685 -7.786263,-2.788538 z"
+           id="path1020-0"
+           sodipodi:nodetypes="cssczcsc"
+           style="fill:#835555;fill-opacity:1;stroke:#000000;stroke-width:1.02528;stroke-miterlimit:4;stroke-dasharray:none" />
         <path
            d="M 40,47.92 V 80.08 C 40,84.454 43.546,88 47.92,88 H 48 v 30.222 c 0,5.4 4.378,9.778 9.778,9.778 h 12.445 c 5.4,0 9.778,-4.378 9.778,-9.778 V 88 h 0.08 c 4.374,0 7.92,-3.546 7.92,-7.92 V 47.92 c 0,-4.374 -3.546,-7.92 -7.92,-7.92 h -32.16 c -4.374,0 -7.92,3.546 -7.92,7.92 z"
            id="path1022"
-           style="fill:#aa37b1;fill-opacity:1" />
+           style="fill:#94dcd9;fill-opacity:1" />
       </g>
       <g
          style="vector-effect:non-scaling-stroke;fill:#bc8f8f;stroke:#000000;stroke-width:1px"
@@ -58,11 +64,11 @@
         <path
            d="M 17.778,0 C 12.378,0 8,4.378 8,9.778 v 108.445 c 0,5.4 4.378,9.778 9.778,9.778 h 84.445 c 5.4,0 9.778,-4.378 9.778,-9.778 V 32.001 H 89.779 c -5.4,0 -9.778,-4.378 -9.778,-9.778 V 0.001 H 17.779 Z"
            id="path1025"
-           style="fill:#f1f6ec;fill-opacity:1" />
+           style="fill:#eadcd9;fill-opacity:1" />
         <path
            d="m 88,0 v 24 h 24 z"
            id="path1027"
-           style="fill:#daeac7;fill-opacity:1" />
+           style="fill:#eadcd9;fill-opacity:1" />
       </g>
     </g>
   </g>

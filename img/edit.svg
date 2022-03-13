@@ -21,11 +21,11 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      showgrid="false"
-     inkscape:zoom="3.296579"
-     inkscape:cx="162.44113"
-     inkscape:cy="147.88058"
+     inkscape:zoom="2.8030872"
+     inkscape:cx="125.39745"
+     inkscape:cy="144.48355"
      inkscape:window-width="1792"
-     inkscape:window-height="1067"
+     inkscape:window-height="998"
      inkscape:window-x="0"
      inkscape:window-y="25"
      inkscape:window-maximized="1"
@@ -34,18 +34,18 @@
      id="g4239"
      transform="matrix(1.503914,0,0,1.5468787,-133.26445,-15.711245)">
     <path
-       d="m 263.78271,27.937372 c -8.62521,-7.921927 -21.83509,-6.913724 -29.95113,1.571405 l -10.85449,10.509976 c 9.95826,10.42817 20.2304,19.845607 30.82896,30.914084 L 264.82518,60.81836 c 8.75451,-9.149787 8.40431,-24.207955 -1.04517,-32.884596 z"
-       style="fill:#bc8f8f;stroke:#000000;stroke-width:2.754;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 263.78271,27.937372 c -8.62521,-7.921927 -21.83509,-6.913724 -29.95113,1.571405 l -7.29628,6.81997 c 9.95826,10.42817 19.75597,20.076232 30.35453,31.144709 l 7.93535,-6.655096 c 8.75451,-9.149787 8.40431,-24.207955 -1.04517,-32.884596 z"
+       style="fill:#bc8f8f;stroke:#000000;stroke-width:3.67154112;stroke-miterlimit:4;stroke-dasharray:none"
        id="e2_shape"
        sodipodi:nodetypes="ccccccc" />
     <path
-       d="m 121.5959,145.2516 c -3.68232,8.73438 -17.22651,39.46462 -19.57026,46.31585 7.14381,-2.1134 42.11955,-13.88472 48.7744,-15.58306 z"
-       style="fill:#bc8f8f;stroke:#000000;stroke-width:2.754;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 119.18844,151.20614 c -3.68232,8.73438 -14.81905,33.51008 -17.1628,40.36131 7.14381,-2.1134 35.37537,-11.56129 42.03022,-13.25963 z"
+       style="fill:#bc8f8f;stroke:#000000;stroke-width:3.93379405;stroke-miterlimit:4;stroke-dasharray:none"
        id="e2_shape-4"
        sodipodi:nodetypes="cccc" />
     <path
        d="m 217.22005,44.609688 -92.06772,96.327602 30.46025,31.87 92.60107,-96.888014 z"
-       style="fill:#bc8f8f;stroke:#000000;stroke-width:2.754;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#bc8f8f;stroke:#000000;stroke-width:3.93379405;stroke-miterlimit:4;stroke-dasharray:none"
        id="e2_shape-9"
        sodipodi:nodetypes="ccccc" />
   </g>

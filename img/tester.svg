@@ -22,13 +22,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      showgrid="false"
-     inkscape:zoom="1.1619553"
-     inkscape:cx="239.6822"
-     inkscape:cy="231.07601"
+     inkscape:zoom="2.5773611"
+     inkscape:cx="262.47777"
+     inkscape:cy="307.48505"
      inkscape:window-width="1312"
      inkscape:window-height="969"
-     inkscape:window-x="196"
-     inkscape:window-y="53"
+     inkscape:window-x="338"
+     inkscape:window-y="36"
      inkscape:window-maximized="0"
      inkscape:current-layer="g1190" />
   <g
@@ -44,18 +44,28 @@
          transform="matrix(4.57917,0,0,4.57917,-56.3833,63.0827)">
         <path
            d="M 80,16 C 80,24.837 72.837,32 64,32 55.163,32 48,24.837 48,16 48,7.164 55.163,0 64,0 72.837,0 80,7.163 80,16 Z"
-           id="path1020" />
+           id="path1020"
+           style="fill:#ead0c5;fill-opacity:1" />
         <path
            d="M 40,47.92 V 80.08 C 40,84.454 43.546,88 47.92,88 H 48 v 30.222 c 0,5.4 4.378,9.778 9.778,9.778 h 12.445 c 5.4,0 9.778,-4.378 9.778,-9.778 V 88 h 0.08 c 4.374,0 7.92,-3.546 7.92,-7.92 V 47.92 c 0,-4.374 -3.546,-7.92 -7.92,-7.92 h -32.16 c -4.374,0 -7.92,3.546 -7.92,7.92 z"
-           id="path1022" />
+           id="path1022"
+           style="fill:#bcab5a;fill-opacity:1" />
       </g>
+      <rect
+         style="fill:#fa6562;fill-opacity:1;stroke:#000000;stroke-width:1.20661806;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect8811"
+         width="73.072441"
+         height="70.771027"
+         x="297.08597"
+         y="489.48087"
+         ry="0" />
       <g
          style="vector-effect:non-scaling-stroke;fill:#bc8f8f;stroke:#000000;stroke-width:1px"
          id="e2_shape"
          transform="matrix(1.74999,0,0,1.74999,210,316)">
         <path
            d="M 110.73347,85.743153 H 95.50175 V 75.99145 c 0,-3.702686 -3.00085,-6.704585 -6.70219,-6.704585 H 58.336109 c -3.701342,0 -6.702181,3.001899 -6.702181,6.704585 v 9.751703 H 36.402203 c -3.701342,0 -6.702187,3.001914 -6.702187,6.704581 v 52.416726 c 0,3.70268 3.000845,6.70457 6.702187,6.70457 h 74.331957 c 3.70134,0 6.70218,-3.00191 6.70218,-6.70457 V 92.447734 c 0,-3.702667 -3.00084,-6.704581 -6.70218,-6.704581 z M 90.01826,124.14118 H 79.05131 v 10.97086 H 68.08436 V 124.14118 H 57.1174 v -10.97086 h 10.96696 v -10.97085 h 10.96695 v 10.97085 h 10.96695 z m 0,-38.398027 H 57.1174 V 74.772287 h 32.90086 z"
-           style="vector-effect:non-scaling-stroke;fill:#bc8f8f;stroke:#000000;stroke-width:0.685555px"
+           style="vector-effect:non-scaling-stroke;fill:#a772c5;stroke:#000000;stroke-width:0.685555px;fill-opacity:1"
            id="e5_shape" />
       </g>
     </g>

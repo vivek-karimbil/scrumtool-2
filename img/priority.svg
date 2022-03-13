@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="140mm"
+   height="140mm"
+   viewBox="0 0 140 140"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.1 (c3084ef, 2021-09-22)"
+   sodipodi:docname="priority.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.66368547"
+     inkscape:cx="344.28959"
+     inkscape:cy="579.3407"
+     inkscape:window-width="1792"
+     inkscape:window-height="993"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#928282;stroke:#612d2d;stroke-width:2.565;stroke-linecap:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect1153"
+       width="88.502007"
+       height="90.096649"
+       x="55.246304"
+       y="-47.097672"
+       ry="11.162427"
+       transform="rotate(45.368457)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:128.436px;line-height:1.25;font-family:'Academy Engraved LET';-inkscape-font-specification:'Academy Engraved LET, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.64311;stroke-miterlimit:4;stroke-dasharray:none"
+       x="37.401054"
+       y="130.61125"
+       id="text1907"
+       transform="scale(1.3594504,0.73559139)"><tspan
+         sodipodi:role="line"
+         id="tspan1905"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:128.436px;font-family:'Academy Engraved LET';-inkscape-font-specification:'Academy Engraved LET, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:5.64311;stroke-miterlimit:4;stroke-dasharray:none"
+         x="37.401054"
+         y="130.61125">!</tspan></text>
+  </g>
+</svg>

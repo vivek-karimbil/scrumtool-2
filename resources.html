@@ -327,6 +327,8 @@
                 <img id="tester" class="menuicon person undraggable" src="img/tester.svg"
                     onclick="showTesterView()">
             </span>
+            <span id="header" style="display: table-cell;">
+            </span>
         </div>
         <table id="devtasklist" class="mslayout">
             <colgroup>
@@ -370,7 +372,10 @@
             <div class="container">
                 <div onclick="document.getElementById('taskForm').style.display='none'" class="minbutton">×</div>
                 <div>&nbsp;</div>
-                <div><input id="name" class="teamData" placeholder="Label" /></div>
+                <div>
+                    <input id="name" class="teamData" placeholder="Label" />
+                    <img id="editBurndown" src="img/flame.svg" style="height: 20px;" draggable="false"/>
+                </div>
                 <div><input id="details" class="teamData" placeholder="Details" /></div>
                 <div id="estimate"></div>
                 <button id="yes">Save</button>
@@ -386,6 +391,11 @@
         <button id="milestone" class="graphType graphType-selected">Milestone</button>
         <button id="project"   class="graphType">Project</button>
         <button id="details"   class="graphType">Feature/Developer</button>
+    </div>
+    <div id="msChoice">
+        <text>Milestone:
+        <select id="selectMS"></select>
+        </text>
     </div>
     <div id="graph"></div>
 </div>
@@ -409,7 +419,12 @@
                     <span style="display: block; padding-top: 20px; padding-bottom: 10px;">
                         <b style="display: inline-block; width: 10ch;">Milestone:</b><span class="milestones"></span>
                     </span>
-                    <div><span style="display: inline-block; width: 10ch;"><b>Feature:</b></span><span id="taskbrief"></span></div>
+                    <div>
+                        <span style="display: inline-block; width: 10ch;">
+                            <b>Feature:</b></span><span id="taskbrief">
+                        </span>
+                        <img id="editTask" src="img/edit.svg" style="height: 20px;" draggable="false"/>
+                    </div>
                     <div><span style="display: inline-block; width: 10ch;"><b>Estimate:</b></span><span id="estimate"></span></div>
                     <div id="daterange"></div>
                     <table>
@@ -916,217 +931,1032 @@
             if (blackoutDays.filter(d => d.getDate() == date.getDate()).length > 0) return true;
             var dow = date.getDay();
             return project.getWeeklyHolidays().filter(d => d == dow).length > 0;
+        },
+        file: {
+            open: function() {
+                var form = document.querySelector("#loadfileForm");
+                form.style.display = "";
+                form.querySelector("#yes").addEventListener("click", function() {
+                    if (form.querySelector("#filename").value == '') return;
+                    var file = document.querySelector("#loadfileForm #filename").files[0];
+                    var reader = new FileReader();
+                    reader.readAsText(file);
+                    reader.onload = function() {
+                        clearProjectData();
+                        var data = JSON.parse(reader.result);
+                        for (var d in data.projectInfo) {
+                            if (d == "burndownDays" || d == "weeklyHolidays") {
+                                var daytype = d == "burndownDays" ? "workday" : "holiday";
+                                data.projectInfo[d].forEach(i => {
+                                    var day = [...document.querySelectorAll("#week .weekday")]
+                                        .filter(d => d.getAttribute("data-value") == i)[0];
+                                        dragged = document.querySelector("img#" + daytype);
+                                        addArtifact('dayOfWeek', day);
+                                });
+                                continue;
+                            }
+                            var input = document.querySelector("#projectInfo input#" + d);
+                            if (input)
+                                input.value = data.projectInfo[d];
+                            else {
+                                input = document.querySelector("#defaults input#" + d);
+                                if (!input) {
+                                    input = document.querySelector("#defaults select#" + d);
+                                    input.selected = data.projectInfo[d];
+                                }
+                                else {
+                                    if (input.type == 'checkbox') input.checked = data.projectInfo[d];
+                                    else input.value = data.projectInfo[d];
+                                }
+                            }
+                        }
+                        for (var d in data.defaults) {
+                            document.querySelector("#defaults input#" + d).value = data.projectInfo[d];
+                        }
+                        for (var i in data.team) {
+                            var id = data.team[i].id;
+                            var teamData = data.team[i].data;
+                            role = teamData.role ? teamData.role : "developer";
+                            dragged = document.querySelector("#people img#" + role);
+                            var teamMember = addArtifact("teamMember", document.querySelector("#team"));
+                            teamMember.id = id;
+                            teamMember.querySelector(".itemName").innerText = teamData.name;
+                            teamMember.querySelector("#data").innerText = JSON.stringify(teamData);
+                        }
+                        for (var i in data.milestones) {
+                            var id = data.milestones[i].id;
+                            var msData = data.milestones[i].data;
+                            type = data.milestones[i].data.type;
+                            dragged = document.querySelector("#msTypes img#" + type);
+                            var ms = addArtifact("scheduleMS", document.querySelector("#milestones"));
+                            trackingMS = document.querySelector("#mslist #" + ms.id.replace(/\./, "\\."));
+                            if (trackingMS) {
+                                trackingMS.id = id;
+                                trackingMS.querySelector(".itemName").innerText = msData.name;
+                                trackingMS.querySelector(".scheduleMS").id = id;
+                            }
+                            ms.id = id;
+                            ms.querySelector(".itemName").innerText = msData.name;
+                            ms.querySelector("#data").innerText = JSON.stringify(msData);
+                        }
+                        for (var i in data.holidayWeeks) {
+                            var id = data.holidayWeeks[i].id;
+                            var hwData = data.holidayWeeks[i].data;
+                            dragged = document.querySelector("#blackouts img");
+                            var hw = addArtifact("holidayWeek", document.querySelector("#holidayWeeks"));
+                            hw.id = id;
+                            hw.querySelector(".itemName").innerText = hwData.name;
+                            hw.querySelector("#data").innerText = JSON.stringify(hwData);
+                        }
+                        for (var i in data.requirements) {
+                            var id = data.requirements[i].id;
+                            var rqtData = data.requirements[i].data;
+                            dragged = document.querySelector("#backlogDiv img");
+                            var rqt = addArtifact("workItem", document.querySelector("#backlogDiv #requirements"));
+                            var origId = rqt.id;
+                            rqt.id = id;
+                            rqt.querySelector(".itemName").innerText = rqtData.name;
+                            rqt.querySelector("#data").innerText = JSON.stringify(rqtData);
+                            var oldReq = document.querySelector("#backlog #list #" + origId.replace(/\./, "\\."));
+                            oldReq.innerText = rqtData.name;
+                            oldReq.id = id;
+                        }
+                        project.file.loadTrackingData(data.burndown);
+                    }
+                    form.style.display = "none";
+                });
+                form.querySelector("#no").addEventListener("click", function() {
+                    form.style.display = "none";
+                });
+            },
+            loadTrackingData: function(burndown) {
+                var table = document.querySelector("#mslist");
+                burndown.forEach(milestone => {
+                    var tr = table.querySelector("tr#" + milestone.id.replace(/\./, "\\."));
+                    statuses.forEach(status => {
+                        milestone[status].forEach(task => {
+                            var data = task.data;
+                            dragged = document.querySelector("#mslist #development");
+                            var newTask = addArtifact("newTask", tr.querySelector("." + status));
+                            newTask.id = task.id;
+                            newTask.querySelector(".itemName").innerText = data.name;
+                            newTask.querySelector("#data").innerText = JSON.stringify(data);
+                        });
+                    })
+                })
+            },
+            save: function() {
+                var form = document.querySelector("#savefileForm");
+                form.style.display = "";
+                var dt = (new Date()).toISOString().split(".")[0];
+                var projectName = document.querySelector("#projectName").value;
+                if (projectName == "") projectName = "Project";
+                form.querySelector("#filename").value = projectName + "." + dt;
+                form.querySelector("#yes").addEventListener("click", function() {
+                    var filename = this.closest("#savefileForm").querySelector("#filename").value;
+                    console.log("Save project to", filename);
+                    if (form.querySelector("#filename").value == '') return;
+                    blob = new Blob([JSON.stringify(project.file.toJSON(), null, 2)], {
+                        type: "application/json;charset=utf-8"
+                    });
+                    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                        window.navigator.msSaveOrOpenBlob(blob, filename);
+                    }
+                    else {
+                        var a = document.createElement('a');
+                        a.download = filename;
+                        a.href = URL.createObjectURL(blob);
+                        a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
+                        a.dispatchEvent(new MouseEvent('click', {
+                            'view': window,
+                            'bubbles': true,
+                            'cancelable': false
+                        }));
+                    }
+                    form.style.display = "none";
+                });
+                form.querySelector("#no").addEventListener("click", function() {
+                    form.style.display = "none";
+                });
+            },
+            toJSON: function() {
+                var json = {
+                    projectInfo: {},
+                    defaults: {},
+                    team: [],
+                    milestones: [],
+                    holidayWeeks: [],
+                    requirements: [],
+                    burndown: []
+                };
+                document.querySelectorAll("#projectInfo input").forEach (v => {
+                    json.projectInfo[v.id] = v.value;
+                });
+                json.projectInfo.burndownDays = project.getBurndownDays();
+                json.projectInfo.weeklyHolidays = project.getWeeklyHolidays();
+                document.querySelectorAll("#defaults input").forEach (v => {
+                    if (v.type == 'checkbox')
+                        json.projectInfo[v.id] = v.checked;
+                    if (v.type == 'text')
+                        json.projectInfo[v.id] = v.value;
+                });
+                document.querySelectorAll("#defaults select").forEach (v => {
+                    json.projectInfo[v.id] = v.value;
+                });
+                document.querySelectorAll("#team .teamMember").forEach(t => {
+                    json.team.push({ id: t.id, data: getJSONData(t) });
+                });
+                document.querySelectorAll("#milestones .scheduleMS").forEach(t => {
+                    json.milestones.push({ id: t.id, data: getJSONData(t) });
+                });
+                document.querySelectorAll("#holidayWeeks .holidayWeek").forEach(t => {
+                    json.holidayWeeks.push({ id: t.id, data: getJSONData(t) });
+                });
+                document.querySelectorAll("#requirements .workItem").forEach(t => {
+                    json.requirements.push({ id: t.id, data: getJSONData(t) });
+                });
+                document.querySelectorAll("#mslist tbody tr.msrequirements").forEach(ms => {
+                    var last = json.burndown.push({ id: ms.id }) - 1;
+                    var milestone = json.burndown[last];
+                    statuses.forEach(status => {
+                        milestone[status] = [];
+                        ms.querySelectorAll("." + status + " .taskbrief").forEach(task => {
+                            milestone[status].push({ id: task.id, data: getJSONData(task)});
+                        })
+                    });
+                });
+                return json;
+            }
+
         }
     }
-
-    document.querySelector(".topmenu").classList.add("topmenu-selected");
-    document.querySelectorAll(".topmenu").forEach(screen => {
-        screen.addEventListener("click", e => {
-            var selected = document.querySelector(".topmenu-selected");
-            selected.classList.remove("topmenu-selected");
-            document.querySelector("#" + selected.id + "Screen").style.display = "none";
-            var target = e.target.closest(".topmenu");
-            target.classList.add("topmenu-selected");
-            document.querySelector("#" + target.id + "Screen").style.display = "";
-            callFuntion(target.id + "Init");
-        })
-    });
-    document.querySelectorAll(".graphType").forEach(screen => {
-        screen.addEventListener("click", e => {
-            var selected = document.querySelector(".graphType-selected");
-            selected.classList.remove("graphType-selected");
-            var target = e.target.closest(".graphType");
-            target.classList.add("graphType-selected");
-            callFuntion(target.id + "Initgraph");
-        })
-    });
-    document.querySelector("#loadfile").addEventListener("click", function() {
-        var form = document.querySelector("#loadfileForm");
-        form.style.display = "";
-        form.querySelector("#yes").addEventListener("click", function() {
-            if (form.querySelector("#filename").value == '') return;
-            var file = document.querySelector("#loadfileForm #filename").files[0];
-            var reader = new FileReader();
-            reader.readAsText(file);
-            reader.onload = function() {
-                clearProjectData();
-                var data = JSON.parse(reader.result);
-                for (var d in data.projectInfo) {
-                    if (d == "burndownDays" || d == "weeklyHolidays") {
-                        var daytype = d == "burndownDays" ? "workday" : "holiday";
-                        data.projectInfo[d].forEach(i => {
-                            var day = [...document.querySelectorAll("#week .weekday")]
-                                .filter(d => d.getAttribute("data-value") == i)[0];
-                                dragged = document.querySelector("img#" + daytype);
-                                addArtifact('dayOfWeek', day);
-                        });
-                        continue;
-                    }
-                    var input = document.querySelector("#projectInfo input#" + d);
-                    if (input)
-                        input.value = data.projectInfo[d];
-                    else {
-                        input = document.querySelector("#defaults input#" + d);
-                        if (!input) {
-                            input = document.querySelector("#defaults select#" + d);
-                            input.selected = data.projectInfo[d];
-                        }
-                        else {
-                            if (input.type == 'checkbox') input.checked = data.projectInfo[d];
-                            else input.value = data.projectInfo[d];
-                        }
-                    }
-                }
-                for (var d in data.defaults) {
-                    document.querySelector("#defaults input#" + d).value = data.projectInfo[d];
-                }
-                for (var i in data.team) {
-                    var id = data.team[i].id;
-                    var teamData = data.team[i].data;
-                    role = teamData.role ? teamData.role : "developer";
-                    dragged = document.querySelector("#people img#" + role);
-                    var teamMember = addArtifact("teamMember", document.querySelector("#team"));
-                    teamMember.id = id;
-                    teamMember.querySelector(".itemName").innerText = teamData.name;
-                    teamMember.querySelector("#data").innerText = JSON.stringify(teamData);
-                }
-                for (var i in data.milestones) {
-                    var id = data.milestones[i].id;
-                    var msData = data.milestones[i].data;
-                    type = data.milestones[i].data.type;
-                    dragged = document.querySelector("#msTypes img#" + type);
-                    var ms = addArtifact("scheduleMS", document.querySelector("#milestones"));
-                    trackingMS = document.querySelector("#mslist #" + ms.id.replace(/\./, "\\."));
-                    if (trackingMS) {
-                        trackingMS.id = id;
-                        trackingMS.querySelector(".itemName").innerText = msData.name;
-                        trackingMS.querySelector(".scheduleMS").id = id;
-                    }
-                    ms.id = id;
-                    ms.querySelector(".itemName").innerText = msData.name;
-                    ms.querySelector("#data").innerText = JSON.stringify(msData);
-                }
-                for (var i in data.holidayWeeks) {
-                    var id = data.holidayWeeks[i].id;
-                    var hwData = data.holidayWeeks[i].data;
-                    dragged = document.querySelector("#blackouts img");
-                    var hw = addArtifact("holidayWeek", document.querySelector("#holidayWeeks"));
-                    hw.id = id;
-                    hw.querySelector(".itemName").innerText = hwData.name;
-                    hw.querySelector("#data").innerText = JSON.stringify(hwData);
-                }
-                for (var i in data.requirements) {
-                    var id = data.requirements[i].id;
-                    var rqtData = data.requirements[i].data;
-                    dragged = document.querySelector("#backlogDiv img");
-                    var rqt = addArtifact("workItem", document.querySelector("#backlogDiv #requirements"));
-                    var origId = rqt.id;
-                    rqt.id = id;
-                    rqt.querySelector(".itemName").innerText = rqtData.name;
-                    rqt.querySelector("#data").innerText = JSON.stringify(rqtData);
-                    var oldReq = document.querySelector("#backlog #list #" + origId.replace(/\./, "\\."));
-                    oldReq.innerText = rqtData.name;
-                    oldReq.id = id;
-                }
-                loadTrackingData(data.burndown);
-            }
-            form.style.display = "none";
-        });
-        form.querySelector("#no").addEventListener("click", function() {
-            form.style.display = "none";
-        });
-    });
-    document.querySelector("#savefile").addEventListener("click", function() {
-        var form = document.querySelector("#savefileForm");
-        form.style.display = "";
-        var dt = (new Date()).toISOString().split(".")[0];
-        var projectName = document.querySelector("#projectName").value;
-        if (projectName == "") projectName = "Project";
-        form.querySelector("#filename").value = projectName + "." + dt;
-        form.querySelector("#yes").addEventListener("click", function() {
-            var filename = this.closest("#savefileForm").querySelector("#filename").value;
-            console.log("Save project to", filename);
-            if (form.querySelector("#filename").value == '') return;
-            blob = new Blob([JSON.stringify(projectToJSON(), null, 2)], {
-                type: "application/json;charset=utf-8"
-            });
-            if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-                window.navigator.msSaveOrOpenBlob(blob, filename);
+    var graph = {
+        init: function() {
+            document.querySelector("#graphsScreen #milestone").addEventListener("click", this.milestoneInitgraph);
+            document.querySelector("#graphsScreen #project").addEventListener("click", this.projectInitgraph);
+            document.querySelector("#graphsScreen #details").addEventListener("click", this.detailsInitgraph);
+            document.querySelector("#graphs").setAttribute("data-Init", "graph.refresh");
+        },
+        refresh: () => document.querySelector("#graphsScreen .graphType-selected").click(),
+        setGraph: function(selected) {
+            var previous = document.querySelector("#graphsScreen .graphType-selected");
+            previous.classList.remove("graphType-selected");
+            document.querySelector("#graphsScreen " + selected).classList.add("graphType-selected");
+        },
+        selectedMS: function() {
+            var milestones = project.getMilestones();
+            if (milestones.length == 0) return;
+            var ms = milestones[0];
+            if (document.querySelector("#selectMS").selectedOptions.length) {
+                var selectedMS = document.querySelector("#selectMS").selectedOptions[0].value;
+                ms = [...milestones].filter(m => m.id == selectedMS)[0];
             }
             else {
-                var a = document.createElement('a');
-                a.download = filename;
-                a.href = URL.createObjectURL(blob);
-                a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
-                a.dispatchEvent(new MouseEvent('click', {
-                    'view': window,
-                    'bubbles': true,
-                    'cancelable': false
-                }));
+                var msSelect = document.querySelector("#selectMS");
+                milestones.forEach(m => {
+                    var data = project.getMilestone(m).getData();
+                    var option = document.createElement("option");
+                    option.value = m.id;
+                    option.innerText = data.name;
+                    msSelect.appendChild(option);
+                });
             }
-            form.style.display = "none";
-        });
-        form.querySelector("#no").addEventListener("click", function() {
-            form.style.display = "none";
-        });
-    });
-    // Defaults
-    document.querySelectorAll("input.default").forEach(d => {
-        d.value = eval(d.getAttribute("data-path"));
-    });
-    document.querySelectorAll("div#estimate").forEach(d => {
-        var estimate = document.getElementById("estimateTemplate");
-        d.appendChild(estimate.content.cloneNode(true));
-    });
-    document.querySelectorAll("div#priorities input").forEach(d => {
-        var label = d.parentNode.querySelector("label#" + d.id);
-        var priority = document.createElement("option");
-        priority.id = d.id;
-        priority.innerText = label.innerText;
-        priority.selected = d.checked;
-        document.querySelector("select#priority").appendChild(priority);
-    });
-    document.querySelectorAll("div#roles input").forEach(d => {
-        var label = d.parentNode.querySelector("label#" + d.id);
-        var role = document.createElement("option");
-        role.id = d.id;
-        role.innerText = label.innerText;
-        role.selected = d.checked;
-        document.querySelector("select#role").appendChild(role);
-    });
-    document.querySelectorAll("#week .weekday").forEach(d => {
-        var value = +d.getAttribute("data-value");
-        if (defaults.burndownDays.includes(value) || defaults.weeklyHolidays.includes(value)) {
-            var daytype = defaults.burndownDays.includes(value) ? "workday" : "holiday";
-            dragged = document.querySelector("img#" + daytype);
-            addArtifact('dayOfWeek', d);
-            var edit = d.querySelector(".edit");
-            edit.parentNode.removeChild(edit);
-            edit = d.querySelector(".itemName");
-            edit.parentNode.removeChild(edit);
-        }
-    })
-    document.querySelector("#estimateTemplate").content.querySelectorAll("input").forEach(d => {
-        var label = d.parentNode.querySelector("label#" + d.id);
-        var estimate = document.createElement("option");
-        estimate.id = d.id;
-        estimate.innerText = label.innerText;
-        estimate.selected = d.checked;
-        document.querySelector("select#size").appendChild(estimate);
-    });
-    // Drag and drop handlers
-    document.addEventListener("dragstart", function(event) {
-    dragged = event.target;
-    }, false);
-    document.addEventListener("dragover", function(event) {
-    event.preventDefault();
-    }, false);
-    document.addEventListener("drop", function(event) {
-        event.preventDefault();
-        dropAction(dragged, event);
-        dragged = '';
-    }, false);
+            document.querySelector("#msChoice").style.display = "";
+            return ms;
+        },
+        milestoneInitgraph: function() {
+            graph.setGraph("#milestone");
+            var ms = graph.selectedMS();
+            if (!ms) return;
+            var margin = {top: 20, right: 20, bottom: 30, left: 40},
+                width = "50%",
+                height = 500;
+            
+            // Set up left and right screen halves
+            var board = d3.select("#graph")
+                .html("")
+                .append("div")
+                .style("width", '100%')
+                .style("height", '100%');
+            // Select MS dropdown
+            board.select("#selectMS")
+                .selectAll("milestones")
+                .data(project.getDevMilestones())
+                .enter()
+                .append("option")
+                .text(d => project.getMilestone(d).getData().name)
+                .attr("value", d => project.getMilestone(d).id);
+            d3.select('#selectMS').property('value', ms.id);
+            var leftGraph = board.append("div")
+                .attr("id", "leftGraph")
+                .style("width", "50%")
+                .style("height", "100%")
+                .style("float", "left");
+            var rightGraph = board.append("div")
+                .attr("id", "rightGraph")
+                .style("margin-left", "50%")
+                .style("height", "100%");
+            d3.select("#selectMS").on("change", function(d) {
+                var ms = d3.select(this).property("value");
+                document.getElementById("leftGraph").textContent = '';
+                document.getElementById("rightGraph").textContent = '';
+                drawGraphs();
+            });
 
+            function drawGraphs() {
+                var msid = d3.select("#selectMS").property("value");
+                var ms = document.querySelector("#" + msid.replace(/\./, "\\."));
+                var capacity = project.getMilestone(ms).getCapacity();
+                var tasks =  project.getMilestone(ms).getTasks();
+                var total = project.getMilestone(ms).getBurndown();
+                var target = project.getMilestone(ms).getTargetBurndown();
+                var width = 600;
+                var height = 600;
+
+                // Sum of effort in all reqts on day 1 
+                var burndown = [{
+                    week: "Start",
+                    total: total[0].effort,
+                    target: project.getMilestone(ms).getCapacity()
+                }];
+                var today = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
+                project.getMilestone(ms).getTrackingDates().forEach(d => {
+                    var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
+                    var week = d.toDateString().split(" ")[1] + " " + d.getDate();
+                    var totalValue = +dt.substr(3) <= +today ?
+                        total.filter(t => t.date == dt)[0].effort : 0;
+                    var targetValue = target.filter(t => t.date == dt)[0].effort;
+                    burndown.push({ week: week, total: totalValue, target: targetValue });
+                });
+
+                var maxremainder = burndown.map(b => b.total).reduce((a, b) => a > b ? a : b);
+                var ymax = Math.max(capacity, maxremainder);
+
+                var xScale = d3.scaleBand()
+                    .rangeRound([0, width])
+                    .padding(0.2)
+                    .domain(burndown.map(b => b.week));
+                var yScale = d3.scaleLinear()
+                    .rangeRound([height, 0])
+                    .domain([0, ymax * 1.2]);
+
+                var svg = leftGraph.append("svg")
+                    .attr("width", "100%")
+                    .attr("height", height + margin.top + margin.bottom);
+                // Tooltip
+                var div = leftGraph.append("div")
+                    .attr("class", "tooltip")
+                    .style("opacity", 0);
+                // Chart title
+                svg.append("text")
+                    .attr("x", (width / 2))
+                    .attr("y", margin.top)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "20px")
+                    .style("text-decoration", "underline")
+                    .text("Mileston Burndown");
+                var g = svg.append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                // height of axis-x from bottom of graph
+                g.append("g")
+                    .attr("class", "axis axis--x")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(d3.axisBottom(xScale));
+                // axis-y
+                g.append("g")
+                    .attr("class", "axis axis--y")
+                    .call(d3.axisLeft(yScale));
+                var bar = g.selectAll("rect")
+                    .data(burndown)
+                    .enter().append("g");
+
+                // Bars
+                bar.append("rect")
+                    .attr("x", d => xScale(d.week))
+                    .attr("y", d => yScale(d.total))
+                    .attr("width", xScale.bandwidth())
+                    .attr("height", d => height - yScale(d.total))
+                    .attr("class", "plainbar bar1")
+                    .on("click", function(event, d) {
+                        document.querySelector("#schedule").click();
+                        msId = document.querySelector("#selectMS").value.replace(/\./, "\\.");
+                        editMileStone(document.querySelector("#projectScheduleEditor div#" + msId + ".scheduleMS"));
+                    });
+                // labels on the bar chart
+                bar.append("text")
+                    .attr("dy", "1.3em")
+                    .attr("x", d => xScale(d.week) + xScale.bandwidth() / 2)
+                    .attr("y", d => yScale(d.total) - 20)
+                    .attr("text-anchor", "middle")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "11px")
+                    .attr("fill", "black")
+                    .text(d => d.total > 0 ? d.total : '');
+                // line charts
+                var stretch = 0.1 * burndown[0].target;
+                var greenline = d3.line()
+                    .x((d, i) => xScale(d.week) + xScale.bandwidth() / 2)
+                    .y(d => yScale(d.target));
+                bar.append("path")
+                    .attr("class", "greenline")
+                    .attr("d", greenline(burndown));
+                bar.append("circle")
+                    .attr("class", "greendot")
+                    .attr("cx", (d, i) => xScale(d.week) + xScale.bandwidth() / 2)
+                    .attr("cy", d => yScale(d.target))
+                    .attr("r", 3)
+                    .on("mouseover", function(event, d) {
+                        div.transition().duration(200).style("opacity", .9);
+                        div.html("Week: " + d.week + "<br/>Capacity: " + Math.floor(d.target))
+                            .style("left", (event.pageX) + "px")
+                            .style("top", (event.pageY - 10) + "px");
+                    })
+                    .on("mouseout", function(d) {
+                        div.transition().duration(500).style("opacity", 0);
+                    });
+                bar.append("text")
+                    .attr("dx", "1.3em")
+                    .attr("dy", "0.5em")
+                    .attr("x", (d, i) => xScale(d.week) + xScale.bandwidth() / 2)
+                    .attr("y", d => yScale(d.target))
+                    .attr("text-anchor", "middle")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "11px")
+                    .attr("fill", "black")
+                    .text(d => d.target > 0 ? Math.floor(d.target) : '');
+
+                var redline = d3.line()
+                    .x((d, i) => xScale(d.week) + xScale.bandwidth() / 2)
+                    .y(d => yScale(d.target + stretch));
+                bar.append("path")
+                    .attr("class", "redline")
+                    .attr("d", redline(burndown));
+                bar.append("circle")
+                    .attr("class", "reddot")
+                    .attr("cx", (d, i) => xScale(d.week) + xScale.bandwidth() / 2)
+                    .attr("cy", d => yScale(d.target + stretch))
+                    .attr("r", 3)
+                    .on("mouseover", function(event, d) {
+                        div.transition().duration(200).style("opacity", .9);
+                        div.html("Week: " + d.week + "<br/>Stretch: " + Math.floor(d.target + stretch))
+                            .style("left", (event.pageX) + "px")
+                            .style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", function(d) {
+                        div.transition().duration(500).style("opacity", 0);
+                    });
+                bar.append("text")
+                    .attr("dx", "1.3em")
+                    .attr("dy", "0.5em")
+                    .attr("x", (d, i) => xScale(d.week) + xScale.bandwidth() / 2)
+                    .attr("y", d => yScale(d.target + stretch))
+                    .attr("text-anchor", "middle")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "11px")
+                    .attr("fill", "black")
+                    .text(d => Math.floor(d.target + stretch));
+
+        //--------------------------------------------------------------------------------------------
+                var milestone = project.getMilestone(ms);
+                var capacity = milestone.getCapacityConfig();
+                var workingDays = milestone.getWorkingDays().length;
+                var scope = project.getMilestone(ms).getTasks();
+                var today = new Date();
+                var capacity = milestone.getCapacityConfig(today);
+                var data = capacity.map(c => {
+                    if (today > project.getMilestone(ms).getEndDate()) {
+                        remainingDays = 0;
+                    }
+                    else {
+                        capacity.filter(d => d.developer == c.developer)[0];
+                        if (today <= project.getMilestone(ms).getStartDate())
+                            remainingDays = milestone.getDeveloperCapacity(c.id);
+                        remainingDays = milestone.getDeveloperCapacity(c.id, today);
+                    }
+                    return {
+                        "Developer": c.developer,
+                        "Planned availability": workingDays * parseInt(c.availability) / 100 - c.vacation,
+                        "Assigned work": (project.getDeveloper(c.id).getTasksForMS(milestone.id)
+                            .map(t => project.getTask(t.id).getMSBurndown(milestone)[0].effort)
+                            .reduce((pr, cv) => { return pr + cv }, 0)).toFixed(2),
+                        "Remaining days": remainingDays.toFixed(2),
+                        "Remaining work": (project.getDeveloper(c.id).getTasksForMS(milestone.id)
+                            .map(t => project.getTask(t.id).getMSBurndown(milestone)
+                                [project.getTask(t.id).getMSBurndown(milestone).length - 1].effort)
+                            .reduce((pr, cv) => { return pr + cv }, 0)).toFixed(2)
+                    }
+                });
+                data.columns = Object.keys(data[0]);
+                data.y = "Days";
+
+                keys = data.columns.slice(1);
+                groupKey = data.columns[0];
+
+                xAxis = g => g
+                    .attr("transform", `translate(0,${height + margin.bottom -10})`)
+                    .call(d3.axisBottom(x0).tickSizeOuter(0));
+                yAxis = g => g
+                    .attr("transform", `translate(${margin.left},0)`)
+                    .call(d3.axisLeft(y).ticks(null, "s"))
+                    .call(g => g.select(".tick:last-of-type text").clone()
+                        .attr("x", 3)
+                        .attr("text-anchor", "start")
+                        .attr("font-weight", "bold")
+                        .text(data.y));
+
+                color = d3.scaleOrdinal()
+                    .range(["#6b486b", "#a05d56", "#d0743c", "#ff8c00", "#98abc5", "#8a89a6", "#7b6888"]);
+
+                x0 = d3.scaleBand()
+                    .domain(data.map(d => d[groupKey]))
+                    .rangeRound([margin.left, width - margin.right])
+                    .paddingInner(0.1);
+
+                x1 = d3.scaleBand()
+                    .domain(keys)
+                    .rangeRound([0, x0.bandwidth()])
+                    .padding(0.05);
+
+                y = d3.scaleLinear()
+                    .rangeRound([height + margin.bottom - 10, margin.top])
+                    .domain([0, d3.max(data, d => d3.max(keys, key => d[key])) + 10]).nice();
+
+                legend = svg => {
+                    const g = svg
+                        .attr("transform", `translate(${width},0)`)
+                        .attr("text-anchor", "end")
+                        .attr("font-family", "sans-serif")
+                        .attr("font-size", 10)
+                        .selectAll("g")
+                        .data(color.domain().slice().reverse())
+                        .join("g")
+                        .attr("transform", (d, i) => `translate(0,${i * 20})`);
+
+                    g.append("rect")
+                        .attr("x", -19)
+                        .attr("width", 19)
+                        .attr("height", 19)
+                        .attr("fill", color);
+
+                    g.append("text")
+                        .attr("x", -24)
+                        .attr("y", 9.5)
+                        .attr("dy", "0.35em")
+                        .text(d => d);
+                }
+
+                svg = rightGraph.append("svg")
+                    .attr("width", "100%")
+                    .attr("height", height + margin.top + margin.bottom);
+                div = rightGraph.append("div")
+                    .attr("class", "tooltip devburndown")
+                    .style("opacity", 0);
+                // Chart title
+                svg.append("text")
+                    .attr("x", (width / 2))
+                    .attr("y", margin.top)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "20px")
+                    .style("text-decoration", "underline")
+                    .text("Developer Load");
+                g = svg.append("g") // Whole graph boundary
+                    .attr("transform", "translate(" + margin.left + ", 0)");
+
+                bar = g.selectAll("rect")
+                    .data(data)
+                    .enter()
+                    .append("g")
+                    .attr("transform", d => `translate(${x0(d[groupKey])},0)`)
+
+                // Add bars
+                bar.selectAll("rect")
+                    .data(d => keys.map(key => ({
+                        key,
+                        value: d[key]
+                    })))
+                    .enter()
+                    .append("rect")
+                    .attr("x", d => x1(d.key))
+                    .attr("y", d => y(d.value))
+                    .attr("width", x1.bandwidth())
+                    .attr("height", d => y(0) - y(d.value))
+                    .attr("fill", d => color(d.key))
+                    .on("mouseover", function(event, d) {
+                        div.transition().duration(200).style("opacity", .9);
+                        div.html(d.key + ": " + d.value + " days")
+                            .style("left", (event.pageX) + "px")
+                            .style("top", (event.pageY - 32) + "px");
+                    })
+                    .on("mouseout", function(d) {
+                        div.transition().duration(500).style("opacity", 0);
+                    })
+                    .on("click", function(event, d) {
+                        document.querySelector("#schedule").click();
+                        msId = document.querySelector("#selectMS").value.replace(/\./, "\\.");
+                        editMileStone(document.querySelector("#projectScheduleEditor div#" + msId + ".scheduleMS"));
+                    })
+
+                bar.selectAll("text")
+                    .data(d => keys.map(key => ({
+                        key,
+                        value: d[key]
+                    })))
+                    .enter()
+                    .append("text")
+                    .attr("dx", "1.4em")
+                    .attr("dy", "-0.3em")
+                    .attr("x", d => x1(d.key))
+                    .attr("y", d => y(d.value))
+                    .attr("text-anchor", "middle")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "11px")
+                    .attr("fill", "black")
+                    .text(d => d.value);
+
+                g.append("g")
+                    .call(xAxis);
+
+                g.append("g")
+                    .call(yAxis);
+
+                g.append("g")
+                    .call(legend);
+            }
+            drawGraphs();
+        },
+        projectInitgraph: function() {
+            var ms = project.getMilestones()[0];
+            if (!ms) return;
+            document.querySelector("#msChoice").style.display = "none";
+            graph.setGraph("#project");
+            var projectBurndown = project.getBurndown();
+            var targetBurndown = project.getTargetBurndown();
+            var today = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
+            var burndown = project.getTrackingDates().map(d => {
+                var dt = d.toDateString().split(" ");
+                var dtIndex = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
+                var efforts = projectBurndown.filter(d => d.date == dtIndex && +dtIndex.substr(3) <= +today);
+                return {
+                    date: dt[1] + " " + dt[2],
+                    effort: efforts.length ? efforts[0].effort : 0,
+                    target: targetBurndown.filter(d => d.date == dtIndex)[0].effort
+                }
+            });
+            burndown.unshift({
+                date: "Start",
+                effort: project.getTasks().map(t => project.getTask(t.id).getEstimate()).reduce((a, b) => a + b),
+                target: targetBurndown[0].effort
+            })
+            
+            var ymax = burndown.reduce((a,b) => Math.max(a.effort, a.target) > Math.max(b.effort, b.target) ? a : b);
+            ymax = ymax.effort > ymax.target ? ymax.effort : ymax.target;
+            
+            var margin = {top: 20, right: 20, bottom: 50, left: 40},
+                width = 900,
+                height = 600;
+            
+            var board = d3.select("#graph")
+                .html("")
+                .append("div")
+                .style("width", '100%')
+                .style("height", 500);
+            
+            var xScale = d3.scaleBand()
+                .rangeRound([0, width])
+                .padding(0.2)
+                .domain(burndown.map(b => b.date));
+            var yScale = d3.scaleLinear()
+                .rangeRound([height, 0])
+                .domain([0, ymax + 10]);
+            
+            var svg = board.append("svg")
+                .attr("width", "100%")
+                .attr("height", height + margin.top + margin.bottom);
+            // Tooltip
+            var div = board.append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+            
+            // Chart title
+            svg.append("text")
+                .attr("x", (width / 2))
+                .attr("y", margin.top)
+                .attr("text-anchor", "middle")
+                .style("font-size", "20px")
+                .style("text-decoration", "underline")
+                .text("Project Burndown");
+            
+            var g = svg.append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            // height of axis-x from bottom of graph
+            g.append("g")
+                .attr("class", "axis axis--x")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(xScale))
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-1.0em")
+                .attr("dy", "-.5em")
+                .attr("transform", "rotate(-90)");
+            // axis-y
+            g.append("g")
+                .attr("class", "axis axis--y")
+                .call(d3.axisLeft(yScale));
+            
+            var bar = g.selectAll("rect")
+                .data(burndown)
+                .enter().append("g");
+
+            // Bars
+            bar.append("rect")
+                .attr("x", function(d) { return xScale(d.date); })
+                .attr("y", function(d) { return yScale(d.effort); })
+                .attr("width", xScale.bandwidth())
+                .attr("height", function(d) { return height - yScale(d.effort); })
+                .attr("class", "plainbar bar1")
+                .on("mouseover", function(event,d) {
+                    div.transition().duration(200).style("opacity", .9);
+                    div.html("Week: " + d.date + "<br/>Capacity: " + Math.floor(d.target))
+                        .style("left", (event.pageX) + "px")
+                        .style("top", (event.pageY - 50) + "px");
+                })
+                .on("mouseout", function(d) {
+                    div.transition().duration(500).style("opacity", 0);
+                })
+                .on("click", function (event) {
+                    document.querySelector("#schedule").click();
+                    msId = document.querySelector("#selectMS").value.replace(/\./, "\\.");
+                    showMilestones();
+                });
+            // labels on top of the bar
+            bar.append("text")
+                .attr("dy", "1.3em")
+                .attr("x", function(d) { return xScale(d.date) + xScale.bandwidth() / 2; })
+                .attr("y", function(d) { return yScale(d.effort) - 17; })
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "11px")
+                .attr("fill", "black")
+                .text(function(d) { return d.effort > 0 ? d.effort : ''; });
+            
+            // Ideal burndown line
+            var greenline = d3.line()
+                .x(function(d, i) { return xScale(d.date) + xScale.bandwidth() / 2; })
+                .y(function(d) { return yScale(d.target); });
+            bar.append("path")
+                .attr("class", "greenline")
+                .attr("d", greenline(burndown));
+            bar.append("circle")
+                .attr("class", "greendot")
+                .attr("cx", function(d, i) { return xScale(d.date) + xScale.bandwidth() / 2; })
+                .attr("cy", function(d) { return yScale(d.target); })
+                .attr("r", 3);
+            bar.append("text")
+                .attr("dx", "1.3em")
+                .attr("dy", "0.5em")
+                .attr("x", function(d, i) { return xScale(d.date) + xScale.bandwidth() / 2; })
+                .attr("y", function(d) { return yScale(d.target); })
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "11px")
+                .attr("fill", "black")
+                .text(function(d) { return d.target > 0 ? Math.floor(d.target) : ''; });
+        },
+        detailsInitgraph: function() {
+            graph.setGraph("#details");
+            var ms = graph.selectedMS();
+            if (!ms) return;
+            var margin = {top: 20, right: 20, bottom: 30, left: 40},
+            width = 600,
+            height = 600;
+            
+            // Set up left and right screen halves
+            var board = d3.select("#graph")
+                .html("")
+                .append("div")
+                .style("width", '100%')
+                .style("height", 500);
+            d3.select('#selectMS').property('value', ms.id);
+            var leftGraph = board.append("div")
+                .attr("id", "leftGraph")
+                .style("width", "50%")
+                .style("height", "100%")
+                .style("float", "left");
+            var rightGraph = board.append("div")
+                .attr("id", "rightGraph")
+                .style("margin-left", "50%")
+                .style("height", "100%");
+            d3.select("#selectMS").on("change", function(d) {
+                var ms = d3.select(this).property("value");
+                document.getElementById("leftGraph").textContent = '';
+                document.getElementById("rightGraph").textContent = '';
+                drawGraphs(project, ms);
+            });
+            
+            var xScale, yScale, svg, div, g;
+            
+            function drawGraphs() {
+                var milestones = project.getDevMilestones();
+                if (milestones.length == 0) return;
+                var today = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
+                var ms = document.querySelector("#selectMS") ?
+                    document.querySelector("#selectMS").selectedOptions[0].value
+                    : milestones[0].id;
+                var milestone = [...milestones].filter(m => m.id == ms)[0];
+                var taskData = project.getMilestone(milestone).getTasks().map(t => {
+                    return {
+                        name: project.getTask(t.id).getData().name,
+                        burndown: project.getTask(t.id).getMSBurndown(milestone),
+                        estimate: project.getTask(t.id).getEstimate()
+                    }
+                });
+                var trackingDates = project.getMilestone(milestone).getTrackingDates();
+                var fdata = trackingDates.map(d => {
+                    var dtParts = d.toDateString().split(" ");
+                    var data = { group: dtParts[1] + " " + dtParts[2] };
+                    dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
+                    taskData.forEach(t => data[t.name] = +dt.substr(3) <= today ?
+                        t.burndown.filter(b => b.date == dt)[0].effort : 0);
+                    return data;
+                });
+                var initData = { group: "Start" };
+                taskData.forEach(t => initData[t.name] = t.estimate);
+                fdata.unshift(initData);
+                drawPaper(project, milestone, leftGraph, "Feature Burndown", fdata);
+
+                var trackingDates = project.getMilestone(milestone).getTrackingDates();
+                trackingDates.unshift(project.getMilestone(milestone).getStartDate());
+                var msBurndown = project.getDevelopers().map(d => {
+                    var taskData = project.getDeveloper(d).getTasksForMS(milestone.id)
+                        .map(t => project.getTask(t.id).getMSBurndown(milestone));
+                    var developerBurndown = trackingDates.map(d => {
+                        var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
+                        var taskList = taskData.map(r => r.filter(s => s.date == dt)[0].effort);
+                        var effort = taskList.length > 0 ? taskList.reduce((a, b) => a + b) : 0;
+                        return { date: dt, effort: effort }
+                    });
+                    return {
+                        developer: d,
+                        assigned: developerBurndown
+                    }
+                });
+                taskData = project.getMilestone(milestone).getUnassignedDeveloper()
+                    .map(t => project.getTask(t.id).getMSBurndown(milestone));
+                taskBurndown = trackingDates.map(d => {
+                    var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
+                    var taskList = taskData.map(r => r.filter(s => s.date == dt)[0].effort);
+                    var effort = taskList.length > 0 ? taskList.reduce((a, b) => a + b) : 0;
+                    return { date: dt, effort: effort }
+                });
+                msBurndown.push({ developer: "Unassigned", assigned: taskBurndown });
+                var udata = trackingDates.map(d => {
+                    var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
+                    var dtParts = d.toDateString().split(" ");
+                    var data = { group: dtParts[1] + " " + dtParts[2] }
+                    msBurndown.map(m => m.developer).forEach(developer => {
+                        var devname = developer != "Unassigned" ?
+                            project.getDeveloper(developer).getData().name : "Unassigned";
+                        data[devname] = msBurndown.filter(m => m.developer == developer)[0]
+                            .assigned.filter(a => a.date == dt)[0].effort
+                    });
+                    return data;
+                });
+                udata[0].group = "Start";
+                drawPaper(project, milestone, rightGraph, "Developer Burndown", udata);
+            }
+            
+            function drawPaper(project, ms, paper, title, data) {
+                var capacity = project.getMilestone(ms).getCapacity();
+                var ymax = project.getMilestone(ms).getBurndown().map(b => b.effort)
+                    .concat(capacity).reduce((a, b) => a > b ?  a : b);
+                var workingweeks = project.getMilestone(ms).getTrackingDates();
+                
+                var groups = data.map(d => d.group);
+                var subgroups = Object.keys(data[0]).filter(k => k != "group");
+
+                var color = d3.scaleOrdinal()
+                    .domain(subgroups)
+                    .range(['#e41a1c','#377eb8','#4daf4a']);
+
+                xScale = d3.scaleBand()
+                    .rangeRound([0, width])
+                    .padding(0.2)
+                    .domain(groups);
+                yScale = d3.scaleLinear()
+                    .rangeRound([height, 0])
+                    .domain([0, ymax * 1.2]);
+
+                svg = paper.append("svg")
+                    .attr("width", "100%")
+                    .attr("height", height + margin.top + margin.bottom);
+                // Tooltip
+                tooltip = paper.append("div")
+                    .attr("class", "tooltip")
+                    .style("width", 250)
+                    .style("opacity", 0);
+                // Chart title
+                svg.append("text")
+                    .attr("x", (width / 2))
+                    .attr("y", margin.top)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "20px")
+                    .style("text-decoration", "underline")
+                    .text(title);
+                g = svg.append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                // height of axis-x from bottom of graph
+                g.append("g")
+                    .attr("class", "axis axis--x")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(d3.axisBottom(xScale));
+                // axis-y
+                g.append("g")
+                    .attr("class", "axis axis--y")
+                    .call(d3.axisLeft(yScale));
+                // Legend
+                var legend = g.append("g")
+                    .attr("transform", `translate(${width},0)`)
+                    .attr("text-anchor", "end")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", 10)
+                    .selectAll("g")
+                    .data(color.domain().slice())
+                    .join("g")
+                    .attr("transform", (d, i) => {
+                        return `translate(0,${i * 20})`;
+                    });
+                    
+                legend.append("rect")
+                    .attr("x", -19)
+                    .attr("width", 19)
+                    .attr("height", 19)
+                    .attr("fill", color);
+
+                legend.append("text")
+                    .attr("x", -24)
+                    .attr("y", 9.5)
+                    .attr("dy", "0.35em")
+                    .text(d => d);
+                
+                var stackedData = d3.stack()
+                    .keys(subgroups)
+                    (data)
+
+                // Show the bars
+                var bar = g.append("g")
+                    .selectAll("g")
+                    // Enter in the stack data = loop key per key = group per group
+                    .data(stackedData)
+                    .enter()
+                        .append("g")
+                        .attr("fill", d => color(d.key))
+                    
+                var bar_enter = bar.selectAll("rect")
+                    .data(d => d)
+                    .enter()
+                        .append("rect")
+                        .attr("x", d => xScale(d.data.group))
+                        .attr("y", d => yScale(d[1]))
+                        .attr("height", d => yScale(d[0]) - yScale(d[1]))
+                        .attr("width",xScale.bandwidth())
+                        .on("mouseover", function(event, d) {
+                            var key = d3.select(this.parentNode).datum().key;
+                            var remaining = d.data[key];
+                            tooltip.transition().duration(200).style("opacity", .9);
+                            var tip = "<b>" + title.split(" ")[0] + ":</b> "  + key + "<br><b>Remaining:</b> " + remaining + " days";
+                            tooltip.html(tip)
+                            .style("left", (event.pageX) + "px")
+                            .style("top", (event.pageY - 8) + "px");
+                        })
+                        .on("mouseout", function(d) {
+                            tooltip.transition().duration(500).style("opacity", 0);
+                            // enter a second time = loop subgroup per subgroup to add all rectangles
+                        })
+                        .on("click", function(d) {
+                            document.querySelector("#schedule").click();
+                            msId = document.querySelector("#selectMS").value.replace(/\./, "\\.");
+                            editMileStone(document.querySelector("#projectScheduleEditor div#" + msId + ".scheduleMS"));
+                        })
+            }
+            drawGraphs(project, ms);
+        }
+    };
+
+    document.querySelector("body").onload = function() {
+        document.querySelector(".topmenu").classList.add("topmenu-selected");
+        document.querySelectorAll(".topmenu").forEach(screen => {
+            screen.addEventListener("click", e => {
+                var selected = document.querySelector(".topmenu-selected");
+                selected.classList.remove("topmenu-selected");
+                document.querySelector("#" + selected.id + "Screen").style.display = "none";
+                var target = e.target.closest(".topmenu");
+                target.classList.add("topmenu-selected");
+                document.querySelector("#" + target.id + "Screen").style.display = "";
+                var initFunction = target.getAttribute("data-init");
+                if (!initFunction) initFunction = target.id + "Init";
+                callFuntion(initFunction);
+            })
+        });
+        document.querySelector("#loadfile").addEventListener("click", project.file.open);
+        document.querySelector("#savefile").addEventListener("click", project.file.save);
+        graph.init();
+        // Defaults
+        document.querySelectorAll("input.default").forEach(d => {
+            d.value = eval(d.getAttribute("data-path"));
+        });
+        document.querySelectorAll("div#estimate").forEach(d => {
+            var estimate = document.getElementById("estimateTemplate");
+            d.appendChild(estimate.content.cloneNode(true));
+        });
+        document.querySelectorAll("div#priorities input").forEach(d => {
+            var label = d.parentNode.querySelector("label#" + d.id);
+            var priority = document.createElement("option");
+            priority.id = d.id;
+            priority.innerText = label.innerText;
+            priority.selected = d.checked;
+            document.querySelector("select#priority").appendChild(priority);
+        });
+        document.querySelectorAll("div#roles input").forEach(d => {
+            var label = d.parentNode.querySelector("label#" + d.id);
+            var role = document.createElement("option");
+            role.id = d.id;
+            role.innerText = label.innerText;
+            role.selected = d.checked;
+            document.querySelector("select#role").appendChild(role);
+        });
+        document.querySelectorAll("#week .weekday").forEach(d => {
+            var value = +d.getAttribute("data-value");
+            if (defaults.burndownDays.includes(value) || defaults.weeklyHolidays.includes(value)) {
+                var daytype = defaults.burndownDays.includes(value) ? "workday" : "holiday";
+                dragged = document.querySelector("img#" + daytype);
+                addArtifact('dayOfWeek', d);
+                var edit = d.querySelector(".edit");
+                edit.parentNode.removeChild(edit);
+                edit = d.querySelector(".itemName");
+                edit.parentNode.removeChild(edit);
+            }
+        })
+        document.querySelector("#estimateTemplate").content.querySelectorAll("input").forEach(d => {
+            var label = d.parentNode.querySelector("label#" + d.id);
+            var estimate = document.createElement("option");
+            estimate.id = d.id;
+            estimate.innerText = label.innerText;
+            estimate.selected = d.checked;
+            document.querySelector("select#size").appendChild(estimate);
+        });
+        // Drag and drop handlers
+        document.addEventListener("dragstart", function(event) {
+            dragged = event.target;
+        }, false);
+        document.addEventListener("dragover", function(event) {
+            event.preventDefault();
+        }, false);
+        document.addEventListener("drop", function(event) {
+            event.preventDefault();
+            dropAction(dragged, event);
+            dragged = '';
+        }, false);
+    }
     function hideMS(target) {
         target.closest("td").querySelectorAll("div:not(.minholder)").forEach(div => div.style.display = "none");
         var minholder = target.closest(".minholder");
@@ -1145,9 +1975,6 @@
         minholder.querySelector(".displayed").style.display = "none";
         target.closest("tr").querySelectorAll("td:not(.msicon)").forEach(c => c.style.display = "");
     }
-    function setDefaults() {
-        console.log("I an here");
-    }
     function clearProjectData() {
         document.querySelectorAll("#projectInfo input").forEach(f => f.value = "");
         document.querySelectorAll(".droplist:not(.weekdays)").forEach(d => d.innerHTML = "");
@@ -1156,8 +1983,21 @@
         document.querySelector("#backlog #list").innerHTML = "";
     }
     function callFuntion(functionName, params) {
-        console.log("Invoking", functionName, "if defined")
-        if (typeof window[functionName] === "function") window[functionName](params);
+        if (functionName.split(".").length == 1) {
+            var argType = typeof window[functionName];
+            console.log("Calling function named", functionName, "type:", argType);
+            if (argType === "function") window[functionName](params);
+        }
+        else {
+            params = window;
+            var args = Array.prototype.slice.call(arguments, 2);
+            var namespaces = functionName.split(".");
+            var func = namespaces.pop();
+            for(var i = 0; i < namespaces.length; i++) {
+                params = params[namespaces[i]];
+            }
+            return params[func].apply(params, args);
+        }
     }
     function dropAction(dragged, event) {
         var dropzone = event.target.closest(".dropzone");
@@ -1284,6 +2124,11 @@
                     input.checked = false;
         });
         form.style.display = 'block';
+        var burnEditor = form.querySelector("#editBurndown");
+        if (burnEditor) burnEditor.onclick = function (e) {
+            form.style.display = "none";
+            editBurndown(event);
+        }
         form.querySelector('#yes').onclick = function (event) {
             document.querySelectorAll("#" + id.replace(/\./, "\\.")).forEach(i => {
                 saveFormData(i, form);
@@ -1316,11 +2161,16 @@
         if (mserrors.length)
             return burnDownEditError(form, "Set Milestone lengths:<br/>" + mserrors.join("<br/>"));
         showBurndown(item, form);
-        form.querySelector('#yes').onclick = function (event) {
+        form.querySelector("#editTask").onclick = function (e) {
+            editForm(event);
+            form.style.display = "none";
+        }
+        form.querySelector("#yes").onclick = function (event) {
             document.querySelectorAll("#" + id.replace(/\./, "\\.")).forEach(i => saveFormData(i, form));
             clearFormData(form);
+            document.querySelector(".graphType-selected").click();
         };
-        form.querySelector('#no').onclick = function (event) {
+        form.querySelector("#no").onclick = function (event) {
             form.style.display = 'none';
         };
     }
@@ -1355,6 +2205,15 @@
         document.querySelector("#milestoneEditor tbody#tester").style.display = "none";
         document.querySelector("#milestoneEditor #msbacklog").style.display = "";
         document.querySelector("#milestoneEditor #qabacklog").style.display = "none";
+    }
+    function scheduleInit() {
+        var today = new Date();
+        document.querySelectorAll("#mslist tbody tr").forEach(r => {
+            var ms = project.getMilestone(r);
+            var age = ms.getEndDate() < today ? r.style.backgroundColor = "#eeeeee" :
+                ms.getStartDate() > today ? r.style.backgroundColor = "#eeeeff" :
+                r.style.backgroundColor = "#ffffff";
+        });
     }
     function showTesterView() {
         document.querySelector("#milestoneEditor #developer").classList.remove("selected");
@@ -1531,6 +2390,11 @@
         mseditor.querySelector("#qabacklog tbody").innerHTML = '';
         // Put header icon on top
         document.querySelector("#msicon").appendChild(milestone.closest(".scheduleMS").cloneNode(true));
+        // Set up start and end dates in header
+        var ms = project.getMilestone(milestone);
+        var dateRange = ms.getStartDate().toDateString() + " - "
+            + ms.getEndDate().toDateString();
+        document.querySelector("#milestoneEditor #header").innerText = dateRange;
         // For each team member, create a row in developer or tester table
         document.querySelectorAll('#teamDiv #team .teamMember').forEach(dev => {
             var msrow = document.querySelector("#msTemplate").content.cloneNode(true);
@@ -1765,788 +2629,5 @@
         var id = params.filter(t => typeof(t) == 'string' && t.match(/^team/))[0];
         var role = project.getDeveloper(id).getData().role;
         document.querySelector(".formDescription").innerText = "Role: " + role;
-    }
-    function projectToJSON() {
-        var json = {
-            projectInfo: {},
-            defaults: {},
-            team: [],
-            milestones: [],
-            holidayWeeks: [],
-            requirements: [],
-            burndown: []
-        };
-        document.querySelectorAll("#projectInfo input").forEach (v => {
-            json.projectInfo[v.id] = v.value;
-        });
-        json.projectInfo.burndownDays = project.getBurndownDays();
-        json.projectInfo.weeklyHolidays = project.getWeeklyHolidays();
-        document.querySelectorAll("#defaults input").forEach (v => {
-            if (v.type == 'checkbox')
-                json.projectInfo[v.id] = v.checked;
-            if (v.type == 'text')
-                json.projectInfo[v.id] = v.value;
-        });
-        document.querySelectorAll("#defaults select").forEach (v => {
-            json.projectInfo[v.id] = v.value;
-        });
-        document.querySelectorAll("#team .teamMember").forEach(t => {
-            json.team.push({ id: t.id, data: getJSONData(t) });
-        });
-        document.querySelectorAll("#milestones .scheduleMS").forEach(t => {
-            json.milestones.push({ id: t.id, data: getJSONData(t) });
-        });
-        document.querySelectorAll("#holidayWeeks .holidayWeek").forEach(t => {
-            json.holidayWeeks.push({ id: t.id, data: getJSONData(t) });
-        });
-        document.querySelectorAll("#requirements .workItem").forEach(t => {
-            json.requirements.push({ id: t.id, data: getJSONData(t) });
-        });
-        document.querySelectorAll("#mslist tbody tr.msrequirements").forEach(ms => {
-            var last = json.burndown.push({ id: ms.id }) - 1;
-            var milestone = json.burndown[last];
-            statuses.forEach(status => {
-                milestone[status] = [];
-                ms.querySelectorAll("." + status + " .taskbrief").forEach(task => {
-                    milestone[status].push({ id: task.id, data: getJSONData(task)});
-                })
-            });
-        });
-        return json;
-    }
-    function loadTrackingData(burndown) {
-        var table = document.querySelector("#mslist");
-        burndown.forEach(milestone => {
-            var tr = table.querySelector("tr#" + milestone.id.replace(/\./, "\\."));
-            statuses.forEach(status => {
-                milestone[status].forEach(task => {
-                    var data = task.data;
-                    dragged = document.querySelector("#mslist #development");
-                    var newTask = addArtifact("newTask", tr.querySelector("." + status));
-                    newTask.id = task.id;
-                    newTask.querySelector(".itemName").innerText = data.name;
-                    newTask.querySelector("#data").innerText = JSON.stringify(data);
-                });
-            })
-        })
-    }
-    function graphsInit() {
-        if (document.querySelector("#graphsScreen #graph").innerText == "") {
-            milestoneInitgraph();
-        }
-    }
-    function milestoneInitgraph() {
-        var milestones = project.getMilestones();
-		if (milestones.length == 0) return;
-        var ms = document.querySelector("#selectMS") ?
-            document.querySelector("#selectMS").selectedOptions[0].value
-            : milestones[0];
-		var margin = {top: 20, right: 20, bottom: 30, left: 40},
-            width = "50%",
-            height = 500;
-		
-		// Set up left and right screen halves
-		var board = d3.select("#graph")
-            .html("")
-            .append("div")
-            .style("width", '100%')
-            .style("height", '100%');
-		// Select MS dropdown
-		board.append("div")
-            .append("text")
-            .text("Milestone: ")
-            .append("select")
-            .style("width", '100%')
-            .attr("id", "selectMS")
-            .style("width", '50px')
-            .selectAll("milestones")
-            .data(project.getDevMilestones())
-            .enter()
-            .append("option")
-            .text(d => project.getMilestone(d).getData().name)
-            .attr("value", d => project.getMilestone(d).id);
-		d3.select('#selectMS').property('value', ms.id);
-		var leftGraph = board.append("div")
-            .attr("id", "leftGraph")
-            .style("width", "50%")
-            .style("height", "100%")
-            .style("float", "left");
-		var rightGraph = board.append("div")
-            .attr("id", "rightGraph")
-            .style("margin-left", "50%")
-            .style("height", "100%");
-		d3.select("#selectMS").on("change", function(d) {
-            var ms = d3.select(this).property("value");
-            document.getElementById("leftGraph").textContent = '';
-            document.getElementById("rightGraph").textContent = '';
-            drawGraphs();
-		});
-
-        function drawGraphs() {
-            var msid = d3.select("#selectMS").property("value");
-            var ms = document.querySelector("#" + msid.replace(/\./, "\\."));
-            var capacity = project.getMilestone(ms).getCapacity();
-            var tasks =  project.getMilestone(ms).getTasks();
-            var total = project.getMilestone(ms).getBurndown();
-            var target = project.getMilestone(ms).getTargetBurndown();
-            var width = 600;
-            var height = 500;
-
-            // Sum of effort in all reqts on day 1 
-            var burndown = [{
-                week: "Start",
-                total: total[0].effort,
-                target: project.getMilestone(ms).getCapacity()
-             }];
-             var today = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
-            project.getMilestone(ms).getTrackingDates().forEach(d => {
-                var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
-                var week = d.toDateString().split(" ")[1] + " " + d.getDate();
-                var totalValue = +dt.substr(3) <= +today ?
-                    total.filter(t => t.date == dt)[0].effort : 0;
-                var targetValue = target.filter(t => t.date == dt)[0].effort;
-                burndown.push({ week: week, total: totalValue, target: targetValue });
-            });
-
-            var maxremainder = burndown.map(b => b.total).reduce((a, b) => a > b ? a : b);
-            var ymax = Math.max(capacity, maxremainder);
-
-            var xScale = d3.scaleBand()
-                .rangeRound([0, width])
-                .padding(0.2)
-                .domain(burndown.map(b => b.week));
-            var yScale = d3.scaleLinear()
-                .rangeRound([height, 0])
-                .domain([0, ymax * 1.2]);
-
-            var svg = leftGraph.append("svg")
-                .attr("width", "100%")
-                .attr("height", height + margin.top + margin.bottom);
-            // Tooltip
-            var div = leftGraph.append("div")
-                .attr("class", "tooltip")
-                .style("opacity", 0);
-            // Chart title
-            svg.append("text")
-                .attr("x", (width / 2))
-                .attr("y", margin.top)
-                .attr("text-anchor", "middle")
-                .style("font-size", "20px")
-                .style("text-decoration", "underline")
-                .text("Mileston Burndown");
-            var g = svg.append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-            // height of axis-x from bottom of graph
-            g.append("g")
-                .attr("class", "axis axis--x")
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(xScale));
-            // axis-y
-            g.append("g")
-                .attr("class", "axis axis--y")
-                .call(d3.axisLeft(yScale));
-            var bar = g.selectAll("rect")
-                .data(burndown)
-                .enter().append("g");
-
-            // Bars
-            bar.append("rect")
-                .attr("x", d => xScale(d.week))
-                .attr("y", d => yScale(d.total))
-                .attr("width", xScale.bandwidth())
-                .attr("height", d => height - yScale(d.total))
-                .attr("class", "plainbar bar1");
-            // labels on the bar chart
-            bar.append("text")
-                .attr("dy", "1.3em")
-                .attr("x", d => xScale(d.week) + xScale.bandwidth() / 2)
-                .attr("y", d => yScale(d.total) - 20)
-                .attr("text-anchor", "middle")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "11px")
-                .attr("fill", "black")
-                .text(d => d.total > 0 ? d.total : '');
-            // line charts
-            var stretch = 0.1 * burndown[0].target;
-            var greenline = d3.line()
-                .x((d, i) => xScale(d.week) + xScale.bandwidth() / 2)
-                .y(d => yScale(d.target));
-            bar.append("path")
-                .attr("class", "greenline")
-                .attr("d", greenline(burndown));
-            bar.append("circle")
-                .attr("class", "greendot")
-                .attr("cx", (d, i) => xScale(d.week) + xScale.bandwidth() / 2)
-                .attr("cy", d => yScale(d.target))
-                .attr("r", 3)
-                .on("mouseover", function(event, d) {
-                    div.transition().duration(200).style("opacity", .9);
-                    div.html("Week: " + d.week + "<br/>Capacity: " + Math.floor(d.target))
-                        .style("left", (event.pageX) + "px")
-                        .style("top", (event.pageY - 10) + "px");
-                })
-                .on("mouseout", function(d) {
-                    div.transition().duration(500).style("opacity", 0);
-                });
-            bar.append("text")
-                .attr("dx", "1.3em")
-                .attr("dy", "0.5em")
-                .attr("x", (d, i) => xScale(d.week) + xScale.bandwidth() / 2)
-                .attr("y", d => yScale(d.target))
-                .attr("text-anchor", "middle")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "11px")
-                .attr("fill", "black")
-                .text(d => d.target > 0 ? Math.floor(d.target) : '');
-
-            var redline = d3.line()
-                .x((d, i) => xScale(d.week) + xScale.bandwidth() / 2)
-                .y(d => yScale(d.target + stretch));
-            bar.append("path")
-                .attr("class", "redline")
-                .attr("d", redline(burndown));
-            bar.append("circle")
-                .attr("class", "reddot")
-                .attr("cx", (d, i) => xScale(d.week) + xScale.bandwidth() / 2)
-                .attr("cy", d => yScale(d.target + stretch))
-                .attr("r", 3)
-                .on("mouseover", function(event, d) {
-                    div.transition().duration(200).style("opacity", .9);
-                    div.html("Week: " + d.week + "<br/>Stretch: " + Math.floor(d.target + stretch))
-                        .style("left", (event.pageX) + "px")
-                        .style("top", (event.pageY - 28) + "px");
-                })
-                .on("mouseout", function(d) {
-                    div.transition().duration(500).style("opacity", 0);
-                });
-            bar.append("text")
-                .attr("dx", "1.3em")
-                .attr("dy", "0.5em")
-                .attr("x", (d, i) => xScale(d.week) + xScale.bandwidth() / 2)
-                .attr("y", d => yScale(d.target + stretch))
-                .attr("text-anchor", "middle")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "11px")
-                .attr("fill", "black")
-                .text(d => Math.floor(d.target + stretch));
-
-    //--------------------------------------------------------------------------------------------
-            var milestone = project.getMilestone(ms);
-            var capacity = milestone.getCapacityConfig();
-            var workingDays = milestone.getWorkingDays().length;
-            var scope = project.getMilestone(ms).getTasks();
-            var today = new Date();
-            var capacity = milestone.getCapacityConfig(today);
-            var data = capacity.map(c => {
-                if (today > project.getMilestone(ms).getEndDate()) {
-                    remainingDays = 0;
-                }
-                else {
-                    capacity.filter(d => d.developer == c.developer)[0];
-                    if (today <= project.getMilestone(ms).getStartDate())
-                        remainingDays = milestone.getDeveloperCapacity(c.id);
-                    remainingDays = milestone.getDeveloperCapacity(c.id, today);
-                }
-                return {
-                    "Developer": c.developer,
-                    "Planned availability": workingDays * parseInt(c.availability) / 100 - c.vacation,
-                    "Assigned work": (project.getDeveloper(c.id).getTasksForMS(milestone.id)
-                        .map(t => project.getTask(t.id).getMSBurndown(milestone)[0].effort)
-                        .reduce((pr, cv) => { return pr + cv }, 0)).toFixed(2),
-                    "Remaining days": remainingDays.toFixed(2),
-                    "Remaining work": (project.getDeveloper(c.id).getTasksForMS(milestone.id)
-                        .map(t => project.getTask(t.id).getMSBurndown(milestone)
-                            [project.getTask(t.id).getMSBurndown(milestone).length - 1].effort)
-                        .reduce((pr, cv) => { return pr + cv }, 0)).toFixed(2)
-                }
-            });
-            data.columns = Object.keys(data[0]);
-            data.y = "Days";
-
-            keys = data.columns.slice(1);
-            groupKey = data.columns[0];
-
-            xAxis = g => g
-                .attr("transform", `translate(0,${height + margin.bottom -10})`)
-                .call(d3.axisBottom(x0).tickSizeOuter(0));
-            yAxis = g => g
-                .attr("transform", `translate(${margin.left},0)`)
-                .call(d3.axisLeft(y).ticks(null, "s"))
-                .call(g => g.select(".tick:last-of-type text").clone()
-                    .attr("x", 3)
-                    .attr("text-anchor", "start")
-                    .attr("font-weight", "bold")
-                    .text(data.y));
-
-            color = d3.scaleOrdinal()
-                .range(["#6b486b", "#a05d56", "#d0743c", "#ff8c00", "#98abc5", "#8a89a6", "#7b6888"]);
-
-            x0 = d3.scaleBand()
-                .domain(data.map(d => d[groupKey]))
-                .rangeRound([margin.left, width - margin.right])
-                .paddingInner(0.1);
-
-            x1 = d3.scaleBand()
-                .domain(keys)
-                .rangeRound([0, x0.bandwidth()])
-                .padding(0.05);
-
-            y = d3.scaleLinear()
-                .rangeRound([height + margin.bottom - 10, margin.top])
-                .domain([0, d3.max(data, d => d3.max(keys, key => d[key])) + 10]).nice();
-
-            legend = svg => {
-                const g = svg
-                    .attr("transform", `translate(${width},0)`)
-                    .attr("text-anchor", "end")
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", 10)
-                    .selectAll("g")
-                    .data(color.domain().slice().reverse())
-                    .join("g")
-                    .attr("transform", (d, i) => `translate(0,${i * 20})`);
-
-                g.append("rect")
-                    .attr("x", -19)
-                    .attr("width", 19)
-                    .attr("height", 19)
-                    .attr("fill", color);
-
-                g.append("text")
-                    .attr("x", -24)
-                    .attr("y", 9.5)
-                    .attr("dy", "0.35em")
-                    .text(d => d);
-            }
-
-            svg = rightGraph.append("svg")
-                .attr("width", "100%")
-                .attr("height", height + margin.top + margin.bottom);
-            div = rightGraph.append("div")
-                .attr("class", "tooltip devburndown")
-                .style("opacity", 0);
-            // Chart title
-            svg.append("text")
-                .attr("x", (width / 2))
-                .attr("y", margin.top)
-                .attr("text-anchor", "middle")
-                .style("font-size", "20px")
-                .style("text-decoration", "underline")
-                .text("Developer Load");
-            g = svg.append("g") // Whole graph boundary
-                .attr("transform", "translate(" + margin.left + ", 0)");
-
-            bar = g.selectAll("rect")
-                .data(data)
-                .enter()
-                .append("g")
-                .attr("transform", d => `translate(${x0(d[groupKey])},0)`)
-
-            // Add bars
-            bar.selectAll("rect")
-                .data(d => keys.map(key => ({
-                    key,
-                    value: d[key]
-                })))
-                .enter()
-                .append("rect")
-                .attr("x", d => x1(d.key))
-                .attr("y", d => y(d.value))
-                .attr("width", x1.bandwidth())
-                .attr("height", d => y(0) - y(d.value))
-                .attr("fill", d => color(d.key))
-                .on("mouseover", function(event, d) {
-                    div.transition().duration(200).style("opacity", .9);
-                    div.html(d.key + ": " + d.value + " days")
-                        .style("left", (event.pageX) + "px")
-                        .style("top", (event.pageY - 128) + "px");
-                })
-                .on("mouseout", function(d) {
-                    div.transition().duration(500).style("opacity", 0);
-                })
-
-            bar.selectAll("text")
-                .data(d => keys.map(key => ({
-                    key,
-                    value: d[key]
-                })))
-                .enter()
-                .append("text")
-                .attr("dx", "1.4em")
-                .attr("dy", "-0.3em")
-                .attr("x", d => x1(d.key))
-                .attr("y", d => y(d.value))
-                .attr("text-anchor", "middle")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "11px")
-                .attr("fill", "black")
-                .text(d => d.value);
-
-            g.append("g")
-                .call(xAxis);
-
-            g.append("g")
-                .call(yAxis);
-
-            g.append("g")
-                .call(legend);
-        }
-		drawGraphs();
-	}
-    function projectInitgraph() {
-		var ms = project.getMilestones()[0];
-		if (!ms) return;
-        var projectBurndown = project.getBurndown();
-        var targetBurndown = project.getTargetBurndown();
-        var today = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
-		var burndown = project.getTrackingDates().map(d => {
-            var dt = d.toDateString().split(" ");
-            var dtIndex = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
-            var efforts = projectBurndown.filter(d => d.date == dtIndex && +dtIndex.substr(3) <= +today);
-            return {
-                date: dt[1] + " " + dt[2],
-                effort: efforts.length ? efforts[0].effort : 0,
-                target: targetBurndown.filter(d => d.date == dtIndex)[0].effort
-            }
-        });
-        burndown.unshift({
-            date: "Start",
-            effort: project.getTasks().map(t => project.getTask(t.id).getEstimate()).reduce((a, b) => a + b),
-            target: targetBurndown[0].effort
-        })
-		
-		var ymax = burndown.reduce((a,b) => Math.max(a.effort, a.target) > Math.max(b.effort, b.target) ? a : b);
-        ymax = ymax.effort > ymax.target ? ymax.effort : ymax.target;
-		
-		var margin = {top: 20, right: 20, bottom: 50, left: 40},
-            width = 900,
-            height = 500;
-		  
-		var board = d3.select("#graph")
-            .html("")
-            .append("div")
-            .style("width", '100%')
-            .style("height", 500);
-		  
-		var xScale = d3.scaleBand()
-            .rangeRound([0, width])
-            .padding(0.2)
-            .domain(burndown.map(b => b.date));
-		var yScale = d3.scaleLinear()
-            .rangeRound([height, 0])
-            .domain([0, ymax + 10]);
-		  
-		var svg = board.append("svg")
-            .attr("width", "100%")
-            .attr("height", height + margin.top + margin.bottom);
-		// Tooltip
-		var div = board.append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
-		
-		// Chart title
-		svg.append("text")
-            .attr("x", (width / 2))
-            .attr("y", margin.top)
-            .attr("text-anchor", "middle")
-            .style("font-size", "20px")
-            .style("text-decoration", "underline")
-            .text("Project Burndown");
-		
-		var g = svg.append("g")
-    		  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-		// height of axis-x from bottom of graph
-		g.append("g")
-            .attr("class", "axis axis--x")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(xScale))
-            .selectAll("text")
-            .style("text-anchor", "end")
-            .attr("dx", "-1.0em")
-            .attr("dy", "-.5em")
-            .attr("transform", "rotate(-90)");
-		// axis-y
-		g.append("g")
-            .attr("class", "axis axis--y")
-            .call(d3.axisLeft(yScale));
-		  
-		var bar = g.selectAll("rect")
-            .data(burndown)
-            .enter().append("g");
-
-		// Bars
-		bar.append("rect")
-            .attr("x", function(d) { return xScale(d.date); })
-            .attr("y", function(d) { return yScale(d.effort); })
-            .attr("width", xScale.bandwidth())
-            .attr("height", function(d) { return height - yScale(d.effort); })
-            .attr("class", "plainbar bar1");
-		// labels on top of the bar
-		bar.append("text")
-            .attr("dy", "1.3em")
-            .attr("x", function(d) { return xScale(d.date) + xScale.bandwidth() / 2; })
-            .attr("y", function(d) { return yScale(d.effort) - 17; })
-            .attr("text-anchor", "middle")
-            .attr("font-family", "sans-serif")
-            .attr("font-size", "11px")
-            .attr("fill", "black")
-            .text(function(d) { return d.effort > 0 ? d.effort : ''; });
-		  
-		// Ideal burndown line
-		var greenline = d3.line()
-            .x(function(d, i) { return xScale(d.date) + xScale.bandwidth() / 2; })
-            .y(function(d) { return yScale(d.target); });
-		bar.append("path")
-            .attr("class", "greenline")
-            .attr("d", greenline(burndown));
-		bar.append("circle")
-            .attr("class", "greendot")
-            .attr("cx", function(d, i) { return xScale(d.date) + xScale.bandwidth() / 2; })
-            .attr("cy", function(d) { return yScale(d.target); })
-            .attr("r", 3	)
-            .on("mouseover", function(event,d) {
-                div.transition().duration(200).style("opacity", .9);
-                div.html("Week: " + d.date + "<br/>Capacity: " + Math.floor(d.target))
-                    .style("left", (event.pageX) + "px")
-                    .style("top", (event.pageY - 50) + "px");
-            })
-            .on("mouseout", function(d) {
-                div.transition().duration(500).style("opacity", 0);
-            });
-		bar.append("text")
-            .attr("dx", "1.3em")
-            .attr("dy", "0.5em")
-            .attr("x", function(d, i) { return xScale(d.date) + xScale.bandwidth() / 2; })
-            .attr("y", function(d) { return yScale(d.target); })
-            .attr("text-anchor", "middle")
-            .attr("font-family", "sans-serif")
-            .attr("font-size", "11px")
-            .attr("fill", "black")
-            .text(function(d) { return d.target > 0 ? Math.floor(d.target) : ''; });
-	}
-    function detailsInitgraph() {
-        var ms = project.getMilestones()[0];
-		if (!ms) return;
-
-        var margin = {top: 20, right: 20, bottom: 30, left: 40},
-		  width = 600,
-		  height = 550;
-		
-		// Set up left and right screen halves
-		var board = d3.select("#graph")
-            .html("")
-            .append("div")
-            .style("width", '100%')
-            .style("height", 500);
-        board.append("div")
-            .append("text")
-            .text("Milestone: ")
-            .append("select")
-            .style("width", '100%')
-            .attr("id", "selectMS")
-            .style("width", '50px')
-            .selectAll("milestones")
-            .data(project.getDevMilestones())
-            .enter()
-            .append("option")
-            .text(d => project.getMilestone(d).getData().name)
-            .attr("value", d => project.getMilestone(d).id);
-		d3.select('#selectMS').property('value', ms.id);
-		var leftGraph = board.append("div")
-            .attr("id", "leftGraph")
-            .style("width", "50%")
-            .style("height", "100%")
-            .style("float", "left");
-		var rightGraph = board.append("div")
-            .attr("id", "rightGraph")
-            .style("margin-left", "50%")
-            .style("height", "100%");
-		d3.select("#selectMS").on("change", function(d) {
-            var ms = d3.select(this).property("value");
-            document.getElementById("leftGraph").textContent = '';
-            document.getElementById("rightGraph").textContent = '';
-            drawGraphs(project, ms);
-		});
-		
-		var xScale, yScale, svg, div, g;
-		
-		function drawGraphs() {
-            var milestones = project.getDevMilestones();
-            if (milestones.length == 0) return;
-            var today = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
-            var ms = document.querySelector("#selectMS") ?
-                document.querySelector("#selectMS").selectedOptions[0].value
-                : milestones[0].id;
-            var milestone = [...milestones].filter(m => m.id == ms)[0];
-            var taskData = project.getMilestone(milestone).getTasks().map(t => {
-                return {
-                    name: project.getTask(t.id).getData().name,
-                    burndown: project.getTask(t.id).getMSBurndown(milestone),
-                    estimate: project.getTask(t.id).getEstimate()
-                }
-            });
-            var trackingDates = project.getMilestone(milestone).getTrackingDates();
-            var fdata = trackingDates.map(d => {
-                var dtParts = d.toDateString().split(" ");
-                var data = { group: dtParts[1] + " " + dtParts[2] };
-                dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
-                taskData.forEach(t => data[t.name] = +dt.substr(3) <= today ?
-                    t.burndown.filter(b => b.date == dt)[0].effort : 0);
-                return data;
-            });
-            var initData = { group: "Start" };
-            taskData.forEach(t => initData[t.name] = t.estimate);
-            fdata.unshift(initData);
-            drawPaper(project, milestone, leftGraph, "Feature Burndown", fdata);
-
-            var trackingDates = project.getMilestone(milestone).getTrackingDates();
-            trackingDates.unshift(project.getMilestone(milestone).getStartDate());
-            var msBurndown = project.getDevelopers().map(d => {
-                var taskData = project.getDeveloper(d).getTasksForMS(milestone.id)
-                    .map(t => project.getTask(t.id).getMSBurndown(milestone));
-                var developerBurndown = trackingDates.map(d => {
-                    var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
-                    var taskList = taskData.map(r => r.filter(s => s.date == dt)[0].effort);
-                    var effort = taskList.length > 0 ? taskList.reduce((a, b) => a + b) : 0;
-                    return { date: dt, effort: effort }
-                });
-                return {
-                    developer: d,
-                    assigned: developerBurndown
-                }
-            });
-            taskData = project.getMilestone(milestone).getUnassignedDeveloper()
-                .map(t => project.getTask(t.id).getMSBurndown(milestone));
-            taskBurndown = trackingDates.map(d => {
-                var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
-                var taskList = taskData.map(r => r.filter(s => s.date == dt)[0].effort);
-                var effort = taskList.length > 0 ? taskList.reduce((a, b) => a + b) : 0;
-                return { date: dt, effort: effort }
-            });
-            msBurndown.push({ developer: "Unassigned", assigned: taskBurndown });
-            var udata = trackingDates.map(d => {
-                var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
-                var dtParts = d.toDateString().split(" ");
-                var data = { group: dtParts[1] + " " + dtParts[2] }
-                msBurndown.map(m => m.developer).forEach(developer => {
-                    var devname = developer != "Unassigned" ?
-                        project.getDeveloper(developer).getData().name : "Unassigned";
-                    data[devname] = msBurndown.filter(m => m.developer == developer)[0]
-                        .assigned.filter(a => a.date == dt)[0].effort
-                });
-                return data;
-            });
-            udata[0].group = "Start";
-            drawPaper(project, milestone, rightGraph, "Developer Burndown", udata);
-		}
-		
-		function drawPaper(project, ms, paper, title, data) {
-            var capacity = project.getMilestone(ms).getCapacity();
-            var ymax = project.getMilestone(ms).getBurndown().map(b => b.effort)
-                .concat(capacity).reduce((a, b) => a > b ?  a : b);
-            var workingweeks = project.getMilestone(ms).getTrackingDates();
-            
-            var groups = data.map(d => d.group);
-            var subgroups = Object.keys(data[0]).filter(k => k != "group");
-
-            var color = d3.scaleOrdinal()
-                .domain(subgroups)
-                .range(['#e41a1c','#377eb8','#4daf4a']);
-
-            xScale = d3.scaleBand()
-                .rangeRound([0, width])
-                .padding(0.2)
-                .domain(groups);
-            yScale = d3.scaleLinear()
-                .rangeRound([height, 0])
-                .domain([0, ymax * 1.2]);
-
-            svg = paper.append("svg")
-                .attr("width", "100%")
-                .attr("height", height + margin.top + margin.bottom);
-            // Tooltip
-            tooltip = paper.append("div")
-                .attr("class", "tooltip")
-                .style("width", 250)
-                .style("opacity", 0);
-            // Chart title
-            svg.append("text")
-                .attr("x", (width / 2))
-                .attr("y", margin.top)
-                .attr("text-anchor", "middle")
-                .style("font-size", "20px")
-                .style("text-decoration", "underline")
-                .text(title);
-            g = svg.append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-            // height of axis-x from bottom of graph
-            g.append("g")
-                .attr("class", "axis axis--x")
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(xScale));
-            // axis-y
-            g.append("g")
-                .attr("class", "axis axis--y")
-                .call(d3.axisLeft(yScale));
-            // Legend
-            var legend = g.append("g")
-                .attr("transform", `translate(${width},0)`)
-                .attr("text-anchor", "end")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", 10)
-                .selectAll("g")
-                .data(color.domain().slice())
-                .join("g")
-                .attr("transform", (d, i) => {
-                    return `translate(0,${i * 20})`;
-                });
-                
-            legend.append("rect")
-                .attr("x", -19)
-                .attr("width", 19)
-                .attr("height", 19)
-                .attr("fill", color);
-
-            legend.append("text")
-                .attr("x", -24)
-                .attr("y", 9.5)
-                .attr("dy", "0.35em")
-                .text(d => d);
-            
-            var stackedData = d3.stack()
-                .keys(subgroups)
-                (data)
-
-            // Show the bars
-            var bar = g.append("g")
-                .selectAll("g")
-                // Enter in the stack data = loop key per key = group per group
-                .data(stackedData)
-                .enter()
-                    .append("g")
-                    .attr("fill", d => color(d.key))
-                
-            var bar_enter = bar.selectAll("rect")
-                .data(d => d)
-                .enter()
-                    .append("rect")
-                    .attr("x", d => xScale(d.data.group))
-                    .attr("y", d => yScale(d[1]))
-                    .attr("height", d => yScale(d[0]) - yScale(d[1]))
-                    .attr("width",xScale.bandwidth())
-                    .on("mouseover", function(event, d) {
-                        var key = d3.select(this.parentNode).datum().key;
-                        var remaining = d.data[key];
-                        tooltip.transition().duration(200).style("opacity", .9);
-                        var tip = "<b>" + title.split(" ")[0] + ":</b> "  + key + "<br><b>Remaining:</b> " + remaining + " days";
-                        tooltip.html(tip)
-                        .style("left", (event.pageX) + "px")
-                        .style("top", (event.pageY - 8) + "px");
-                    })
-                    .on("mouseout", function(d) {
-                        tooltip.transition().duration(500).style("opacity", 0);			  // enter a second time = loop subgroup per subgroup to add all rectangles
-                    })
-        }
-        drawGraphs(project, ms);
     }
 </script>
