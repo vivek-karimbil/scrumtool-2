@@ -335,8 +335,7 @@
                 <img id="tester" class="menuicon person undraggable" src="img/tester.svg"
                     onclick="showTesterView()">
             </span>
-            <span id="header" style="display: table-cell;">
-            </span>
+            <span id="header" style="display: table-cell; width: 100%;"></span>
         </div>
         <table id="devtasklist" class="mslayout">
             <colgroup>
@@ -2502,8 +2501,8 @@
         document.querySelector("#msicon").appendChild(milestone.closest(".scheduleMS").cloneNode(true));
         // Set up start and end dates in header
         var ms = project.milestones.get(milestone);
-        var dateRange = ms.startDate().toDateString() + " - "
-            + ms.endDate().toDateString();
+        var dateRange = ms.startDate() == null ? "Start date not set" :
+            ms.startDate().toDateString() + " - " + ms.endDate().toDateString();
         document.querySelector("#milestoneEditor #header").innerText = dateRange;
         // For each team member, create a row in developer or tester table
         document.querySelectorAll('#teamDiv #team .teamMember').forEach(dev => {
@@ -2514,7 +2513,7 @@
             var controls = devwidget.querySelector(".controls");
             controls.parentElement.removeChild(controls);
             msrow.querySelector(".msicon").appendChild(devwidget);
-            var role = dev.classList.contains("developer") ? "developer" : "tester";
+            var role = dev.classList.contains("tester") ? "tester" : "developer";
             mseditor.querySelector("tbody#" + role).appendChild(msrow);
         });
         // List tasks at end: for all columns in milestone row
