@@ -45,6 +45,7 @@
 .capacitySetting {
     width: 150px;
     vertical-align: top;
+    /* align-items: center; */
 }
 .capacitySetting img {
     max-height: 75px;
@@ -91,7 +92,6 @@
     gap: 10px;
     grid-template-columns: repeat(5, 1fr);
     min-height: 100px;
-    fit-content;
 }
 .editorsettings {
     border: 3px solid #666;
@@ -144,7 +144,7 @@
     width: 100px;
 }
 .itemDescription {
-    margin: 5px;
+    margin: 0 5 5 5;
     text-align: left;
 }
 .leftDiv {
@@ -226,6 +226,17 @@
 .notecontrol {
     width: 35px;
 }
+p.itemName {
+    max-width: 50ch;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    margin-top: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 90px;
+}
 .parameters {
     padding-left: 3px;
     padding-right: 3px;
@@ -235,6 +246,11 @@
 }
 .people {
     grid-template-columns: repeat(10, 1fr);
+}
+.postIt {
+    width: 85px;
+    height: 65px;
+    margin: 10px;
 }
 .projectComponent {
     display: grid;
@@ -251,6 +267,17 @@
     width: 90%;
     margin-bottom: 5px;
     padding-left: 5px;
+    padding-right: 5px;
+}
+.reqt.backlogitem p {
+    max-width: 40ch;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    margin-top: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .reqticon {
     width: 50px;
@@ -264,6 +291,26 @@
 }
 .requirement {
     height: 50px;
+}
+#requirementsForm #name {
+    width: 485px;
+    margin: 10 0 10 0;
+}
+#requirementsForm #description {
+    max-width: 485px;
+    min-width: 485px;
+}
+#requirementsScreen #requirements {
+    position: relative;
+    width: 100%;
+    height: 200%;
+    border: 3px solid #666;
+}
+#requirementsScreen #requirements .item {
+    width: 175px;
+    margin: 0;
+    height: 130px;
+    position: relative;
 }
 .rightDiv {
     float: left;
@@ -313,6 +360,7 @@
 }
 .taskcontrols img {
     height: 20px;
+    float: right;
 }
 .taskcorner {
     height: 50px;
