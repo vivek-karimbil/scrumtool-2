@@ -855,7 +855,7 @@
                 var mserrors = [];
                 if (mserrors.length)
                     return project.burndown.error(bdForm, "Set Milestone lengths:<br/>" + mserrors.join("<br/>"));
-                showBurndown(item, bdForm);
+                this.show(item, bdForm);
                 bdForm.querySelector("#editTask").onclick = function (e) {
                     bdForm.edit(event);
                     bdForm.style.display = "none";
@@ -868,6 +868,40 @@
                 bdForm.querySelector("#no").onclick = function (event) {
                     bdForm.style.display = 'none';
                 };
+            },
+            show: function(requirement, form) {
+                var id = form.querySelector(".milestones").id;
+                var msid = document.querySelector(".milestones#" + id.replace(/\./, "\\."));
+                var msStartDate = project.getMilestone(msid).getStartDate();
+                var msWeeks = +project.getMilestone(msid).getDataValue("weeks");
+                var msEndDate = project.getMilestone(msid).getEndDate();
+                document.querySelector("#daterange").innerText = msStartDate
+                    .toLocaleString("default", { month: "short", day: "numeric"}) + " - "
+                    + msEndDate.toLocaleString("default", { month: "short", day: "numeric", year: "numeric" });
+                var weeks = project.getMilestone(msid).getDataValue("weeks");
+                var tbody = document.querySelector("#burndownForm table tbody");
+                tbody.innerHTML = "";
+                var data = getJSONData(requirement);
+                for(var week = 0, msdate = project.getMilestone(msid).getStartDate(); week < weeks; week++) {
+                    var tr = document.createElement("tr");
+                    for(var d = 0; d < 7; d++) {
+                        var td = document.createElement("td");
+                        td.innerText = msdate.getDate();
+                        msdate.setDate(msdate.getDate() + 1);
+                        tr.appendChild(td);
+                    }
+                    for(var d = 0; d < project.getBurndownDays().length; d++) {
+                        var day = project.getBurndownDays()[d];
+                        var bdDate = new Date(msStartDate);
+                        bdDate.setDate(bdDate.getDate() + (week * 7) + day - 1);
+                        var id = "dt_" + (bdDate.toISOString().slice(0,10).replace(/-/g,""));
+                        input = '<input id="' + id + '" class="bdData">';
+                        tr.querySelector(":nth-child(" + day + ")").innerHTML += input;
+                        if (Object.keys(data).filter(key => key == id).length > 0)
+                        tr.querySelector(":nth-child(" + day + ") input").value = data[id];
+                    }
+                    tbody.appendChild(tr);
+                }
             }
         },
         backlog: {
@@ -1476,8 +1510,9 @@
                             var rqtData = data.requirements[i].data;
                             dragdrop.dragged = document.querySelector("#backlogDiv #backlog ." + rqtData.level + " .postIt");
                             var event = {
-                                x: parseInt(rqtData.left),
-                                y: parseInt(rqtData.top)
+                                clientX: parseInt(rqtData.left),
+                                clientY: parseInt(rqtData.top),
+                                target: document.querySelector("#requirementsScreen #requirements")
                             }
                             var rqt = dragdrop.add("workItem", document.querySelector("#backlogDiv #requirements"), event);
                             var origId = rqt.id;
