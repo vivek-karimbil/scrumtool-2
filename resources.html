@@ -797,7 +797,7 @@
                 var tasks = project.tasks.getAll();
                 var allBurndown = [];
                 tasks.forEach(t => {
-                    allBurndown.push({ id: t.id, burndown: project.tasks.get(t.id).getProjectBurndown()});
+                    allBurndown.push({ id: t.id, burndown: project.tasks.get(t.id).projectBurndown()});
                 });
                 var dates = project.dates.trackingDates();
                 var burndown = [];
@@ -848,20 +848,21 @@
                     milestone = document.querySelector("#milestoneEditor .scheduleMS");
                 bdForm.style.display = 'block';
                 bdForm.querySelector("#taskbrief").innerHTML = data.name;
-                bdForm.querySelector("#estimate").innerHTML = project.tasks.get(id).getSize() + " ("
-                    + project.tasks.get(id).getEstimate() + ")";
+                bdForm.querySelector("#estimate").innerHTML = project.tasks.get(id).size() + " ("
+                    + project.tasks.get(id).estimate() + ")";
                 bdForm.querySelector(".milestones").id = milestone.id;
                 bdForm.querySelector(".milestones").innerHTML = project.milestones.get(milestone).data().name;
                 var mserrors = [];
                 if (mserrors.length)
                     return project.burndown.error(bdForm, "Set Milestone lengths:<br/>" + mserrors.join("<br/>"));
-                this.show(item, bdForm);
+                project.burndown.show(item, bdForm);
                 bdForm.querySelector("#editTask").onclick = function (e) {
-                    bdForm.edit(event);
                     bdForm.style.display = "none";
+                    this.closest(".container").querySelector("#yes").click();
+                    form.edit({ target: milestone.querySelector("#" + id.replace(/\./, "\\.")) });
                 }
                 bdForm.querySelector("#yes").onclick = function (event) {
-                    document.querySelectorAll("#" + id.replace(/\./, "\\.")).forEach(i => form.saveData(i));
+                    document.querySelectorAll("#" + id.replace(/\./, "\\.")).forEach(i => form.saveData(i, bdForm));
                     bdForm.clearData(bdForm);
                     document.querySelector(".graphType-selected").click();
                 };
@@ -872,17 +873,17 @@
             show: function(requirement, form) {
                 var id = form.querySelector(".milestones").id;
                 var msid = document.querySelector(".milestones#" + id.replace(/\./, "\\."));
-                var msStartDate = project.getMilestone(msid).getStartDate();
-                var msWeeks = +project.getMilestone(msid).getDataValue("weeks");
-                var msEndDate = project.getMilestone(msid).getEndDate();
+                var msStartDate = project.milestones.get(msid).startDate();
+                var msWeeks = +project.milestones.get(msid).dataValue("weeks");
+                var msEndDate = project.milestones.get(msid).endDate();
                 document.querySelector("#daterange").innerText = msStartDate
                     .toLocaleString("default", { month: "short", day: "numeric"}) + " - "
                     + msEndDate.toLocaleString("default", { month: "short", day: "numeric", year: "numeric" });
-                var weeks = project.getMilestone(msid).getDataValue("weeks");
+                var weeks = project.milestones.get(msid).dataValue("weeks");
                 var tbody = document.querySelector("#burndownForm table tbody");
                 tbody.innerHTML = "";
                 var data = getJSONData(requirement);
-                for(var week = 0, msdate = project.getMilestone(msid).getStartDate(); week < weeks; week++) {
+                for(var week = 0, msdate = project.milestones.get(msid).startDate(); week < weeks; week++) {
                     var tr = document.createElement("tr");
                     for(var d = 0; d < 7; d++) {
                         var td = document.createElement("td");
@@ -890,8 +891,8 @@
                         msdate.setDate(msdate.getDate() + 1);
                         tr.appendChild(td);
                     }
-                    for(var d = 0; d < project.getBurndownDays().length; d++) {
-                        var day = project.getBurndownDays()[d];
+                    for(var d = 0; d < project.dates.burndownDays().length; d++) {
+                        var day = project.dates.burndownDays()[d];
                         var bdDate = new Date(msStartDate);
                         bdDate.setDate(bdDate.getDate() + (week * 7) + day - 1);
                         var id = "dt_" + (bdDate.toISOString().slice(0,10).replace(/-/g,""));
@@ -1055,7 +1056,7 @@
                         tasks.forEach(t => {
                             allBurndown.push({
                                 id: t.id,
-                                burndown: project.tasks.get(t.id).getProjectBurndown()
+                                burndown: project.tasks.get(t.id).projectBurndown()
                             });
                         });
                         var dates = this.trackingDates();
@@ -1102,22 +1103,22 @@
                     data: function() {
                         return getJSONData(document.querySelector("#" + this.id.replace(/\./, "\\.")));
                     },
-                    getSize: function() {
+                    size: function() {
                         var data = this.data();
                         var sizes = [...document.querySelector("#estimateTemplate")
                             .content.querySelectorAll("input")].map(s => s.id).filter(d => data[d]);
                         if (sizes.length == 0) return 0;
                         return sizes[sizes.length - 1];
                     },
-                    getEstimate: function() {
+                    estimate: function() {
                         return +document.querySelector("#estimateTemplate").content
-                            .querySelector("input#" + this.getSize()).value;
+                            .querySelector("input#" + this.size()).value;
                     },
-                    getProjectBurndown: function() {
+                    projectBurndown: function() {
                         var startDate = project.dates.start();
                         if (!startDate) return [];
                         var endDate = project.dates.end();
-                        var remainingEffort = this.getEstimate();
+                        var remainingEffort = this.estimate();
                         var task = document.querySelector("#" + this.id.replace(/\./, "\\."));
                         var data = getJSONData(task);
                         var allDays = {};
@@ -1134,8 +1135,8 @@
                         });
                         return burndown;
                     },
-                    getMSBurndown: function(msid) {
-                        var  taskBurndown = this.getProjectBurndown();
+                    msBurndown: function(msid) {
+                        var  taskBurndown = this.projectBurndown();
                         var dates = project.milestones.get(msid).trackingDates();
                         burndown = [];
                         dates.forEach(d => {
@@ -1147,13 +1148,13 @@
                         })
                         return burndown;
                     },
-                    getRemaimingEffort: function () {
-                        var burndown = this.getProjectBurndown();
+                    remaimingEffort: function () {
+                        var burndown = this.projectBurndown();
                         var dates = [...Object.keys(burndown)];
                         return burndown[dates[dates.length - 1]];
                     },
-                    getMSRemaimingEffort: function (msid) {
-                        var msburndown = this.getMSBurndown(msid);
+                    msRemaimingEffort: function (msid) {
+                        var msburndown = this.msBurndown(msid);
                         var dates = [...Object.keys(msburndown)];
                         return msburndown[msburndown.length - 1];
                     }
@@ -1887,12 +1888,12 @@
                         "Developer": c.developer,
                         "Planned availability": workingDays * parseInt(c.availability) / 100 - c.vacation,
                         "Assigned work": (project.team.getDeveloper(c.id).getTasksForMS(milestone.id)
-                            .map(t => project.tasks.get(t.id).getMSBurndown(milestone)[0].effort)
+                            .map(t => project.tasks.get(t.id).msBurndown(milestone)[0].effort)
                             .reduce((pr, cv) => { return pr + cv }, 0)).toFixed(2),
                         "Remaining days": remainingDays.toFixed(2),
                         "Remaining work": (project.team.getDeveloper(c.id).getTasksForMS(milestone.id)
-                            .map(t => project.tasks.get(t.id).getMSBurndown(milestone)
-                                [project.tasks.get(t.id).getMSBurndown(milestone).length - 1].effort)
+                            .map(t => project.tasks.get(t.id).msBurndown(milestone)
+                                [project.tasks.get(t.id).msBurndown(milestone).length - 1].effort)
                             .reduce((pr, cv) => { return pr + cv }, 0)).toFixed(2)
                     }
                 });
@@ -2057,7 +2058,7 @@
             });
             if (targetBurndown.length) burndown.unshift({
                 date: "Start",
-                effort: project.tasks.getAll().map(t => project.tasks.get(t.id).getEstimate()).reduce((a, b) => a + b),
+                effort: project.tasks.getAll().map(t => project.tasks.get(t.id).estimate()).reduce((a, b) => a + b),
                 target: targetBurndown[0].effort
             })
             
@@ -2220,8 +2221,8 @@
                 var taskData = project.milestones.get(milestone).tasks().map(t => {
                     return {
                         name: project.tasks.get(t.id).data().name,
-                        burndown: project.tasks.get(t.id).getMSBurndown(milestone),
-                        estimate: project.tasks.get(t.id).getEstimate()
+                        burndown: project.tasks.get(t.id).msBurndown(milestone),
+                        estimate: project.tasks.get(t.id).estimate()
                     }
                 });
                 var trackingDates = project.milestones.get(milestone).trackingDates();
@@ -2243,7 +2244,7 @@
                 if (startDate) trackingDates.unshift(startDate);
                 var msBurndown = project.team.getDevelopers().map(d => {
                     var taskData = project.team.getDeveloper(d).getTasksForMS(milestone.id)
-                        .map(t => project.tasks.get(t.id).getMSBurndown(milestone));
+                        .map(t => project.tasks.get(t.id).msBurndown(milestone));
                     var developerBurndown = trackingDates.map(d => {
                         var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
                         var taskList = taskData.map(r => r.filter(s => s.date == dt)[0].effort);
@@ -2256,7 +2257,7 @@
                     }
                 });
                 taskData = project.milestones.get(milestone).unassignedDeveloper()
-                    .map(t => project.tasks.get(t.id).getMSBurndown(milestone));
+                    .map(t => project.tasks.get(t.id).msBurndown(milestone));
                 taskBurndown = trackingDates.map(d => {
                     var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
                     var taskList = taskData.map(r => r.filter(s => s.date == dt)[0].effort);
@@ -2421,7 +2422,7 @@
             this.ui.style.display = 'block';
             var burnEditor = this.ui.querySelector("#editBurndown");
             if (burnEditor) burnEditor.onclick = function (e) {
-                this.ui.style.display = "none";
+                this.closest(".container").querySelector("#yes").click();
                 project.burndown.edit(event);
             }
             this.ui.querySelector('#yes').onclick = function (event) {
