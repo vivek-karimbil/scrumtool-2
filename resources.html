@@ -2757,10 +2757,13 @@
         }
 
         var teamlist = capacitydata.querySelector("#teamlist");
+        capacity = capacitydata.querySelector("#capacity");
         teamlist.innerHTML = "<td>Name</td>";
         if (mstype == "development") {
-            capacity = capacitydata.querySelector("#capacity");
             capacity.innerHTML = "<td>Capacity</td>";
+        }
+        else {
+            capacitydata.querySelector("#capacity").innerHTML = "";
         }
         var vacation = capacitydata.querySelector("#vacation");
         vacation.innerHTML = "<td>Leave</td>";
