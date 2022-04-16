@@ -309,6 +309,7 @@ p.itemName {
     width: 100%;
     height: 200%;
     border: 3px solid #666;
+    top: 93px;
 }
 #requirementsScreen #requirements .item {
     width: 175px;
