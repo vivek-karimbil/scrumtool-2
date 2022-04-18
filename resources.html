@@ -945,8 +945,13 @@
                     },
                     endDate: function() {
                         var dt = this.startDate();
-                        return  dt == null ? null :
-                            new Date(dt.setDate(dt.getDate() + (this.dataValue("weeks") * 7) - 1));
+                        if (dt == null) return null;
+                        var returnDate = new Date(dt.setDate(dt.getDate() + (this.dataValue("weeks") * 7) - 1));
+                        returnDate.setHours(23);
+                        returnDate.setMinutes(59);
+                        returnDate.setSeconds(59);
+                        returnDate.setMilliseconds(999);
+                        return returnDate;
                     },
                     tasks: function() {
                         var selector = "#mslist #" + this.id.replace(/\./, "\\.") + " .newTask";
@@ -1094,6 +1099,16 @@
             getDev: function() {
                 return [...document.querySelectorAll("#settingsScreen #milestones img#development")]
                     .map(d => d.closest(".scheduleMS"));
+            },
+            getCurrent: function() {
+                var milestones = [...this.getAll()];
+                var today = new Date();
+                for (m in milestones) {
+                    var ms = project.milestones.get(milestones[m]);
+                    if (today >= ms.startDate() && today <= ms.endDate())
+                        return ms;
+                }
+                return null;
             }
         },
         tasks: {
