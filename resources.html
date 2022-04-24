@@ -1700,14 +1700,14 @@
             if (!ms) return;
             var margin = {top: 20, right: 20, bottom: 30, left: 40},
                 width = "50%",
-                height = 500;
+                height = screen.height - 400;
             
             // Set up left and right screen halves
             var board = d3.select("#graph")
                 .html("")
                 .append("div")
                 .style("width", '100%')
-                .style("height", '100%');
+                .style("height", height);
             // Select MS dropdown
             board.select("#selectMS")
                 .selectAll("milestones")
@@ -1720,12 +1720,12 @@
             var leftGraph = board.append("div")
                 .attr("id", "leftGraph")
                 .style("width", "50%")
-                .style("height", "100%")
+                .style("height", height)
                 .style("float", "left");
             var rightGraph = board.append("div")
                 .attr("id", "rightGraph")
                 .style("margin-left", "50%")
-                .style("height", "100%");
+                .style("height", height);
             d3.select("#selectMS").on("change", function(d) {
                 var ms = d3.select(this).property("value");
                 document.getElementById("leftGraph").textContent = '';
@@ -1741,8 +1741,8 @@
                 var tasks =  project.milestones.get(ms).tasks();
                 var total = project.milestones.get(ms).burndown();
                 var target = project.milestones.get(ms).targetBurndown();
-                var width = 600;
-                var height = 600;
+                var width = (screen.width / 2) - 50;
+                var height = screen.height - 450;
 
                 // Sum of effort in all reqts on day 1
                 var burndown = [];
@@ -2090,8 +2090,8 @@
             ymax = ymax.effort > ymax.target ? ymax.effort : ymax.target;
             
             var margin = {top: 20, right: 20, bottom: 50, left: 40},
-                width = 900,
-                height = 600;
+                width = screen.width - 50,
+                height = screen.height - 400;
             
             var board = d3.select("#graph")
                 .html("")
@@ -2117,7 +2117,7 @@
             
             // Chart title
             svg.append("text")
-                .attr("x", (width / 2))
+                .attr("x", "50%")
                 .attr("y", margin.top)
                 .attr("text-anchor", "middle")
                 .style("font-size", "20px")
@@ -2205,8 +2205,8 @@
             var ms = graph.selectedMS();
             if (!ms) return;
             var margin = {top: 20, right: 20, bottom: 30, left: 40},
-            width = 600,
-            height = 600;
+                width = (screen.width / 2) - 50,
+                height = screen.height - 450;
             
             // Set up left and right screen halves
             var board = d3.select("#graph")
