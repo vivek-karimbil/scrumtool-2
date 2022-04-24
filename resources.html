@@ -465,12 +465,14 @@
 
 <template id="msTemplate">
     <tr class="msrequirements">
-        <td id="task" class="status msicon" style="min-width: 100px; padding: 3px;">
+        <td id="task" class="status" style="min-width: 100px; padding: 3px;">
             <div class="minholder" style="width: 100%; display: inline-block;">
                 <span class="description"></span>
                 <img class="togglerow displayed" src="img/arrowright.svg" onclick="project.ui.ms.show(event.target)" style="display: none;"/>
                 <img class="togglerow hidden" src="img/arrowdown.svg" onclick="project.ui.ms.hide(event.target)"/>
             </div>
+            <div class="msicon"></div>
+            <div id="schedule"></div>
         </td>
         <td id="task" class="status task dropzone"></td>
         <td id="task" class="status inprogress dropzone"></td>
@@ -621,8 +623,12 @@
                 console.log("No rule to drop class [" + callbackentry[0] + "] on [" + dropzone.classList.toString() + "]");
                 return;
             }
-            console.log("\nDragged:\n\t#" + dragdrop.dragged.id + ".[" + dragdrop.dragged.classList + "]\nDropped on:\n\t#"
-                + event.target.id + ".[" + event.target.classList + "]\nClosets dropzone:\n\t#" + dropzone.id
+            console.log("\nDragged:\n\t"
+                + dragdrop.dragged.tagName.toLocaleLowerCase()
+                + "#" + dragdrop.dragged.id + ".[" + dragdrop.dragged.classList + "]\nDropped on:\n\t"
+                + event.target.tagName.toLocaleLowerCase() + "#"
+                + event.target.id + ".[" + event.target.classList + "]\nClosets dropzone:\n\t"
+                + dropzone.tagName.toLocaleLowerCase() + "#" + dropzone.id
                 + ".[" + dropzone.classList + "]\nCallback handler:\n\t",
                 callback[0].handler, callback.length > 1 ? callback.length + " handlers found\n" : "\n",
                 callbackentry + ":", callback, "\n-----------\n");
@@ -760,6 +766,8 @@
                         destination.appendChild(t);
                     });
                 }
+                document.querySelectorAll("#" + task.id.replace(/\./, "\\."))
+                    .forEach(t => t.querySelector("#data").innerText = JSON.stringify(data));
             }
             if (cell.classList.contains("done")) { // set remaining effort to 0
                 var msid = cell.closest("tr").id;
@@ -1188,7 +1196,7 @@
                     if (assignee && assignee.length > 0) assignee = assignee[0][assignee];
                 }
                 if (closestTable.id == "devtasklist") {
-                    assignee = cell.closest("tr").querySelector("td div").id;
+                    assignee = cell.closest("tr").querySelector("td .teamMember").id;
                 }
                 if (closestTable.id == "msbacklog" || closestTable.id == "qabacklog") {
                     assignee = "";
@@ -1428,7 +1436,7 @@
                     document.querySelector("#milestoneEditor").style.display = "none";
                 }
             },
-            developerVeiw: function() {
+            developerView: function() {
                 document.querySelector("#milestoneEditor #tester").classList.remove("selected");
                 document.querySelector("#milestoneEditor #developer").classList.add("selected");
                 document.querySelector("#milestoneEditor tbody#developer").style.display = "";
@@ -1629,7 +1637,7 @@
                 document.querySelectorAll("#team .teamMember").forEach(t => {
                     json.team.push({ id: t.id, data: getJSONData(t) });
                 });
-                document.querySelectorAll("#milestones .scheduleMS").forEach(t => {
+                document.querySelectorAll("#scheduleDiv #milestones .scheduleMS").forEach(t => {
                     json.milestones.push({ id: t.id, data: getJSONData(t) });
                 });
                 document.querySelectorAll("#holidayWeeks .holidayWeek").forEach(t => {
@@ -2665,7 +2673,6 @@
         params.querySelector("#data").innerText = JSON.stringify(data);
         if (mstype != 'development') return;
         // Add development MS to tracking tab
-        var devMilestones = document.querySelector("#mslist #milestones");
         var msnode = params.cloneNode(true);
         msnode.draggable = false;
         msnode.classList.remove("dragable");
@@ -2675,8 +2682,21 @@
         var controls = msnode.querySelector(".controls");
         controls.parentElement.removeChild(controls);
         var msdiv = document.querySelector("#msTemplate").content.cloneNode(true);
+        var currentMS = project.milestones.getCurrent();
+        if (currentMS && params.id == currentMS.id) {
+            msdiv.querySelector("tr").classList.add("current");
+        }
+        var dateRange = "[Not set]";
+        if (start = project.milestones.get(params).startDate()) {
+            var end = project.milestones.get(params).endDate();
+            dateRange = start.toLocaleDateString(undefined, { month: "short", day: "numeric" })
+                + " - " + end.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+            var schedule = msdiv.querySelector("#schedule");
+            schedule.innerText = dateRange;
+        }
         msdiv.querySelector(".msrequirements").id = params.id;
         msdiv.querySelector(".msicon").appendChild(msnode);
+        var devMilestones = document.querySelector("#mslist #milestones");
         devMilestones.appendChild(msdiv);
     }
     function onadd_teamMember(params) {

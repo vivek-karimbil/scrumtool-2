@@ -227,8 +227,15 @@
     margin-bottom: 10px;
     width: 98%;
 }
+.msrequirements.current {
+    background-color: #fee0e0;
+}
 .notecontrol {
     width: 35px;
+}
+.msrequirements #schedule {
+    font-size: xx-small;
+    text-align: center;
 }
 p.itemName {
     max-width: 50ch;
