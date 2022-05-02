@@ -614,7 +614,7 @@
             var callbackentry = draggableObjects.filter(f => dragdrop.dragged.classList.contains(f));
             if (callbackentry.length != 1) {
                 console.log("Drop handler configured error for #" + dragdrop.dragged.id.replace(/\./, "\\.") + "."
-                    + [...dragdrop.dragged.classList].join(".") + ":", callbackentry.length, "entries matched");
+                    + [...dragdrop.dragged.classList].join(".") + ":", callbackentry.length + " entries matched");
                 if (callbackentry.length > 1) console.log("Matching entries:", callbackentry.join(", "))
                 return; 
             }
@@ -629,9 +629,14 @@
                 + event.target.tagName.toLocaleLowerCase() + "#"
                 + event.target.id + ".[" + event.target.classList + "]\nClosets dropzone:\n\t"
                 + dropzone.tagName.toLocaleLowerCase() + "#" + dropzone.id
-                + ".[" + dropzone.classList + "]\nCallback handler:\n\t",
-                callback[0].handler, callback.length > 1 ? callback.length + " handlers found\n" : "\n",
-                callbackentry + ":", callback, "\n-----------\n");
+                + ".[" + dropzone.classList + "]\nCallback handler:\n\t"
+                + callback[0].handler
+                + (callback.length > 1 ? callback.length
+                    + " handlers found\n" : "\n")
+                + callbackentry
+                + ":" + callback.target ? callback.target : "<no target>"
+                + ":" + calllback.handler ? callback.handler : "<no handler>"
+                + "\n-----------\n");
             eval(callback[0].handler);
         },
         add: function (itemClass, target, event) {
@@ -2572,10 +2577,11 @@
     function callFuntion(functionName, params) {
         if (functionName.split(".").length == 1) {
             var argType = typeof window[functionName];
-            console.log("Calling function named", functionName, "type:", argType);
+            console.log("Calling function named [" + functionName + "] type: " + argType);
             if (argType === "function") window[functionName](params);
         }
         else {
+            console.log("Calling function named [" + functionName + "]");
             params = window;
             var args = Array.prototype.slice.call(arguments, 2);
             var namespaces = functionName.split(".");
