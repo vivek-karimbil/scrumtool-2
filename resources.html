@@ -634,8 +634,8 @@
                 + (callback.length > 1 ? callback.length
                     + " handlers found\n" : "\n")
                 + callbackentry
-                + ":" + callback.target ? callback.target : "<no target>"
-                + ":" + calllback.handler ? callback.handler : "<no handler>"
+                + ":" + (callback[0].target ? callback[0].target : "<no target>")
+                + ":" + (callback[0].handler ? callback[0].handler : "<no handler>")
                 + "\n-----------\n");
             eval(callback[0].handler);
         },
@@ -2657,7 +2657,7 @@
         params.querySelector(".burndown").onclick = project.burndown.edit;
         params.querySelector("#data").innerText = JSON.stringify(data);
         var dropTable = params.closest("table");
-        if (dropTable.id == "devtasklist") {
+        if (dropTable.id == "devtasklist" || dropTable.id == "msbacklog" || dropTable.id == "qabacklog") {
             var milestone = params.closest("#milestoneEditor").querySelector(".scheduleMS");
             var msRow = document.querySelector("#scheduleScreen #" + milestone.id.replace(/\./, "\\."));
             var status = [...params.closest("td").classList].filter(f => statuses.filter(s => s == f).length)[0];
@@ -2668,6 +2668,7 @@
             taskCopy.querySelector(".edit").onclick = form.edit;
             taskCopy.querySelector(".delete").onclick = deleteItem;
             msRow.querySelector("." + status).appendChild(taskCopy);
+            project.ui.ms.edit(milestone);
         }
     }
     function onadd_scheduleMS(params) {
