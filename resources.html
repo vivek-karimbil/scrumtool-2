@@ -804,7 +804,7 @@
     var project = {
         burndown: {
             capacity: function(date) {
-                return project.milestones.getDev().map(m => this.getMilestone(m).capacity(date)).reduce((a, b) => a + b);
+                return project.milestones.getDev().map(m => project.milestones.get(m).capacity(date)).reduce((a, b) => a + b);
             },
             get: function() {
                 var tasks = project.tasks.getAll();
@@ -1590,8 +1590,8 @@
                 form.querySelector("#filename").value = projectName + "." + dt;
                 form.querySelector("#yes").addEventListener("click", function() {
                     var filename = this.closest("#savefileForm").querySelector("#filename").value;
-                    console.log("Save project to", filename);
                     if (form.querySelector("#filename").value == '') return;
+                    console.log("Save project to " + filename);
                     blob = new Blob([JSON.stringify(project.file.toJSON(), null, 2)], {
                         type: "application/json;charset=utf-8"
                     });
