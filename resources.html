@@ -27,14 +27,17 @@
 
     <div id="teamDiv">
         <div id="people" class="projectComponent">
-            <div class="item">
-                <img id="developer" class="menuicon person" src="img/developer.svg"/>
+            <div id="developer" class="item person" draggable="true">
+                <img class="hand" src="img/dragable.svg" draggable="false">
+                <img class="menuicon" src="img/developer.svg" draggable="false"/>
             </div>
-            <div class="item">
-                <img id="lead" class="menuicon person" src="img/lead.svg"/>
+            <div id="lead" class="item person" draggable="true">
+                <img class="hand" src="img/dragable.svg" draggable="false">
+                <img class="menuicon" src="img/lead.svg" draggable="false"/>
             </div>
-            <div class="item">
-                <img id="tester" class="menuicon person" src="img/tester.svg"/>
+            <div id="tester" class="item person" draggable="true">
+                <img class="hand" src="img/dragable.svg" draggable="false">
+                <img class="menuicon" src="img/tester.svg" draggable="false"/>
             </div>
         </div>
         <div id="team" class="dropzone droplist people"></div>
@@ -43,11 +46,13 @@
     <div id="scheduleDiv">
         <div class="leftDiv">
             <div id="msTypes" class="projectComponent">
-                <div class="item">
-                    <img id="development" class="menuicon milestone" src="img/devsprint.svg"/>
+                <div id="development" class="item milestone" draggable="true">
+                    <img class="hand" src="img/dragable.svg" draggable="false">
+                    <img class="menuicon" src="img/devsprint.svg" draggable="false"/>
                 </div>
-                <div class="item">
-                    <img id="testing" class="menuicon milestone" src="img/qasprint.svg"/>
+                <div id="testing" class="item milestone" draggable="true">
+                    <img class="hand" src="img/dragable.svg" draggable="false">
+                    <img class="menuicon" src="img/qasprint.svg" draggable="false"/>
                 </div>
             </div>
             <div id="milestones" class="dropzone droplist schedule"></div>
@@ -55,8 +60,9 @@
 
         <div class="rightDiv">
             <div id="blackouts" class="projectComponent">
-                <div class="item">
-                    <img id="blackoutImg" class="menuicon blackout" src="img/blackout.svg"/>
+                <div id="blackoutImg" class="item blackout" draggable="true">
+                    <img class="hand" src="img/dragable.svg" draggable="false">
+                    <img class="menuicon" src="img/blackout.svg" draggable="false"/>
                 </div>
             </div>
             <div id="holidayWeeks" class="dropzone droplist holidayWeeks"></div>
@@ -67,11 +73,13 @@
         <div id="weekDiv" class="leftDiv">
             <div class="weeksetup">
                 <div id="daytypes" class="projectComponent">
-                    <div class="item">
-                        <img id="workday" class="menuicon daytype" src="img/workday.svg"/>
+                    <div id="workday" class="item daytype workday" draggable="true">
+                        <img class="hand" src="img/dragable.svg" draggable="false">
+                        <img class="menuicon" src="img/workday.svg" draggable="false"/>
                     </div>
-                    <div class="item">
-                        <img id="holiday" class="menuicon daytype" src="img/holiday.svg"/>
+                    <div id="holiday" class="item daytype holiday" draggable="true">
+                        <img class="hand" src="img/dragable.svg" draggable="false">
+                        <img class="menuicon" src="img/holiday.svg" draggable="false"/>
                     </div>
                 </div>
                 <div id="week" class="dropzone droplist weekdays">
@@ -253,13 +261,25 @@
     <div id="backlogDiv">
         <div id="backlog" class="projectComponent">
             <div class="item task level1">
-                <div style="background-color:gold;" class="postIt" draggable="true"></div>
+                <div style="background-color:gold;" class="postIt" draggable="true">
+                    <span style="float: left; padding: 3px;">
+                        <img class="hand" src="img/dragable.svg">
+                    </span>
+                </div>
             </div>
             <div class="item task level2">
-                <div style="background-color:hotpink;" class="postIt" draggable="true"></div>
+                <div style="background-color:hotpink;" class="postIt" draggable="true">
+                    <span style="float: left; padding: 3px;">
+                        <img class="hand" src="img/dragable.svg">
+                    </span>
+                </div>
             </div>
             <div class="item task level3">
-                <div style="background-color:rgb(142, 103, 194);" class="postIt" draggable="true"></div>
+                <div style="background-color:rgb(142, 103, 194);" class="postIt" draggable="true">
+                    <span style="float: left; padding: 3px;">
+                        <img class="hand" src="img/dragable.svg">
+                    </span>
+                </div>
             </div>
         </div>
         <div id="requirements" class="dropzone backlog"></div>
@@ -317,7 +337,10 @@
             <thead>
                 <tr class="toprow">
                     <th>
-                        <img id="development" class="menuicon newtask" src="img/requirement.svg">
+                        <div id="development" class="newtask" draggable="true">
+                            <img class="hand" src="img/dragable.svg" draggable="false">
+                            <img class="menuicon" src="img/requirement.svg" draggable="false">
+                        </div>
                     </th>
                     <th class="boardtitle">Stories</th>
                     <th class="boardtitle">In Progress</th>
@@ -353,7 +376,10 @@
             <thead>
                 <tr class="toprow">
                     <th style="width: 100px;">
-                        <img id="development" class="menuicon newtask" src="img/requirement.svg">
+                        <div id="development" class="newtask" draggable="true">
+                            <img class="hand" src="img/dragable.svg" draggable="false">
+                            <img class="menuicon" src="img/requirement.svg" draggable="false">
+                        </div>
                     </th>
                     <th class="boardtitle">Stories</th>
                     <th class="boardtitle">In Progress</th>
@@ -361,10 +387,8 @@
                     <th class="boardtitle">Complete</th>
                 </tr>
             </thead>
-            <tbody id="developer">
-            </tbody>
-            <tbody id="tester" style="display: none;">
-            </tbody>
+            <tbody id="developer"></tbody>
+            <tbody id="tester" style="display: none;"></tbody>
         </table>
         <table id="msbacklog" class="mslayout">
             <colgroup>
@@ -418,7 +442,7 @@
 <div id="confirmDelete" class="modal" style="display: none;">
     <div class="modal-container">
         <div class="container">
-            <p id="message">Realy delete this?</p>
+            <div id="message">Realy delete this?</div>
             <button id="yes">Yes</button>
             <button id="no">No</button>
         </div>
@@ -465,7 +489,7 @@
 
 <template id="msTemplate">
     <tr class="msrequirements">
-        <td id="task" class="status" style="min-width: 100px; padding: 3px;">
+        <td style="min-width: 100px; padding: 3px; border: 3px solid #666;">
             <div class="minholder" style="width: 100%; display: inline-block;">
                 <span class="description"></span>
                 <img class="togglerow displayed" src="img/arrowright.svg" onclick="project.ui.ms.show(event.target)" style="display: none;"/>
@@ -484,6 +508,9 @@
 <template id="reqtTemplate">
     <div class="item taskbrief dropzone">
         <div id="controls" style="display: flow-root;">
+            <span style="float: left; padding: 3px;">
+                <img class="hand" src="img/dragable.svg">
+            </span>
             <span class="taskcontrols" style="float: right;">
                 <img class="delete" src="img/delete.svg" draggable="false">
                 <img class="edit" src="img/edit.svg" draggable="false">
@@ -497,11 +524,16 @@
 <template id="taskTemplate">
     <div class="item taskbrief dropzone">
         <div style="display: flow-root;">
-            <div class="taskcontrols" style="display: inline-block; width: 100%;">
-                <img class="delete" src="img/delete.svg" draggable="false">
-                <img class="edit" src="img/edit.svg" draggable="false">
-                <img class="burndown" src="img/flame.svg" draggable="false">
-            </div>
+            <table style="width: 100%;">
+                <tr class="taskcontrols" style="display: inline-block; width: 100%; height: 30px;">
+                    <td><img class="hand" src="img/dragable.svg" draggable="false"></td>
+                    <td style="width: 100%;">
+                        <img class="delete" src="img/delete.svg" draggable="false">
+                        <img class="edit" src="img/edit.svg" draggable="false">
+                        <img class="burndown" src="img/flame.svg" draggable="false">
+                    </tr>
+                </tr>
+            </table>
             <div class="itemName itemDescription"></div>
             <div id="data" style="display: none;">{"name":"[Not Set]"}</div>
         </div>
@@ -606,12 +638,17 @@
             var rect = event.target.getBoundingClientRect();
             this.left = event.x - rect.x;
             this.top = event.y - rect.y;
+            var dragged = draggables.filter(f => dragdrop.dragged.classList.contains(f))[0];
+            dragdrop.config[dragged].map(e => e.target)
+                .forEach(c => document.querySelectorAll("." + c)
+                .forEach(e => e.classList.add("droptarget")));
         },
         drop: function (event) {
+            document.querySelectorAll(".droptarget").forEach(t => t.classList.remove("droptarget"));
             var dropzone = event.target.closest(".dropzone");
             if (!dropzone) return;
             // Find config with entry matching class name of dragdrop.dragged item
-            var callbackentry = draggableObjects.filter(f => dragdrop.dragged.classList.contains(f));
+            var callbackentry = draggables.filter(f => dragdrop.dragged.classList.contains(f));
             if (callbackentry.length != 1) {
                 console.log("Drop handler configured error for #" + dragdrop.dragged.id.replace(/\./, "\\.") + "."
                     + [...dragdrop.dragged.classList].join(".") + ":", callbackentry.length + " entries matched");
@@ -658,7 +695,7 @@
                 item.style.top = y.toString();
             }
             document.getElementById(id).draggable = true;
-            callFuntion("onadd_" + itemClass, document.getElementById(id));
+            callFunction("onadd_" + itemClass, document.getElementById(id));
             return document.getElementById(id);
         },
         new: function (artClass, instTemplate, event) {
@@ -697,7 +734,7 @@
             var itemImage = newInstance.querySelector("#itemImage");
             itemImage.querySelector(imgSelector).draggable = false;
             document.getElementById(id).draggable = true;
-            callFuntion("oninsert_" + bin.id, document.getElementById(id));
+            callFunction("oninsert_" + bin.id, document.getElementById(id));
         },
         insertTask: function (onTask, onCell, event) {
             onTask = onTask.closest(".dropzone");
@@ -711,13 +748,13 @@
                 newrequirement.querySelector(".itemName").innerText = dragdrop.dragged.innerText;
                 form.initData("#requirementsForm", newrequirement);
             }
-            callFuntion("oninsert_" + onCell.id, document.getElementById(id));
+            callFunction("oninsert_" + onCell.id, document.getElementById(id));
         },
         moveChildToEnd: function (child, list) {
             var moved = list.removeChild(child);
             list.appendChild(moved);
             var lastClass = child.classList.length - 1;
-            callFuntion("onmovetoend_" + child.classList[lastClass], list);
+            callFunction("onmovetoend_" + child.classList[lastClass], list);
         },
         moveChildBefore: function (child, droppedOn) {
             // Back up to the box with the person
@@ -726,7 +763,7 @@
             if (child.isSameNode(droppedOn) || (droppedOn.parentElement != "team")) return;
             droppedOn.parentElement.insertBefore(child, droppedOn);
             var lastClass = child.classList.length - 1;
-            callFuntion("onmovechildbefore_" + child.classList[lastClass], droppedOn);
+            callFunction("onmovechildbefore_" + child.classList[lastClass], droppedOn);
         },
         moveChildTo: function (child, droppedOn) {
             if (child.closest(".weekday") == droppedOn.closest(".weekday")) return;
@@ -791,7 +828,7 @@
             }
         }
     }
-    var draggableObjects = Object.keys(dragdrop.config);
+    var draggables = Object.keys(dragdrop.config);
     var instanceTemplates = {
         "teamMember": "itemTemplate",
         "scheduleMS": "itemTemplate",
@@ -873,10 +910,10 @@
                     bdForm.style.display = "none";
                     this.closest(".container").querySelector("#yes").click();
                     form.edit({ target: milestone.querySelector("#" + id.replace(/\./, "\\.")) });
-                }
+                } 
                 bdForm.querySelector("#yes").onclick = function (event) {
                     document.querySelectorAll("#" + id.replace(/\./, "\\.")).forEach(i => form.saveData(i, bdForm));
-                    bdForm.clearData(bdForm);
+                    form.clearData(bdForm);
                     document.querySelector(".graphType-selected").click();
                 };
                 bdForm.querySelector("#no").onclick = function (event) {
@@ -918,7 +955,7 @@
                 }
             }
         },
-        backlog: {
+        backlog: { // Requirements defined without yet being added to an MS
             getAll: function() {
                 return Array.from(document.querySelectorAll("#backlogDiv #requirements .item"));
             },
@@ -1110,7 +1147,7 @@
                 return document.querySelectorAll("#settingsScreen .scheduleMS");
             },
             getDev: function() {
-                return [...document.querySelectorAll("#settingsScreen #milestones img#development")]
+                return [...document.querySelectorAll("#settingsScreen #milestones #development")]
                     .map(d => d.closest(".scheduleMS"));
             },
             getCurrent: function() {
@@ -1124,7 +1161,7 @@
                 return null;
             }
         },
-        tasks: {
+        tasks: { // Requirements scheduled for execution in an MS
             get: function(taskid) {
                 return {
                     id: taskid,
@@ -1327,7 +1364,7 @@
                         target.closest("td").querySelector(".itemName").innerText;
                     minholder.querySelector(".displayed").style.display = "";
                     minholder.querySelector(".hidden").style.display = "none";
-                    target.closest("tr").querySelectorAll("td:not(.msicon)").forEach(c => c.style.display = "none");
+                    target.closest("tr").querySelectorAll("td:nth-child(n+2)").forEach(c => c.style.display = "none");
                 },
                 show: function(target) {
                     target.closest("td").querySelectorAll("div:not(.minholder):not(#data)")
@@ -1362,6 +1399,8 @@
                         devwidget.classList.add("undraggable");
                         var controls = devwidget.querySelector(".controls");
                         controls.parentElement.removeChild(controls);
+                        controls = devwidget.querySelector(".hand");
+                        controls.parentElement.removeChild(controls);
                         msrow.querySelector(".msicon").appendChild(devwidget);
                         var role = dev.classList.contains("tester") ? "tester" : "developer";
                         mseditor.querySelector("tbody#" + role).appendChild(msrow);
@@ -1373,6 +1412,7 @@
                     document.querySelector("#msbacklog tbody").appendChild(msrequirements);
                     document.querySelector("#qabacklog tbody").appendChild(qarequirements);
                     // Clear contents of first cell with MS icon
+                    msrequirements.querySelector("td:nth-child(1)").style.removeProperty("border");
                     msrequirements.querySelector("td").innerText = "";
                     qarequirements.querySelector("td").innerText = "";
                     // Copy cell widths
@@ -1476,7 +1516,7 @@
                                 data.projectInfo[d].forEach(i => {
                                     var day = [...document.querySelectorAll("#week .weekday")]
                                         .filter(d => d.getAttribute("data-value") == i)[0];
-                                        dragdrop.dragged = document.querySelector("img#" + daytype);
+                                        dragdrop.dragged = document.querySelector("div#" + daytype);
                                         dragdrop.add('dayOfWeek', day);
                                 });
                                 continue;
@@ -1503,7 +1543,7 @@
                             var id = data.team[i].id;
                             var teamData = data.team[i].data;
                             role = teamData.role ? teamData.role : "developer";
-                            dragdrop.dragged = document.querySelector("#people img#" + role);
+                            dragdrop.dragged = document.querySelector("#people #" + role);
                             var teamMember = dragdrop.add("teamMember", document.querySelector("#team"));
                             teamMember.id = id;
                             teamMember.querySelector(".itemName").innerText = teamData.name;
@@ -1513,8 +1553,8 @@
                             var id = data.milestones[i].id;
                             var msData = data.milestones[i].data;
                             type = data.milestones[i].data.type;
-                            dragdrop.dragged = document.querySelector("#msTypes img#" + type);
-                            var ms = dragdrop.add("scheduleMS", document.querySelector("#milestones"));
+                            dragdrop.dragged = document.querySelector("#msTypes #" + type);
+                            var ms = dragdrop.add("scheduleMS", document.querySelector("#milestones.schedule"));
                             trackingMS = document.querySelector("#mslist #" + ms.id.replace(/\./, "\\."));
                             if (trackingMS) {
                                 trackingMS.id = id;
@@ -1528,7 +1568,7 @@
                         for (var i in data.holidayWeeks) {
                             var id = data.holidayWeeks[i].id;
                             var hwData = data.holidayWeeks[i].data;
-                            dragdrop.dragged = document.querySelector("#blackouts img");
+                            dragdrop.dragged = document.querySelector("#blackouts #blackoutImg");
                             var hw = dragdrop.add("holidayWeek", document.querySelector("#holidayWeeks"));
                             hw.id = id;
                             hw.querySelector(".itemName").innerText = hwData.name;
@@ -1679,7 +1719,7 @@
             document.querySelector("#graphsScreen " + selected).classList.add("graphType-selected");
         },
         selectedMS: function() {
-            var milestones = project.milestones.getAll();
+            var milestones = project.milestones.getDev();
             if (milestones.length == 0) return;
             var ms = milestones[0];
             if (document.querySelector("#selectMS").selectedOptions.length) {
@@ -1786,7 +1826,8 @@
                     .attr("class", "tooltip")
                     .style("opacity", 0);
                 // Chart title
-                svg.append("text")
+                svg.append("g")
+                    .append("text")
                     .attr("x", (width / 2))
                     .attr("y", margin.top)
                     .attr("text-anchor", "middle")
@@ -1901,7 +1942,6 @@
                 var workingDays = milestone.workingDays().length;
                 var scope = project.milestones.get(ms).tasks();
                 var today = new Date();
-                var capacity = milestone.capacityConfig(today);
                 var data = capacity.map(c => {
                     if (today > project.milestones.get(ms).endDate()) {
                         remainingDays = 0;
@@ -1959,7 +1999,8 @@
 
                 y = d3.scaleLinear()
                     .rangeRound([height + margin.bottom - 10, margin.top])
-                    .domain([0, d3.max(data, d => d3.max(keys, key => d[key])) + 10]).nice();
+                    .domain([0, d3.max(data, d => d3.max(keys, key => parseInt(d[key]))) + 1])
+                    .nice();
 
                 legend = svg => {
                     const g = svg
@@ -1992,7 +2033,8 @@
                     .attr("class", "tooltip devburndown")
                     .style("opacity", 0);
                 // Chart title
-                svg.append("text")
+                svg.append("g")
+                    .append("text")
                     .attr("x", (width / 2))
                     .attr("y", margin.top)
                     .attr("text-anchor", "middle")
@@ -2434,7 +2476,7 @@
             var itemClass = id.split('.')[0];
             console.log("Edit [" + itemClass + "], id:", id);
             this["ui"] = document.querySelector("#" + itemClass + "Form");
-            callFuntion("initForm_" + itemClass, [this.ui, id]);
+            callFunction("initForm_" + itemClass, [this.ui, id]);
             var data = getJSONData(item);
             Object.keys(data).forEach(feildname => {
                 var input = this.ui.querySelector("#" + feildname.replace(/\./, "\\."));
@@ -2457,7 +2499,7 @@
                 ui = this.closest(".modal");
                 document.querySelectorAll("#" + id.replace(/\./, "\\.")).forEach(i => {
                     form.saveData(i, ui);
-                    callFuntion("onedit_" + itemClass, i);
+                    callFunction("onedit_" + itemClass, i);
                 });
                 form.clearData(ui);
             };
@@ -2519,7 +2561,7 @@
                 document.querySelector("#" + target.id + "Screen").style.display = "";
                 var initFunction = target.getAttribute("data-init");
                 if (!initFunction) initFunction = target.id + "Init";
-                callFuntion(initFunction);
+                callFunction(initFunction);
             })
         });
         document.querySelector("#loadfile").addEventListener("click", project.file.open);
@@ -2553,7 +2595,7 @@
             var value = +d.getAttribute("data-value");
             if (defaults.burndownDays.includes(value) || defaults.weeklyHolidays.includes(value)) {
                 var daytype = defaults.burndownDays.includes(value) ? "workday" : "holiday";
-                dragdrop.dragged = document.querySelector("img#" + daytype);
+                dragdrop.dragged = document.querySelector("div." + daytype);
                 dragdrop.add('dayOfWeek', d);
             }
         })
@@ -2574,7 +2616,7 @@
             dragdrop.dragged = '';
         }, false);
     }
-    function callFuntion(functionName, params) {
+    function callFunction(functionName, params) {
         if (functionName.split(".").length == 1) {
             var argType = typeof window[functionName];
             console.log("Calling function named [" + functionName + "] type: " + argType);
@@ -2607,7 +2649,9 @@
         var element = document.querySelector(selector);
         var parent = element.parentElement;
         var confirm = document.querySelector("#confirmDelete");
-        var deleted = confirm.querySelector('#message').appendChild(element.cloneNode(true));
+        var clone = element.cloneNode(true);
+        clone.style.removeProperty("position");
+        var deleted = confirm.querySelector('#message').appendChild(clone);
         confirm.style.display = 'block';
         confirm.querySelector('#yes').onclick = function (event) {
             document.querySelectorAll(selector).forEach(n => n.remove());
@@ -2672,7 +2716,7 @@
         }
     }
     function onadd_scheduleMS(params) {
-        var mstype = params.querySelector(".menuIcon").id;
+        var mstype = params.querySelector("#development") ? "development" : "testing";
         params.classList.add(mstype);
         var data = getJSONData(params);
         data.type = mstype;
@@ -2686,8 +2730,7 @@
         msnode.querySelector("#development").addEventListener("click", function(event) {
             project.ui.ms.edit(event.target.closest(".scheduleMS"));
         });
-        var controls = msnode.querySelector(".controls");
-        controls.parentElement.removeChild(controls);
+        msnode.querySelectorAll(".controls").forEach(r => r.parentElement.removeChild(r));
         var msdiv = document.querySelector("#msTemplate").content.cloneNode(true);
         var currentMS = project.milestones.getCurrent();
         if (currentMS && params.id == currentMS.id) {
@@ -2707,7 +2750,7 @@
         devMilestones.appendChild(msdiv);
     }
     function onadd_teamMember(params) {
-        var role = params.querySelector("img").id;
+        var role = params.querySelector(".item").id;
         params.classList.add(role);
         var data = getJSONData(params);
         data.role = role;
@@ -2723,7 +2766,12 @@
         reqt.classList.add("backlogitem");
         reqt.style.backgroundColor = params.style.backgroundColor;
         reqt.setAttribute('draggable', true);
-        para = document.createElement("p");
+        img = document.createElement("img");
+        img.classList.add("hand");
+        img.src = "img/dragable.svg";
+        img.draggable = "false";
+        reqt.appendChild(img);
+        para = document.createElement("span");
         para.innerText = description;
         reqt.appendChild(para);
         var data = getJSONData(params);
