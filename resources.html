@@ -18,7 +18,7 @@
 <div id="settingsScreen">
     <div id="projectInfo">
         <button id="loadfile" class="inlineButton"><img class="menuButton undraggable" src="img/readfile.svg"/></button>
-        <label for="projectName">Projet name:</label>
+        <label for="projectName">Project name:</label>
         <input type="text" id="projectName" name="projectName">
         <label for="startDate" style="margin-left: 20px;">Start:</label>
         <input type="date" id="startDate" class="monday" name="startDate">
@@ -575,15 +575,15 @@
         config: {
             // Droppin object class in bin or other item to create item or insert item in list
             "person": [
-                { "target": "people", "handler": "dragdrop.add('teamMember', event.target)" },
+                { "target": "people", "handler": "dragdrop.add('teamMember', event.target, event)" },
                 { "target": "teamMember", "handler": "dragdrop.insertArtifact('#team', dragdrop.dragged, dropzone, '.' + 'person')" }
             ],
             "milestone": [
-                { "target": "schedule", "handler": "dragdrop.add('scheduleMS', event.target)" },
+                { "target": "schedule", "handler": "dragdrop.add('scheduleMS', event.target, event)" },
                 { "target": "scheduleMS", "handler": "dragdrop.insertArtifact('#milestones', dragdrop.dragged, dropzone, '.' + 'milestone')" }
             ],
             "blackout": [
-                { "target": "holidayWeeks", "handler": "dragdrop.add('holidayWeek', event.target)" },
+                { "target": "holidayWeeks", "handler": "dragdrop.add('holidayWeek', event.target, event)" },
                 { "target": "holidayWeek", "handler": "dragdrop.insertArtifact('#blackouts', dragdrop.dragged, dropzone, '.' + 'blackout')" }
             ],
             "requirement": [
@@ -595,15 +595,15 @@
                 { "target": "workItem", "handler": "dragdrop.insertArtifact('div#requirements', dragdrop.dragged, dropzone, '.' + 'requirement', event)" }
             ],
             "daytype": [
-                { "target": "weekdays", "handler": "dragdrop.add('dayOfWeek', event.target)" },
-                { "target": "dayOfWeek", "handler": "dragdrop.add('dayOfWeek', event.target)" }
+                { "target": "weekdays", "handler": "dragdrop.add('dayOfWeek', event.target, event)" },
+                { "target": "dayOfWeek", "handler": "dragdrop.add('dayOfWeek', event.target, event)" }
             ],
             "newtask": [
-                { "target": "status", "handler": "dragdrop.add('newTask', event.target)" },
+                { "target": "status", "handler": "dragdrop.add('newTask', event.target, event)" },
                 { "target": "taskbrief", "handler": "dragdrop.insertTask(dropzone, dropzone.closest('td'), event)" }
             ],
             "backlogitem": [
-                { "target": "status", "handler": "dragdrop.add('backlogitem', event.target)" },
+                { "target": "status", "handler": "dragdrop.add('backlogitem', event.target, event)" },
                 { "target": "taskbrief", "handler": "dragdrop.insertTask(dropzone, dropzone.closest('td'), event)" }
             ],
             // Droping item on another item in bin or at end of bin
@@ -633,19 +633,20 @@
                 { "target": "taskbrief", "handler": "dragdrop.moveTask(dragdrop.dragged, event)" }
             ]
         },
-        dragstart: function (event) {
-            this.dragged = event.target;
-            var rect = event.target.getBoundingClientRect();
-            this.left = event.x - rect.x;
-            this.top = event.y - rect.y;
+        dragstart: function (ev) {
+            this.dragged = ev.target;
+            if(ev == null || ev.target == null) console.log("Big goof up starting drag");
+            var rect = ev.target.getBoundingClientRect();
+            this.left = ev.x - rect.x;
+            this.top = ev.y - rect.y;
             var dragged = draggables.filter(f => dragdrop.dragged.classList.contains(f))[0];
             dragdrop.config[dragged].map(e => e.target)
                 .forEach(c => document.querySelectorAll("." + c)
                 .forEach(e => e.classList.add("droptarget")));
         },
-        drop: function (event) {
+        drop: function (ev) {
             document.querySelectorAll(".droptarget").forEach(t => t.classList.remove("droptarget"));
-            var dropzone = event.target.closest(".dropzone");
+            var dropzone = ev.target.closest(".dropzone");
             if (!dropzone) return;
             // Find config with entry matching class name of dragdrop.dragged item
             var callbackentry = draggables.filter(f => dragdrop.dragged.classList.contains(f));
@@ -663,21 +664,23 @@
             console.log("\nDragged:\n\t"
                 + dragdrop.dragged.tagName.toLocaleLowerCase()
                 + "#" + dragdrop.dragged.id + ".[" + dragdrop.dragged.classList + "]\nDropped on:\n\t"
-                + event.target.tagName.toLocaleLowerCase() + "#"
-                + event.target.id + ".[" + event.target.classList + "]\nClosets dropzone:\n\t"
+                + ev.target.tagName.toLocaleLowerCase() + "#"
+                + ev.target.id + ".[" + ev.target.classList + "]\nClosets dropzone:\n\t"
                 + dropzone.tagName.toLocaleLowerCase() + "#" + dropzone.id
                 + ".[" + dropzone.classList + "]\nCallback handler:\n\t"
                 + callback[0].handler
-                + (callback.length > 1 ? callback.length
-                    + " handlers found\n" : "\n")
-                + callbackentry
-                + ":" + (callback[0].target ? callback[0].target : "<no target>")
-                + ":" + (callback[0].handler ? callback[0].handler : "<no handler>")
+                + (callback.length > 1 ?
+                    callback.length + " handlers found\n" : "\n")
+                + "\tDragged [" + callbackentry
+                + "] on [" + (callback[0].target ? callback[0].target : "<no target>")
+                + "] Handler: " + (callback[0].handler ? callback[0].handler : "<no handler>")
                 + "\n-----------\n");
             eval(callback[0].handler);
         },
-        add: function (itemClass, target, event) {
-            var newInstance = dragdrop.new(target.id, instanceTemplates[itemClass], event);
+        add: function (itemClass, target, ev) {
+            if (itemClass == "teamMember") { console.log("Calling dragdrop.add(" + itemClass + ", " + target.id + ", ev)");
+            Object.keys(ev).forEach(k => console.log(k)); console.log("....."); }
+            var newInstance = dragdrop.new(target.id, instanceTemplates[itemClass]);
             var id = newInstance.firstElementChild.id;
             var item = newInstance.querySelector(".item");
             item.classList.add(itemClass);
@@ -686,19 +689,21 @@
                 item.classList.remove("workItem");
                 item.style.backgroundColor = dragdrop.dragged.style.backgroundColor;
                 item.style.position = "absolute";
-                var rect = event.target.getBoundingClientRect();
-                var x = event.clientX - rect.left - this.left;
+                var rect = ev.target.getBoundingClientRect();
+                var x = ev.clientX - rect.left - this.left;
                 if (x < 0) x = 0;
-                var y = event.clientY - rect.top - this.top;
+                var y = ev.clientY - rect.top - this.top;
                 if (y < 0) y = 0;
                 item.style.left = x.toString();
                 item.style.top = y.toString();
             }
             document.getElementById(id).draggable = true;
             callFunction("onadd_" + itemClass, document.getElementById(id));
+            if (itemClass == "teamMember") console.log("Returning from add");
             return document.getElementById(id);
         },
-        new: function (artClass, instTemplate, event) {
+        new: function (artClass, instTemplate) {
+            console.log("drop.new(" + artClass + ", " + instTemplate + ")");
             // New instance, like a developer or tester
             var itemTemplate = document.getElementById(instTemplate);
             var item = itemTemplate.content.cloneNode(true);
@@ -715,7 +720,7 @@
             imageHolder && imageHolder.appendChild(icon);
             return item;
         },
-        insertArtifact: function (box, droppedImg, droppedOn, imgSelector, event) {
+        insertArtifact: function (box, droppedImg, droppedOn, imgSelector, ev) {
             var bin = document.querySelector(box);
             // Back up to the box with the person
             while (droppedOn.parentElement && droppedOn.parentElement.id != bin.id)
@@ -736,9 +741,9 @@
             document.getElementById(id).draggable = true;
             callFunction("oninsert_" + bin.id, document.getElementById(id));
         },
-        insertTask: function (onTask, onCell, event) {
+        insertTask: function (onTask, onCell, ev) {
             onTask = onTask.closest(".dropzone");
-            var newChild = dragdrop.new("task", "taskTemplate", event);
+            var newChild = dragdrop.new("task", "taskTemplate", ev);
             var id = newChild.firstElementChild.id;
             newChild.querySelector(".item").classList = onTask.classList;
             onCell.insertBefore(newChild, onTask);
@@ -771,11 +776,11 @@
             weekday.querySelectorAll(":not(.dow)").forEach(n => n.parentNode.removeChild(n));
             weekday.appendChild(child);
         },
-        moveTask: function (task, event) {
-            var rect = event.target.closest("#requirements").getBoundingClientRect();
-            var x = event.clientX - rect.left - this.left;
+        moveTask: function (task, ev) {
+            var rect = ev.target.closest("#requirements").getBoundingClientRect();
+            var x = ev.clientX - rect.left - this.left;
             if (x < 0) x = 0;
-            var y = event.clientY - rect.top - this.top;
+            var y = ev.clientY - rect.top - this.top;
             if (y < 0) y = 0;
             task.style.left = x.toString();
             task.style.top = y.toString();
@@ -2619,7 +2624,7 @@
     function callFunction(functionName, params) {
         if (functionName.split(".").length == 1) {
             var argType = typeof window[functionName];
-            console.log("Calling function named [" + functionName + "] type: " + argType);
+            console.log("Calling function named [" + functionName + "]");
             if (argType === "function") window[functionName](params);
         }
         else {
@@ -2751,10 +2756,12 @@
     }
     function onadd_teamMember(params) {
         var role = params.querySelector(".item").id;
+        console.log("Team member added in role: " + role);
         params.classList.add(role);
         var data = getJSONData(params);
         data.role = role;
         params.querySelector("#data").innerText = JSON.stringify(data);
+        console.log("++++++++");
     }
     function onadd_workItem(params) {
         var requirements = document.querySelector("#scheduleScreen #backlog #list");
