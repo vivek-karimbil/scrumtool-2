@@ -851,8 +851,8 @@
             get: function() {
                 var tasks = project.tasks.getAll();
                 var allBurndown = [];
-                tasks.forEach(t => {
-                    allBurndown.push({ id: t.id, burndown: project.tasks.get(t.id).projectBurndown()});
+                tasks.forEach(task => {
+                    allBurndown.push({ id: task.id, burndown: project.tasks.get(task.id).projectBurndown()});
                 });
                 var dates = project.dates.trackingDates();
                 var burndown = [];
@@ -1231,7 +1231,7 @@
                 }
             },
             getAll: function() {
-                return Array.from(document.querySelectorAll("#mslist div.newTask"));
+                return Array.from(document.querySelectorAll("#mslist div.newTask.item"));
             },
             assign: function(task, cell, role) { // "role" is "developer" or "tester" or ""
                 // Set the name of the developer of the task
@@ -1265,8 +1265,8 @@
                         return getJSONData(document.querySelector("#settingsScreen #" + this.id.replace(/\./, "\\.")));
                     },
                     tasks: function() {
-                        return project.tasks.getAll().filter(f => {
-                            var data = project.tasks.get(f.id).data();
+                        return project.tasks.getAll().filter(task => {
+                            var data = project.tasks.get(task.id).data();
                             return data.developer ? data.developer == this.id : false;
                         });
                     },
@@ -2753,6 +2753,7 @@
         msdiv.querySelector(".msicon").appendChild(msnode);
         var devMilestones = document.querySelector("#mslist #milestones");
         devMilestones.appendChild(msdiv);
+        callFunction("initForm_milestones", [document.querySelector("#milestonesForm"), params.id])
     }
     function onadd_teamMember(params) {
         var role = params.querySelector(".item").id;
