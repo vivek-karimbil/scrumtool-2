@@ -960,7 +960,7 @@
                 }
             }
         },
-        backlog: { // Requirements defined without yet being added to an MS
+        backlog: { // Requirements defined but not yet added to a Sprint
             getAll: function() {
                 return Array.from(document.querySelectorAll("#backlogDiv #requirements .item"));
             },
@@ -1048,9 +1048,12 @@
                         var developers = project.team.getDevelopers();
                         // Accumulate developer capacity = vacation across team 
                         developers.forEach(d => {
-                            if (!data[d]) return;
-                            var burnRate = parseInt(data[d]) / 100;
-                            var vacation = parseInt(data["vac_" + d]); 
+                            var burnRate = data[d] ?
+                                parseInt(data[d]) / 100
+                                : parseInt(defaults.capacity[project.team.getDeveloper(d).data().role]) / 100;                            
+                            var vacation = data["vac_" + d] ?
+                                parseInt(data["vac_" + d])
+                                : parseInt(defaults.capacity.vacation);
                             var devCapacity = 0;
                             for(var dt = new Date(date); dt < endDate; dt.setDate(dt.getDate() + 1)) {
                                 if (!project.dates.isHoliday(dt)) devCapacity += burnRate;
@@ -1166,7 +1169,7 @@
                 return null;
             }
         },
-        tasks: { // Requirements scheduled for execution in an MS
+        tasks: { // Requirements scheduled for execution in a Sprint
             get: function(taskid) {
                 return {
                     id: taskid,
@@ -2756,7 +2759,6 @@
         msdiv.querySelector(".msicon").appendChild(msnode);
         var devMilestones = document.querySelector("#mslist #milestones");
         devMilestones.appendChild(msdiv);
-        callFunction("initForm_milestones", [document.querySelector("#milestonesForm"), params.id])
     }
     function onadd_teamMember(params) {
         var role = params.querySelector(".item").id;
@@ -2835,7 +2837,7 @@
         });
     }
     function initForm_milestones(params) {
-        var capacitydata = params[0].querySelector(".capacitydata");
+        var capacityTable = params[0].querySelector(".capacitydata");
         var dates = document.querySelector("#milestonesForm #msdates");
         var ms = [...project.milestones.getAll()].filter(m => m.id == params[1])[0];
         if (ms.classList.contains("development")) {
@@ -2857,20 +2859,20 @@
             dates.innerText = startDate.toLocaleDateString() + " - " + endDate.toLocaleDateString();
         }
 
-        var teamlist = capacitydata.querySelector("#teamlist");
-        capacity = capacitydata.querySelector("#capacity");
+        var teamlist = capacityTable.querySelector("#teamlist");
+        capacity = capacityTable.querySelector("#capacity");
         teamlist.innerHTML = "<td>Name</td>";
         if (mstype == "development") {
             capacity.innerHTML = "<td>Capacity</td>";
         }
         else {
-            capacitydata.querySelector("#capacity").innerHTML = "";
+            capacityTable.querySelector("#capacity").innerHTML = "";
         }
-        var vacation = capacitydata.querySelector("#vacation");
+        var vacation = capacityTable.querySelector("#vacation");
         vacation.innerHTML = "<td>Leave</td>";
 
-        capacitydata.closest(".container").querySelector("#weeks").value = defaults.sprintLenth;
-        capacitydata.closest(".container").style.width = "500px";
+        capacityTable.closest(".container").querySelector("#weeks").value = defaults.sprintLenth;
+        capacityTable.closest(".container").style.width = "500px";
         staff.forEach(developer => {
             var dev = developer.closest(".teamMember").cloneNode(true);
             var td = document.createElement("td");
