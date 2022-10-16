@@ -3,12 +3,11 @@
     width: 25%;
 }
 #backlogDiv #backlog {
-    border: 3px solid #666;
+    border: 0px solid #666;
     float: left;
     width: 100%;
     position: fixed;
     z-index: 10;
-    background-color: aquamarine;
     width: min-content;
 }
 .bdData {

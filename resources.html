@@ -1,71 +1,71 @@
 <link rel="stylesheet" href="resources.css">
 
 <div>
-    <button id="settings"class="topmenu">
+    <button id="settings"class="topmenu" title="Settings to edit project">
         <img class="menuButton undraggable" src="img/settings.svg"/>
     </button>
-    <button id="requirements" class="topmenu">
+    <button id="requirements" class="topmenu" title="Edit project backlog">
         <img class="menuButton undraggable" src="img/backlog.svg"/>
     </button>
-    <button id="schedule" class="topmenu" data-init="project.ui.ms.refresh">
+    <button id="schedule" class="topmenu" data-init="project.ui.ms.refresh" title="Edit progress of work">
         <img class="menuButton undraggable" src="img/schedule.svg"/>
     </button>
-    <button id="graphs" class="topmenu">
+    <button id="graphs" class="topmenu" title="See progress graphs">
         <img class="menuButton undraggable" src="img/graph.svg"/>
     </button>
 </div>
 
 <div id="settingsScreen">
     <div id="projectInfo">
-        <button id="loadfile" class="inlineButton"><img class="menuButton undraggable" src="img/readfile.svg"/></button>
+        <button id="loadfile" class="inlineButton" title="Load saved project file"><img class="menuButton undraggable" src="img/readfile.svg"/></button>
         <label for="projectName">Project name:</label>
-        <input type="text" id="projectName" name="projectName">
+        <input type="text" id="projectName" name="projectName" title="Name of project - used while saving">
         <label for="startDate" style="margin-left: 20px;">Start:</label>
-        <input type="date" id="startDate" class="monday" name="startDate">
-        <button id="savefile" class="inlineButton"><img class="menuButton undraggable" src="img/savefile.svg"/></button>
+        <input type="date" id="startDate" class="monday" name="startDate" title="Start date of project - use a Monday">
+        <button id="savefile" class="inlineButton" title="Save project to local file"><img class="menuButton undraggable" src="img/savefile.svg"/></button>
     </div>
 
     <div id="teamDiv">
         <div id="people" class="projectComponent">
-            <div id="developer" class="item person" draggable="true">
+            <div id="developer" class="item person" draggable="true" title="Drag to box below to add a developer to the team">
                 <img class="hand" src="img/dragable.svg" draggable="false">
                 <img class="menuicon" src="img/developer.svg" draggable="false"/>
             </div>
-            <div id="lead" class="item person" draggable="true">
+            <div id="lead" class="item person" draggable="true" title="Drag to box below to add a tech lead to the team">
                 <img class="hand" src="img/dragable.svg" draggable="false">
                 <img class="menuicon" src="img/lead.svg" draggable="false"/>
             </div>
-            <div id="tester" class="item person" draggable="true">
+            <div id="tester" class="item person" draggable="true" title="Drag to box below to add a tester to the team">
                 <img class="hand" src="img/dragable.svg" draggable="false">
                 <img class="menuicon" src="img/tester.svg" draggable="false"/>
             </div>
         </div>
-        <div id="team" class="dropzone droplist people"></div>
+        <div id="team" class="dropzone droplist people" title="Drag team members here from above"></div>
     </div>
 
     <div id="scheduleDiv">
         <div class="leftDiv">
             <div id="msTypes" class="projectComponent">
-                <div id="development" class="item milestone" draggable="true">
+                <div id="development" class="item milestone" draggable="true" title="Drag to box below to add a development sprint">
                     <img class="hand" src="img/dragable.svg" draggable="false">
                     <img class="menuicon" src="img/devsprint.svg" draggable="false"/>
                 </div>
-                <div id="testing" class="item milestone" draggable="true">
+                <div id="testing" class="item milestone" draggable="true" title="Drag to box below to add a non-burndown sprint (testing, investigation, ...)">
                     <img class="hand" src="img/dragable.svg" draggable="false">
                     <img class="menuicon" src="img/qasprint.svg" draggable="false"/>
                 </div>
             </div>
-            <div id="milestones" class="dropzone droplist schedule"></div>
+            <div id="milestones" class="dropzone droplist schedule" title="Drag sprints here from above"></div>
         </div>
 
         <div class="rightDiv">
-            <div id="blackouts" class="projectComponent">
+            <div id="blackouts" class="projectComponent" title="Drag below to add weeks where no burndown is likely (Diwali, Christmas, company events, training...)">
                 <div id="blackoutImg" class="item blackout" draggable="true">
                     <img class="hand" src="img/dragable.svg" draggable="false">
                     <img class="menuicon" src="img/blackout.svg" draggable="false"/>
                 </div>
             </div>
-            <div id="holidayWeeks" class="dropzone droplist holidayWeeks"></div>
+            <div id="holidayWeeks" class="dropzone droplist holidayWeeks" title="Drag black out weeks here from above"></div>
         </div>
     </div>
 
@@ -73,11 +73,11 @@
         <div id="weekDiv" class="leftDiv">
             <div class="weeksetup">
                 <div id="daytypes" class="projectComponent">
-                    <div id="workday" class="item daytype workday" draggable="true">
+                    <div id="workday" class="item daytype workday" draggable="true" title="Drag below to set weekly project tracking days">
                         <img class="hand" src="img/dragable.svg" draggable="false">
                         <img class="menuicon" src="img/workday.svg" draggable="false"/>
                     </div>
-                    <div id="holiday" class="item daytype holiday" draggable="true">
+                    <div id="holiday" class="item daytype holiday" draggable="true" title="Drag below to set weekly day off">
                         <img class="hand" src="img/dragable.svg" draggable="false">
                         <img class="menuicon" src="img/holiday.svg" draggable="false"/>
                     </div>
@@ -96,7 +96,7 @@
 
         <div class="rightDiv">
             <div id="blackouts" class="projectComponent">
-                <div class="item">
+                <div class="item" title="Project defaults">
                     <img class="menuIcon undraggable" src="img/edit.svg"
                         style="height: 40px; margin-bottom: 10px; margin-top: 10px;"/>
                 </div>
@@ -109,43 +109,53 @@
                             <table>
                                 <tr>
                                     <td class="rowLabel">
-                                        <img class="undraggable" src="img/capacity.svg" style="height: 75px;"/>
+                                        <img class="undraggable" src="img/capacity.svg" style="height: 75px;" title="Default capacity for development"/>
                                     </td>
-                                    <td class="capacitySetting">
+                                    <td class="capacitySetting" title="Team member in lead role">
                                         <img class="undraggable" src="img/lead.svg"/>
                                         <input id="lead" class="default"
                                             style="text-align: right; width: 4ch;"
-                                            data-path="defaults.capacity.lead">%
+                                            data-path="defaults.capacity.lead"
+                                            title="Default capacity for a lead">%
                                     </td>
-                                    <td class="capacitySetting">
+                                    <td class="capacitySetting" title="Team member in developer role">
                                         <img class="undraggable" src="img/developer.svg"/>
                                         <input id="developer" class="default"
                                             style="text-align: right; width: 4ch;"
-                                            data-path="defaults.capacity.developer">%
+                                            data-path="defaults.capacity.developer"
+                                            title="Default capacity for a developer">%
                                     </td>        
                                 </tr>
                             </table>
                         </td>
                         <td class="capacitySetting" style="border-bottom: 3px solid #666;">
-                            <img src="img/estimate.svg" class="rowLabel undraggable" style="max-height: 78px;"/>
+                            <img src="img/estimate.svg" class="rowLabel undraggable" style="max-height: 78px;" title="Default estimate"/>
                             <input id="estimate" class="default"
                                 style="text-align: right; width: 3ch;"
-                                data-path="defaults.estimate">
+                                data-path="defaults.estimate"
+                                title="Default estimate (currently not used)">
                         </td>
                     </tr>
                     <tr>
                         <td class="capacitySetting" style="border-right: 3px solid #666;">
-                            <img class="rowLabel undraggable" src="img/holiday.svg" style="width: 100px; height: 75px; margin-left: 3px;" alt="Time off">
+                            <img class="rowLabel undraggable"
+                                src="img/holiday.svg" style="width: 100px; height: 75px; margin-left: 3px;"
+                                title="Time off per sprint">
                             <input id="vacation" class="default"
                                 style="text-align: right; width: 5ch;"
-                                data-path="defaults.capacity.vacation"> / <img src="img/devsprint.svg" style="height: 25px;">
+                                data-path="defaults.capacity.vacation"
+                                title="Unavailable days per sprint"> / <img src="img/devsprint.svg" style="height: 25px;">
                         </td>
                         <td class="capacitySetting" style="border-right: 3px solid #666;">
-                            <img class="rowLabel undraggable" src="img/priority.svg" style="width: 100px; height: 75px; margin-left: 3px;" alt="Time off">
+                            <img class="rowLabel undraggable" src="img/priority.svg"
+                                style="width: 100px; height: 75px; margin-left: 3px;"
+                                title="Default priority">
                             <select name="priority" id="priority" class="default"></select>
                         </td>
                         <td class="capacitySetting">
-                            <img class="rowLabel undraggable" src="img/measure.svg" style="width: 100px; height: 75px;" alt="Time off">
+                            <img class="rowLabel undraggable" src="img/measure.svg"
+                                style="width: 100px; height: 75px;"
+                                title="Default size">
                             <select name="size" id="size" class="default"></select>
                         </td>
                     </tr>
@@ -260,21 +270,21 @@
 <div id="requirementsScreen" style="display: none;">
     <div id="backlogDiv">
         <div id="backlog" class="projectComponent">
-            <div class="item task level1">
+            <div class="item task level1" title="Drag and drop requirement to board below. Colours just for display.">
                 <div style="background-color:gold;" class="postIt" draggable="true">
                     <span style="float: left; padding: 3px;">
                         <img class="hand" src="img/dragable.svg">
                     </span>
                 </div>
             </div>
-            <div class="item task level2">
+            <div class="item task level2" title="Drag and drop requirement to board below. Colours just for display.">
                 <div style="background-color:hotpink;" class="postIt" draggable="true">
                     <span style="float: left; padding: 3px;">
                         <img class="hand" src="img/dragable.svg">
                     </span>
                 </div>
             </div>
-            <div class="item task level3">
+            <div class="item task level3" title="Drag and drop requirement to board below. Colours just for display.">
                 <div style="background-color:rgb(142, 103, 194);" class="postIt" draggable="true">
                     <span style="float: left; padding: 3px;">
                         <img class="hand" src="img/dragable.svg">
@@ -321,12 +331,12 @@
             </div>
             <img id="show" class="reqtIcon" src="img/backlog.svg">
         </span>
-        <span id="backlog">
+        <span id="backlog" title="Requirements added in project backlog">
             <div id="backlogDiv">
                 <div class="divheader">
-                    <div onclick="project.backlog.hide()" class="minbutton">X</div>
+                    Backlog<div onclick="project.backlog.hide()" class="minbutton">X</div>
                 </div>
-                <div id="list" class="reqtlist"></div>
+                <div id="list" class="reqtlist" title="Drag requirement to sprint row"></div>
             </div>
         </span>
         <table id="mslist" class="mslayout">
@@ -337,15 +347,15 @@
             <thead>
                 <tr class="toprow">
                     <th>
-                        <div id="development" class="newtask" draggable="true">
+                        <div id="development" class="newtask" draggable="true" title="Drag new task to sprint row below">
                             <img class="hand" src="img/dragable.svg" draggable="false">
                             <img class="menuicon" src="img/requirement.svg" draggable="false">
                         </div>
                     </th>
-                    <th class="boardtitle">Stories</th>
-                    <th class="boardtitle">In Progress</th>
-                    <th class="boardtitle">In Test</th>
-                    <th class="boardtitle">Complete</th>
+                    <th class="boardtitle" title="Stories not yet started">Stories</th>
+                    <th class="boardtitle" title="Stories being burned down">In Progress</th>
+                    <th class="boardtitle" title="Stories in testing">In Test</th>
+                    <th class="boardtitle" title="Stories completed">Complete</th>
                 </tr>
             </thead>
             <tbody id="milestones"></tbody>
@@ -355,16 +365,18 @@
     <div id="milestoneEditor" style="display: none; width: 100%;">
         <div style="width: 100%;">
             <div class="return" style="display: flex; float: right;" onclick="project.ui.schedule.edit()">
-                <img class="undraggable" style="width: 170px;" src="img/sprints.svg"/>
+                <img class="undraggable" style="width: 170px;" src="img/sprints.svg" title="Switch to project editor"/>
             </div>
             <span id="msicon" style="display: table-cell;"></span>
             <span id="msicon" style="display: table-cell; width: 100px; padding-left: 50px;">
                 <img id="developer" class="menuicon person undraggable selected" src="img/developer.svg"
-                    onclick="project.ui.developerView()">
+                    onclick="project.ui.developerView()"
+                    title="Stories assigned to developers">
             </span>
             <span id="msicon" style="display: table-cell;">
                 <img id="tester" class="menuicon person undraggable" src="img/tester.svg"
-                    onclick="project.ui.testerView()">
+                    onclick="project.ui.testerView()"
+                    title="Stories assigned to testers">
             </span>
             <span id="header" style="display: table-cell; width: 100%;"></span>
         </div>
@@ -376,15 +388,15 @@
             <thead>
                 <tr class="toprow">
                     <th style="width: 100px;">
-                        <div id="development" class="newtask" draggable="true">
+                        <div id="development" class="newtask" draggable="true" title="Drag new task to team member row below">
                             <img class="hand" src="img/dragable.svg" draggable="false">
                             <img class="menuicon" src="img/requirement.svg" draggable="false">
                         </div>
                     </th>
-                    <th class="boardtitle">Stories</th>
-                    <th class="boardtitle">In Progress</th>
-                    <th class="boardtitle">In Test</th>
-                    <th class="boardtitle">Complete</th>
+                    <th class="boardtitle" title="Stories not yet started">Stories</th>
+                    <th class="boardtitle" title="Stories being burned down">In Progress</th>
+                    <th class="boardtitle" title="Stories in testing">In Test</th>
+                    <th class="boardtitle" title="Stories completed">Complete</th>
                 </tr>
             </thead>
             <tbody id="developer"></tbody>
@@ -678,8 +690,6 @@
             eval(callback[0].handler);
         },
         add: function (itemClass, target, ev) {
-            if (itemClass == "teamMember") { console.log("Calling dragdrop.add(" + itemClass + ", " + target.id + ", ev)");
-            Object.keys(ev).forEach(k => console.log(k)); console.log("....."); }
             var newInstance = dragdrop.new(target.id, instanceTemplates[itemClass]);
             var id = newInstance.firstElementChild.id;
             var item = newInstance.querySelector(".item");
@@ -716,6 +726,7 @@
             // Add developer/tester icon
             var icon = dragdrop.dragged.cloneNode(true);
             icon.setAttribute('draggable', false);
+            icon.setAttribute('title', '');
             var imageHolder = item.getElementById('itemImage');
             imageHolder && imageHolder.appendChild(icon);
             return item;
@@ -1480,6 +1491,7 @@
                     document.querySelector("#msicon").innerHTML = '';
                     // Put header icon on top
                     document.querySelector("#msicon").appendChild(milestone.closest(".scheduleMS").cloneNode(true));
+                    document.querySelector("#milestoneEditor #development").removeAttribute("title");
                     this.refresh();
                 }
             },
@@ -2741,6 +2753,9 @@
         msnode.querySelector("#development").addEventListener("click", function(event) {
             project.ui.ms.edit(event.target.closest(".scheduleMS"));
         });
+        msnode.querySelector("#development").setAttribute("title", "Click to edit milestone");
+        var hand = msnode.querySelector(".hand");
+        hand.parentElement.removeChild(hand);
         msnode.querySelectorAll(".controls").forEach(r => r.parentElement.removeChild(r));
         var msdiv = document.querySelector("#msTemplate").content.cloneNode(true);
         var currentMS = project.milestones.getCurrent();
