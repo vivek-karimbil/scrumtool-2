@@ -2573,6 +2573,9 @@
         document.querySelector("#savefile").addEventListener("click", project.file.save);
         graph.init();
         // Defaults
+        d = new Date();
+        d.setDate(d.getDate() + ((7 - d.getDay()) % 7 + 1) % 7); // Day of week as Monday
+        document.querySelector("#startDate").value = d.toISOString().split('T')[0];
         document.querySelectorAll("input.default").forEach(d => {
             d.value = eval(d.getAttribute("data-path"));
         });
