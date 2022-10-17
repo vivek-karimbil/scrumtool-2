@@ -292,7 +292,7 @@
                 </div>
             </div>
         </div>
-        <div id="requirements" class="dropzone backlog"></div>
+        <div id="requirements" class="dropzone backlog" title="Drop requirement notes above the box, and arrange them"></div>
     </div>
     <div id="requirementsForm" class="modal" style="display: none;">
         <div class="modal-container">
@@ -339,7 +339,7 @@
                 <div id="list" class="reqtlist" title="Drag requirement to sprint row"></div>
             </div>
         </span>
-        <table id="mslist" class="mslayout">
+        <table id="mslist" class="mslayout tasktable">
             <colgroup>
                 <col span="1">
                 <col span="4">
@@ -380,7 +380,7 @@
             </span>
             <span id="header" style="display: table-cell; width: 100%;"></span>
         </div>
-        <table id="devtasklist" class="mslayout">
+        <table id="devtasklist" class="mslayout tasktable">
             <colgroup>
                 <col span="1">
                 <col span="4">
@@ -425,7 +425,7 @@
                 <div>&nbsp;</div>
                 <div>
                     <input id="name" class="teamData" placeholder="Label" />
-                    <img id="editBurndown" src="img/flame.svg" style="height: 20px;" draggable="false"/>
+                    <img id="editBurndown" src="img/flame.svg" style="height: 20px;" draggable="false" title="Edit burndown"/>
                 </div>
                 <div><input id="details" class="teamData" placeholder="Details" /></div>
                 <div id="estimate"></div>
@@ -541,8 +541,8 @@
                     <td><img class="hand" src="img/dragable.svg" draggable="false"></td>
                     <td style="width: 100%;">
                         <img class="delete" src="img/delete.svg" draggable="false">
-                        <img class="edit" src="img/edit.svg" draggable="false">
-                        <img class="burndown" src="img/flame.svg" draggable="false">
+                        <img class="edit" src="img/edit.svg" draggable="false" title="Edit task">
+                        <img class="burndown" src="img/flame.svg" draggable="false" title="Edit burndown">
                     </tr>
                 </tr>
             </table>
@@ -908,9 +908,9 @@
                 var item = event.target.closest(".item");
                 var id = item.id;
                 var data = getJSONData(item);
-                if (event.target.closest("table").id == "mslist")
-                    milestone = event.target.closest("tr");
-                if (event.target.closest("table").id == "devtasklist")
+                if (event.target.closest("table.tasktable").id == "mslist")
+                    milestone = event.target.closest("tr.msrequirements");
+                if (event.target.closest("table.tasktable").id == "devtasklist")
                     milestone = document.querySelector("#milestoneEditor .scheduleMS");
                 bdForm.style.display = 'block';
                 bdForm.querySelector("#taskbrief").innerHTML = data.name;
