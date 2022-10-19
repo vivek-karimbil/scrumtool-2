@@ -28,15 +28,15 @@
     <div id="teamDiv">
         <div id="people" class="projectComponent">
             <div id="developer" class="item person" draggable="true" title="Drag to box below to add a developer to the team">
-                <img class="hand" src="img/dragable.svg" draggable="false">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                 <img class="menuicon" src="img/developer.svg" draggable="false"/>
             </div>
             <div id="lead" class="item person" draggable="true" title="Drag to box below to add a tech lead to the team">
-                <img class="hand" src="img/dragable.svg" draggable="false">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                 <img class="menuicon" src="img/lead.svg" draggable="false"/>
             </div>
             <div id="tester" class="item person" draggable="true" title="Drag to box below to add a tester to the team">
-                <img class="hand" src="img/dragable.svg" draggable="false">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                 <img class="menuicon" src="img/tester.svg" draggable="false"/>
             </div>
         </div>
@@ -47,11 +47,11 @@
         <div class="leftDiv">
             <div id="msTypes" class="projectComponent">
                 <div id="development" class="item milestone" draggable="true" title="Drag to box below to add a development sprint">
-                    <img class="hand" src="img/dragable.svg" draggable="false">
+                    <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                     <img class="menuicon" src="img/devsprint.svg" draggable="false"/>
                 </div>
                 <div id="testing" class="item milestone" draggable="true" title="Drag to box below to add a non-burndown sprint (testing, investigation, ...)">
-                    <img class="hand" src="img/dragable.svg" draggable="false">
+                    <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                     <img class="menuicon" src="img/qasprint.svg" draggable="false"/>
                 </div>
             </div>
@@ -61,7 +61,7 @@
         <div class="rightDiv">
             <div id="blackouts" class="projectComponent" title="Drag below to add weeks where no burndown is likely (Diwali, Christmas, company events, training...)">
                 <div id="blackoutImg" class="item blackout" draggable="true">
-                    <img class="hand" src="img/dragable.svg" draggable="false">
+                    <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                     <img class="menuicon" src="img/blackout.svg" draggable="false"/>
                 </div>
             </div>
@@ -78,7 +78,7 @@
                         <img class="menuicon" src="img/workday.svg" draggable="false"/>
                     </div>
                     <div id="holiday" class="item daytype holiday" draggable="true" title="Drag below to set weekly day off">
-                        <img class="hand" src="img/dragable.svg" draggable="false">
+                        <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                         <img class="menuicon" src="img/holiday.svg" draggable="false"/>
                     </div>
                 </div>
@@ -273,21 +273,21 @@
             <div class="item task level1" title="Drag and drop requirement to board below. Colours just for display.">
                 <div style="background-color:gold;" class="postIt" draggable="true">
                     <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg">
+                        <img class="hand" src="img/dragable.svg" title="Drag this">
                     </span>
                 </div>
             </div>
             <div class="item task level2" title="Drag and drop requirement to board below. Colours just for display.">
                 <div style="background-color:hotpink;" class="postIt" draggable="true">
                     <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg">
+                        <img class="hand" src="img/dragable.svg" title="Drag this">
                     </span>
                 </div>
             </div>
             <div class="item task level3" title="Drag and drop requirement to board below. Colours just for display.">
                 <div style="background-color:rgb(142, 103, 194);" class="postIt" draggable="true">
                     <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg">
+                        <img class="hand" src="img/dragable.svg" title="Drag this">
                     </span>
                 </div>
             </div>
@@ -334,7 +334,7 @@
         <span id="backlog" title="Requirements added in project backlog">
             <div id="backlogDiv">
                 <div class="divheader">
-                    Backlog<div onclick="project.backlog.hide()" class="minbutton">X</div>
+                    <b>Backlog</b><div onclick="project.backlog.hide()" class="minbutton">X</div>
                 </div>
                 <div id="list" class="reqtlist" title="Drag requirement to sprint row"></div>
             </div>
@@ -348,7 +348,7 @@
                 <tr class="toprow">
                     <th>
                         <div id="development" class="newtask" draggable="true" title="Drag new task to sprint row below">
-                            <img class="hand" src="img/dragable.svg" draggable="false">
+                            <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                             <img class="menuicon" src="img/requirement.svg" draggable="false">
                         </div>
                     </th>
@@ -389,7 +389,7 @@
                 <tr class="toprow">
                     <th style="width: 100px;">
                         <div id="development" class="newtask" draggable="true" title="Drag new task to team member row below">
-                            <img class="hand" src="img/dragable.svg" draggable="false">
+                            <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                             <img class="menuicon" src="img/requirement.svg" draggable="false">
                         </div>
                     </th>
@@ -504,8 +504,12 @@
         <td style="min-width: 100px; padding: 3px; border: 3px solid #666;">
             <div class="minholder" style="width: 100%; display: inline-block;">
                 <span class="description"></span>
-                <img class="togglerow displayed" src="img/arrowright.svg" onclick="project.ui.ms.show(event.target)" style="display: none;"/>
-                <img class="togglerow hidden" src="img/arrowdown.svg" onclick="project.ui.ms.hide(event.target)"/>
+                <img class="togglerow displayed" src="img/arrowright.svg"
+                    onclick="project.ui.ms.show(event.target)" style="display: none;"
+                    title="Inflate row"/>
+                <img class="togglerow hidden" src="img/arrowdown.svg"
+                    onclick="project.ui.ms.hide(event.target)"
+                    title="Collapse row"/>
             </div>
             <div class="msicon"></div>
             <div id="schedule"></div>
@@ -521,7 +525,7 @@
     <div class="item taskbrief dropzone">
         <div id="controls" style="display: flow-root;">
             <span style="float: left; padding: 3px;">
-                <img class="hand" src="img/dragable.svg">
+                <img class="hand" src="img/dragable.svg" title="Drag this">
             </span>
             <span class="taskcontrols" style="float: right;">
                 <img class="delete" src="img/delete.svg" draggable="false">
@@ -538,7 +542,7 @@
         <div style="display: flow-root;">
             <table style="width: 100%;">
                 <tr class="taskcontrols" style="display: inline-block; width: 100%; height: 30px;">
-                    <td><img class="hand" src="img/dragable.svg" draggable="false"></td>
+                    <td><img class="hand" src="img/dragable.svg" draggable="false" title="Drag this"></td>
                     <td style="width: 100%;">
                         <img class="delete" src="img/delete.svg" draggable="false">
                         <img class="edit" src="img/edit.svg" draggable="false" title="Edit task">
@@ -1746,16 +1750,16 @@
                 var selectedMS = document.querySelector("#selectMS").selectedOptions[0].value;
                 ms = [...milestones].filter(m => m.id == selectedMS)[0];
             }
-            else {
-                var msSelect = document.querySelector("#selectMS");
-                milestones.forEach(m => {
-                    var data = project.milestones.get(m).data();
-                    var option = document.createElement("option");
-                    option.value = m.id;
-                    option.innerText = data.name;
-                    msSelect.appendChild(option);
-                });
-            }
+            var msSelect = document.querySelector("#selectMS");
+            document.querySelector("#selectMS").innerHTML = "";
+            milestones.forEach(m => {
+                var data = project.milestones.get(m).data();
+                var option = document.createElement("option");
+                option.value = m.id;
+                option.innerText = data.name;
+                if (m.id == ms.id) m.selected = "true";
+                msSelect.appendChild(option);
+            });
             document.querySelector("#msChoice").style.display = "";
             return ms;
         },
@@ -2753,7 +2757,7 @@
         msnode.querySelector("#development").addEventListener("click", function(event) {
             project.ui.ms.edit(event.target.closest(".scheduleMS"));
         });
-        msnode.querySelector("#development").setAttribute("title", "Click to edit milestone");
+        msnode.querySelector("#development").setAttribute("title", "Click to edit this milestone");
         var hand = msnode.querySelector(".hand");
         hand.parentElement.removeChild(hand);
         msnode.querySelectorAll(".controls").forEach(r => r.parentElement.removeChild(r));
@@ -2798,6 +2802,7 @@
         img.classList.add("hand");
         img.src = "img/dragable.svg";
         img.draggable = "false";
+        img.title = "Drag this";
         reqt.appendChild(img);
         para = document.createElement("span");
         para.innerText = description;
