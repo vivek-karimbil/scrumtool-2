@@ -98,7 +98,8 @@
             <div id="blackouts" class="projectComponent">
                 <div class="item" title="Project defaults">
                     <img class="menuIcon undraggable" src="img/edit.svg"
-                        style="height: 40px; margin-bottom: 10px; margin-top: 10px;"/>
+                        style="height: 40px; margin-bottom: 10px; margin-top: 10px;"
+                        title="Edit dates"/>
                 </div>
             </div>    
             <div id="values">
@@ -257,8 +258,8 @@
             <div class="icons">
                 <div id="itemImage" class="control"></div>
                 <div class="controls">
-                    <img class="edit" src="img/edit.svg" style="width: 100%" draggable="false">
-                    <img class="delete" src="img/delete.svg" style="width: 100%" draggable="false">
+                    <img class="edit" src="img/edit.svg" style="width: 100%" draggable="false" title="Edit details">
+                    <img class="delete" src="img/delete.svg" style="width: 100%" draggable="false" title="Delete">
                 </div>
                 <div class="itemName"></div>
             </div>
@@ -474,7 +475,7 @@
                         <span style="display: inline-block; width: 10ch;">
                             <b>Feature:</b></span><span id="taskbrief">
                         </span>
-                        <img id="editTask" src="img/edit.svg" style="height: 20px;" draggable="false"/>
+                        <img id="editTask" src="img/edit.svg" style="height: 20px;" draggable="false" title="Edit details"/>
                     </div>
                     <div><span style="display: inline-block; width: 10ch;"><b>Estimate:</b></span><span id="estimate"></span></div>
                     <div id="daterange"></div>
@@ -528,8 +529,8 @@
                 <img class="hand" src="img/dragable.svg" title="Drag this">
             </span>
             <span class="taskcontrols" style="float: right;">
-                <img class="delete" src="img/delete.svg" draggable="false">
-                <img class="edit" src="img/edit.svg" draggable="false">
+                <img class="delete" src="img/delete.svg" draggable="false" title="Delete">
+                <img class="edit" src="img/edit.svg" draggable="false" title="Edit task">
             </span>
         </div>
         <div class="itemDescription"><p class="itemName"></p></div>
@@ -544,7 +545,7 @@
                 <tr class="taskcontrols" style="display: inline-block; width: 100%; height: 30px;">
                     <td><img class="hand" src="img/dragable.svg" draggable="false" title="Drag this"></td>
                     <td style="width: 100%;">
-                        <img class="delete" src="img/delete.svg" draggable="false">
+                        <img class="delete" src="img/delete.svg" draggable="false" title="Delete">
                         <img class="edit" src="img/edit.svg" draggable="false" title="Edit task">
                         <img class="burndown" src="img/flame.svg" draggable="false" title="Edit burndown">
                     </tr>
@@ -1086,13 +1087,15 @@
                         var capacity = [];
                         var developers = project.team.getDevelopers();
                         developers.forEach(d => {
-                            if (!data[d]) return;
-                            var vacation = parseInt(data["vac_" + d]); 
+                            var availability = data[d];
+                            if (!availability) availability = defaults.capacity[project.team.getDeveloper(d).data().role];
+                            var vacation = data["vac_" + d] ? parseInt(data["vac_" + d]) :
+                                defaults.capacity.vacation;
                             var devCapacity = 0;
                             capacity.push({
                                 id: d,
                                 developer: project.team.getDeveloper(d).data().name,
-                                availability: data[d],
+                                availability: availability,
                                 vacation: vacation
                             });
                         });
@@ -1977,6 +1980,7 @@
                         remainingDays = milestone.developerCapacity(c.id, today);
                     }
                     return {
+                        "id": c.id,
                         "Developer": c.developer,
                         "Planned availability": workingDays * parseInt(c.availability) / 100 - c.vacation,
                         "Assigned work": (project.team.getDeveloper(c.id).getTasksForMS(milestone.id)
@@ -1993,11 +1997,12 @@
                     : Object.keys(data[0]);
                 data.y = "Days";
 
-                keys = data.columns.slice(1);
+                keys = data.columns.slice(2);
                 groupKey = data.columns[0];
 
                 xAxis = g => g
                     .attr("transform", `translate(0,${height + margin.bottom -10})`)
+                    .attr("id", "developerid")
                     .call(d3.axisBottom(x0).tickSizeOuter(0));
                 yAxis = g => g
                     .attr("transform", `translate(${margin.left},0)`)
@@ -2122,6 +2127,10 @@
                 g.append("g")
                     .call(xAxis);
 
+                document.querySelectorAll("#developerid text").forEach(developer => {
+                    developer.innerHTML = project.team.getDeveloper(developer.innerHTML).data().name;
+                });
+
                 g.append("g")
                     .call(yAxis);
 
@@ -2135,7 +2144,30 @@
             graph.setGraph("#project");
             var ms = project.milestones.getAll()[0];
             if (!ms) return;
-            if (project.tasks.getAll().length == 0) return;
+
+            var margin = {top: 20, right: 20, bottom: 50, left: 40},
+                width = screen.width - 50,
+                height = screen.height - 400;
+            
+            var board = d3.select("#graph")
+                .html("")
+                .append("div")
+                .style("width", '100%')
+                .style("height", 500);
+
+            var svg = board.append("svg")
+                .attr("width", "100%")
+                .attr("height", height + margin.top + margin.bottom);
+
+            // Chart title
+            svg.append("text")
+                .attr("x", "50%")
+                .attr("y", margin.top)
+                .attr("text-anchor", "middle")
+                .style("font-size", "20px")
+                .style("text-decoration", "underline")
+                .text("Project Burndown");
+
             var projectBurndown = project.burndown.get();
             var targetBurndown = project.burndown.getTarget();
             var today = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
@@ -2150,25 +2182,18 @@
                     target: targetBurndown.filter(d => d.date == dtIndex)[0].effort
                 }
             });
+            var taskList = project.tasks.getAll();
+            var effort = taskList.length ?
+                taskList.map(t => project.tasks.get(t.id).estimate()).reduce((a, b) => a + b) : 0;
             if (targetBurndown.length) burndown.unshift({
                 date: "Start",
-                effort: project.tasks.getAll().map(t => project.tasks.get(t.id).estimate()).reduce((a, b) => a + b),
+                effort: effort,
                 target: targetBurndown[0].effort
             })
             
             var ymax = burndown.length == 0 ? { effort: 0, target: 0 } :
                 burndown.reduce((a,b) => Math.max(a.effort, a.target) > Math.max(b.effort, b.target) ? a : b);
             ymax = ymax.effort > ymax.target ? ymax.effort : ymax.target;
-            
-            var margin = {top: 20, right: 20, bottom: 50, left: 40},
-                width = screen.width - 50,
-                height = screen.height - 400;
-            
-            var board = d3.select("#graph")
-                .html("")
-                .append("div")
-                .style("width", '100%')
-                .style("height", 500);
             
             var xScale = d3.scaleBand()
                 .rangeRound([0, width])
@@ -2178,22 +2203,10 @@
                 .rangeRound([height, 0])
                 .domain([0, ymax + 10]);
             
-            var svg = board.append("svg")
-                .attr("width", "100%")
-                .attr("height", height + margin.top + margin.bottom);
             // Tooltip
             var div = board.append("div")
                 .attr("class", "tooltip")
                 .style("opacity", 0);
-            
-            // Chart title
-            svg.append("text")
-                .attr("x", "50%")
-                .attr("y", margin.top)
-                .attr("text-anchor", "middle")
-                .style("font-size", "20px")
-                .style("text-decoration", "underline")
-                .text("Project Burndown");
             
             var g = svg.append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -2545,7 +2558,7 @@
             ui.querySelectorAll("input").forEach(f => {
                 var value;
                 if (f.type == "radio") {
-                    value = f.checked;
+                    value = f.checked;capacity
                 }
                 if (f.type == "text" || f.type == "date" || f.type == "week")  {
                     value = f.value;
@@ -2750,6 +2763,12 @@
         data.weeks = defaults.sprintLenth;
         params.querySelector("#data").innerText = JSON.stringify(data);
         if (mstype != 'development') return;
+        project.team.getDevelopers().forEach(dev => {
+            var role = project.team.getDeveloper(dev).data().role;
+            data[dev] = defaults.capacity[role];
+            data["vac_" + dev] = defaults.capacity.vacation;
+        });
+        params.querySelector("#data").innerText = JSON.stringify(data);
         // Add development MS to tracking tab
         var msnode = params.cloneNode(true);
         msnode.draggable = false;
@@ -2785,6 +2804,14 @@
         params.classList.add(role);
         var data = getJSONData(params);
         data.role = role;
+        if (role == "developer" || role == "lead") {
+            project.milestones.getDev().forEach(msdiv => {
+                var msdata = getJSONData(msdiv);
+                msdata[params.id] = defaults.capacity[role];
+                msdata["vac_" + params.id] = defaults.capacity.vacation;
+                msdiv.querySelector("#data").innerText = JSON.stringify(msdata);
+            })
+        }
         params.querySelector("#data").innerText = JSON.stringify(data);
         console.log("++++++++");
     }
