@@ -323,7 +323,7 @@
 </div>
 
 <div id="scheduleScreen" style="display: none;">
-    <div id="projectScheduleEditor" style="display: flex; width: 100%">
+    <div id="scheduleEditor" style="display: flex; width: 100%">
         <span id="backlogsummary" style="display: none;">
             <div id="backlogicon" class="divheader">
                 <div class="divheader">
@@ -440,12 +440,12 @@
 
 <div id="graphsScreen" style="display: none;">
     <div style="margin-top: 20px;padding-bottom: 20px;">
-        <button id="milestone" class="graphType graphType-selected">Milestone</button>
+        <button id="milestone" class="graphType graphType-selected">Sprint</button>
         <button id="project"   class="graphType">Project</button>
         <button id="details"   class="graphType">Feature/Developer</button>
     </div>
     <div id="msChoice">
-        <text>Milestone:
+        <text>Sprint:
         <select id="selectMS"></select>
         </text>
     </div>
@@ -469,7 +469,7 @@
                 <div onclick="document.getElementById('burndownForm').style.display='none'" class="minbutton">×</div>
                 <div>
                     <span style="display: block; padding-top: 20px; padding-bottom: 10px;">
-                        <b style="display: inline-block; width: 10ch;">Milestone:</b><span class="milestones"></span>
+                        <b style="display: inline-block; width: 10ch;">Sprint:</b><span class="milestones"></span>
                     </span>
                     <div>
                         <span style="display: inline-block; width: 10ch;">
@@ -925,7 +925,7 @@
                 bdForm.querySelector(".milestones").innerHTML = project.milestones.get(milestone).data().name;
                 var mserrors = [];
                 if (mserrors.length)
-                    return project.burndown.error(bdForm, "Set Milestone lengths:<br/>" + mserrors.join("<br/>"));
+                    return project.burndown.error(bdForm, "Set sprint length:<br/>" + mserrors.join("<br/>"));
                 project.burndown.show(item, bdForm);
                 bdForm.querySelector("#editTask").onclick = function (e) {
                     bdForm.style.display = "none";
@@ -1198,7 +1198,7 @@
                         var data = this.data();
                         var sizes = [...document.querySelector("#estimateTemplate")
                             .content.querySelectorAll("input")].map(s => s.id).filter(d => data[d]);
-                        if (sizes.length == 0) return 0;
+                        if (sizes.length == 0) return defaults.size;
                         return sizes[sizes.length - 1];
                     },
                     estimate: function() {
@@ -1404,7 +1404,7 @@
                 refresh: function() {
                     if (document.querySelector("#milestoneEditor").style.display == "none") return;
                     var msid = document.querySelector("#milestoneEditor .scheduleMS").id;
-                    var selector = "#projectScheduleEditor #" + msid.replace(/\./, "\\.") + " .scheduleMS";
+                    var selector = "#scheduleEditor #" + msid.replace(/\./, "\\.") + " .scheduleMS";
                     var milestone = document.querySelector(selector);
                     var mseditor = document.querySelector("#milestoneEditor");
                     // Clear the previous MS editing session
@@ -1491,9 +1491,31 @@
                         });
                     });
                 },
+                syncViews: function() {
+                    console.log("Syncing views");
+                    var devMSList = project.milestones.getDev();
+                    var scheduledSprints = document.querySelectorAll("#scheduleEditor #milestones tr");
+                    console.log(devMSList.map(m => getJSONData(m).name));
+                    console.log([...scheduledSprints].map(m => getJSONData(m).name));
+                    if (devMSList.length != scheduledSprints.length) console.log("Sprints in project setup and progress tabs out of sync");
+                    for (i = 0; i < devMSList.length; i++) {
+                        if (devMSList[i].id != scheduledSprints[i].id) {
+                            var correctRow = Array.from(scheduledSprints).filter(r => r.id == devMSList[i].id);
+                            console.log("Mismatch in row", i, "expected", getJSONData(devMSList[i]).name, "found", getJSONData(scheduledSprints[i]).name);
+                            scheduledSprints[i].parentNode.insertBefore(correctRow[0], scheduledSprints[i]);
+                            scheduledSprints = document.querySelectorAll("#scheduleEditor #milestones tr");
+                        }
+                        var sprint = project.milestones.get(devMSList[i]);
+                        var startDate = sprint.startDate();
+                        var endDate = sprint.endDate();
+                        var dateRange = startDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })
+                            + " - " + endDate.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+                        scheduledSprints[i].querySelector("#schedule").innerText = dateRange;
+                    }
+                },
                 edit: function(milestone) {
                     // Hide the Project scedule editor (table of milestones)
-                    document.querySelector("#projectScheduleEditor").style.display = "none";
+                    document.querySelector("#scheduleEditor").style.display = "none";
                     document.querySelector("#milestoneEditor").style.display = "";
                     document.querySelector("#msicon").innerHTML = '';
                     // Put header icon on top
@@ -1504,7 +1526,7 @@
             },
             schedule: {
                 edit: function() {
-                    document.querySelector("#projectScheduleEditor").style.display = "flex";
+                    document.querySelector("#scheduleEditor").style.display = "flex";
                     document.querySelector("#milestoneEditor").style.display = "none";
                 }
             },
@@ -1860,7 +1882,7 @@
                     .attr("text-anchor", "middle")
                     .style("font-size", "20px")
                     .style("text-decoration", "underline")
-                    .text("Milestone Burndown");
+                    .text("Sprint Burndown");
                 var g = svg.append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
                 // height of axis-x from bottom of graph
@@ -1886,7 +1908,7 @@
                     .on("click", function(event, d) {
                         document.querySelector("#schedule").click();
                         msId = document.querySelector("#selectMS").value.replace(/\./, "\\.");
-                        project.ui.ms.edit(document.querySelector("#projectScheduleEditor div#" + msId + ".scheduleMS"));
+                        project.ui.ms.edit(document.querySelector("#scheduleEditor div#" + msId + ".scheduleMS"));
                     });
                 // labels on the bar chart
                 bar.append("text")
@@ -2104,7 +2126,7 @@
                     .on("click", function(event, d) {
                         document.querySelector("#schedule").click();
                         msId = document.querySelector("#selectMS").value.replace(/\./, "\\.");
-                        project.ui.ms.edit(document.querySelector("#projectScheduleEditor div#" + msId + ".scheduleMS"));
+                        project.ui.ms.edit(document.querySelector("#scheduleEditor div#" + msId + ".scheduleMS"));
                     })
 
                 bar.selectAll("text")
@@ -2499,7 +2521,7 @@
                         .on("click", function(d) {
                             document.querySelector("#schedule").click();
                             msId = document.querySelector("#selectMS").value.replace(/\./, "\\.");
-                            project.ui.ms.edit(document.querySelector("#projectScheduleEditor div#" + msId + ".scheduleMS"));
+                            project.ui.ms.edit(document.querySelector("#scheduleEditor div#" + msId + ".scheduleMS"));
                         })
             }
             drawGraphs(project, ms);
@@ -2795,12 +2817,11 @@
         }
         msdiv.querySelector(".msrequirements").id = params.id;
         msdiv.querySelector(".msicon").appendChild(msnode);
-        var devMilestones = document.querySelector("#mslist #milestones");
-        devMilestones.appendChild(msdiv);
+        var devSprints = document.querySelector("#mslist #milestones");
+        devSprints.appendChild(msdiv);
     }
     function onadd_teamMember(params) {
         var role = params.querySelector(".item").id;
-        console.log("Team member added in role: " + role);
         params.classList.add(role);
         var data = getJSONData(params);
         data.role = role;
@@ -2813,7 +2834,6 @@
             })
         }
         params.querySelector("#data").innerText = JSON.stringify(data);
-        console.log("++++++++");
     }
     function onadd_workItem(params) {
         var requirements = document.querySelector("#scheduleScreen #backlog #list");
@@ -2854,17 +2874,10 @@
     }
     function oninsert_milestones(params) {
         onadd_scheduleMS(params);
-        var devMSList = devMilestones();
-        var scheduledMilestones = document.querySelectorAll("#developer .msrequirements");
-        if (devMSList.length != scheduledMilestones.length) console.log("Data in schedule tab out of sync");
-        for (i = 0; i < devMSList.length; i++) {
-            if (devMSList[i].id != scheduledMilestones[i].id) {
-                var correctRow = Array.from(scheduledMilestones).filter(r => r.id == devMSList[i].id);
-                console.log("Mismatch in row", i, devMSList[i].id, scheduledMilestones[i].id);
-                scheduledMilestones[i].parentNode.insertBefore(scheduledMilestones[i], correctRow[0]);
-                scheduledMilestones = document.querySelectorAll("#developer .msrequirements");
-            }
-        }
+        project.ui.ms.syncViews();
+    }
+    function onmovetoend_development(params) {
+        project.ui.ms.syncViews();
     }
     function onmovetoend_scheduleMS(params) {
         console.log("onmovetoend_scheduleMS", params);
