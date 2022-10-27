@@ -2399,10 +2399,10 @@
                     var dtParts = d.toDateString().split(" ");
                     var data = { group: dtParts[1] + " " + dtParts[2] }
                     msBurndown.map(m => m.developer).forEach(developer => {
-                        var devname = developer != "Unassigned" ?
-                            developer : "Unassigned";
-                        data[devname] = msBurndown.filter(m => m.developer == developer)[0]
+                        data[developer] = dt.substr(3) <= today ?
+                            msBurndown.filter(m => m.developer == developer)[0]
                             .assigned.filter(a => a.date == dt)[0].effort
+                            : 0;
                     });
                     return data;
                 });
