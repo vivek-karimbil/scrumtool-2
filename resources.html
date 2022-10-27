@@ -2349,7 +2349,7 @@
                 var milestone = [...milestones].filter(m => m.id == ms)[0];
                 var taskData = project.milestones.get(milestone).tasks().map(t => {
                     return {
-                        name: project.tasks.get(t.id).data().name,
+                        name: t.id,
                         burndown: project.tasks.get(t.id).msBurndown(milestone),
                         estimate: project.tasks.get(t.id).estimate()
                     }
@@ -2366,7 +2366,7 @@
                 var initData = { group: "Start" };
                 taskData.forEach(t => initData[t.name] = t.estimate);
                 fdata.unshift(initData);
-                drawPaper(project, milestone, leftGraph, "Feature Burndown", fdata);
+                drawPaper(project, milestone, leftGraph, "Feature Burndown", fdata, project.tasks.get);
 
                 var trackingDates = project.milestones.get(milestone).trackingDates();
                 var startDate = project.milestones.get(milestone).startDate();
@@ -2400,17 +2400,17 @@
                     var data = { group: dtParts[1] + " " + dtParts[2] }
                     msBurndown.map(m => m.developer).forEach(developer => {
                         var devname = developer != "Unassigned" ?
-                            project.team.getDeveloper(developer).data().name : "Unassigned";
+                            developer : "Unassigned";
                         data[devname] = msBurndown.filter(m => m.developer == developer)[0]
                             .assigned.filter(a => a.date == dt)[0].effort
                     });
                     return data;
                 });
                 if (udata.length) udata[0].group = "Start";
-                drawPaper(project, milestone, rightGraph, "Developer Burndown", udata);
+                drawPaper(project, milestone, rightGraph, "Developer Burndown", udata, project.team.getDeveloper);
             }
             
-            function drawPaper(project, ms, paper, title, data) {
+            function drawPaper(project, ms, paper, title, data, labelFn) {
                 var capacity = project.milestones.get(ms).capacity();
                 var ymax = project.milestones.get(ms).burndown().map(b => b.effort)
                     .concat(capacity).reduce((a, b) => a > b ?  a : b);
@@ -2482,7 +2482,7 @@
                     .attr("x", -24)
                     .attr("y", 9.5)
                     .attr("dy", "0.35em")
-                    .text(d => d);
+                    .text(d => labelFn(d).data().name);
                 
                 var stackedData = d3.stack()
                     .keys(subgroups)
@@ -2507,9 +2507,11 @@
                         .attr("width",xScale.bandwidth())
                         .on("mouseover", function(event, d) {
                             var key = d3.select(this.parentNode).datum().key;
+                            var label = "Unassigned";
+                            if (labelFn(key).data().name) label = labelFn(key).data().name;
                             var remaining = d.data[key];
                             tooltip.transition().duration(200).style("opacity", .9);
-                            var tip = "<b>" + title.split(" ")[0] + ":</b> "  + key + "<br><b>Remaining:</b> " + remaining + " days";
+                            var tip = "<b>" + title.split(" ")[0] + ":</b> "  + label + "<br><b>Remaining:</b> " + remaining + " days";
                             tooltip.html(tip)
                             .style("left", (event.pageX) + "px")
                             .style("top", (event.pageY - 8) + "px");
@@ -2895,6 +2897,9 @@
             }
             msno++;
         });
+    }
+    function onmovetoend_testing(params) {
+        project.ui.ms.syncViews();
     }
     function initForm_milestones(params) {
         var capacityTable = params[0].querySelector(".capacitydata");
