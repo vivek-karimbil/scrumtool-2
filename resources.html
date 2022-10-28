@@ -21,7 +21,7 @@
         <label for="projectName">Project name:</label>
         <input type="text" id="projectName" name="projectName" title="Name of project - used while saving">
         <label for="startDate" style="margin-left: 20px;">Start:</label>
-        <input type="date" id="startDate" class="monday" name="startDate" title="Start date of project - use a Monday">
+        <input type="date" id="startDate" class="monday" name="startDate" title="Start date of project - use a Monday" onchange="project.ui.ms.syncTabs()">
         <button id="savefile" class="inlineButton" title="Save project to local file"><img class="menuButton undraggable" src="img/savefile.svg"/></button>
     </div>
 
@@ -1491,12 +1491,10 @@
                         });
                     });
                 },
-                syncViews: function() {
-                    console.log("Syncing views");
+                syncTabs: function() {
+                    console.log("Syncing tabs");
                     var devMSList = project.milestones.getDev();
                     var scheduledSprints = document.querySelectorAll("#scheduleEditor #milestones tr");
-                    console.log(devMSList.map(m => getJSONData(m).name));
-                    console.log([...scheduledSprints].map(m => getJSONData(m).name));
                     if (devMSList.length != scheduledSprints.length) console.log("Sprints in project setup and progress tabs out of sync");
                     for (i = 0; i < devMSList.length; i++) {
                         if (devMSList[i].id != scheduledSprints[i].id) {
@@ -2876,10 +2874,10 @@
     }
     function oninsert_milestones(params) {
         onadd_scheduleMS(params);
-        project.ui.ms.syncViews();
+        project.ui.ms.syncTabs();
     }
     function onmovetoend_development(params) {
-        project.ui.ms.syncViews();
+        project.ui.ms.syncTabs();
     }
     function onmovetoend_scheduleMS(params) {
         console.log("onmovetoend_scheduleMS", params);
@@ -2899,7 +2897,7 @@
         });
     }
     function onmovetoend_testing(params) {
-        project.ui.ms.syncViews();
+        project.ui.ms.syncTabs();
     }
     function initForm_milestones(params) {
         var capacityTable = params[0].querySelector(".capacitydata");
