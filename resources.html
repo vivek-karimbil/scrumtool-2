@@ -793,13 +793,20 @@
             weekday.appendChild(child);
         },
         moveTask: function (task, ev) {
-            var rect = ev.target.closest("#requirements").getBoundingClientRect();
-            var x = ev.clientX - rect.left - this.left;
-            if (x < 0) x = 0;
-            var y = ev.clientY - rect.top - this.top;
-            if (y < 0) y = 0;
-            task.style.left = x.toString();
-            task.style.top = y.toString();
+            if (ev.target.closest("#requirementsScreen")) {
+                var rect = ev.target.closest("#requirements").getBoundingClientRect();
+                var x = ev.clientX - rect.left - this.left;
+                if (x < 0) x = 0;
+                var y = ev.clientY - rect.top - this.top;
+                if (y < 0) y = 0;
+                task.style.left = x.toString();
+                task.style.top = y.toString();
+                return;
+            }
+            var prevTask = ev.target.closest(".taskbrief");
+            if (prevTask) {
+                prevTask.parentElement.insertBefore(task, prevTask);
+            }
         },
         appendDraggedTask: function (task, cell) {
             var role = cell.closest("tbody").id;
