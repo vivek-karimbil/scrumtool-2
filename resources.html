@@ -564,7 +564,7 @@
     <label for="grain" id="grain">Grain</label>
     <input type="radio" name="size" class="teamData" value="3" id="pebble"/>
     <label for="pebble" id="pebble">Pebble</label>
-    <input type="radio" name="size" class="teamData" value="5" id="stone" checked/>
+    <input type="radio" name="size" class="teamData" value="5" id="stone"/>
     <label for="stone" id="stone" checked>Stone</label>
     <input type="radio" name="size" class="teamData" value="8" id="rock"/>
     <label for="rock" id="rock">Rock</label>
@@ -582,7 +582,7 @@
         "capacity": { "developer": 80, "lead": 40, "vacation": 1 },
         "estimate": 3,
         "priority": "nicetohave",
-        "size": "stone",
+        "size": "pebble",
         "sprintLenth": 2,
         "burndownDays": [1, 3, 5],
         "weeklyHolidays": [0, 6]
@@ -1202,8 +1202,10 @@
                         return sizes[sizes.length - 1];
                     },
                     estimate: function() {
-                        return +document.querySelector("#estimateTemplate").content
+                        var effort = +document.querySelector("#estimateTemplate").content
                             .querySelector("input#" + this.size()).value;
+                        if (!effort) effort = defaults.estimate;
+                        return effort;
                     },
                     projectBurndown: function() {
                         var startDate = project.dates.start();
@@ -2666,7 +2668,7 @@
             var estimate = document.createElement("option");
             estimate.id = d.id;
             estimate.innerText = label.innerText;
-            estimate.selected = d.checked;
+            estimate.selected = d.id == defaults.size ? true : d.checked;
             document.querySelector("select#size").appendChild(estimate);
         });
         // Drag and drop handlers
