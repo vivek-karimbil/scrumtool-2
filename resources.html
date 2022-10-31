@@ -7,7 +7,7 @@
     <button id="requirements" class="topmenu" title="Edit project backlog">
         <img class="menuButton undraggable" src="img/backlog.svg"/>
     </button>
-    <button id="schedule" class="topmenu" data-init="project.ui.ms.refresh" title="Edit progress of work">
+    <button id="schedule" class="topmenu" data-init="project.ui.refresh" title="Edit progress of work">
         <img class="menuButton undraggable" src="img/schedule.svg"/>
     </button>
     <button id="graphs" class="topmenu" title="See progress graphs">
@@ -807,6 +807,8 @@
             if (prevTask) {
                 prevTask.parentElement.insertBefore(task, prevTask);
             }
+            if (ev.target.closest("#task.status.done"))
+                project.tasks.get(task.id).complete();
         },
         appendDraggedTask: function (task, cell) {
             var role = cell.closest("tbody").id;
@@ -839,21 +841,8 @@
                 document.querySelectorAll("#" + task.id.replace(/\./, "\\."))
                     .forEach(t => t.querySelector("#data").innerText = JSON.stringify(data));
             }
-            if (cell.classList.contains("done")) { // set remaining effort to 0
-                var msid = cell.closest("tr").id;
-                if (msid == '')
-                    msid = cell.closest("#milestoneEditor").querySelector(".scheduleMS").id;
-                var statusDate = new Date();
-                var projectStart = project.dates.start();
-                if (statusDate < projectStart) statusDate = projectStart;
-                var msEndDate = project.milestones.get({ id: msid }).endDate();
-                if (statusDate > msEndDate) statusDate = msEndDate;
-                var dt = "dt_" + (statusDate.toISOString().slice(0,10).replace(/-/g,""));
-                var data = getJSONData(task);
-                data[dt] = "0";
-                document.querySelectorAll("#" + task.id.replace(/\./, "\\."))
-                    .forEach(t => t.querySelector("#data").innerText = JSON.stringify(data));
-            }
+            if (cell.classList.contains("done"))
+                project.tasks.get(task.id).complete();
         }
     }
     var draggables = Object.keys(dragdrop.config);
@@ -1198,6 +1187,20 @@
             get: function(taskid) {
                 return {
                     id: taskid,
+                    complete: function() {
+                        var sprint = [...project.milestones.getAll()]
+                            .filter(s => 
+                                project.milestones.get(s).tasks().filter(t =>
+                                    t.id == this.id).length)[0];
+                        var endDate = project.milestones.get(sprint).endDate();
+                        var today = new Date();
+                        if (today < endDate) endDate = today;
+                        var dt = "dt_" + (endDate.toISOString().slice(0,10).replace(/-/g,""));
+                        var data = this.data();
+                        data[dt] = "0";
+                        document.querySelectorAll("#" + this.id.replace(/\./, "\\.")).forEach(task =>
+                            task.querySelector("#data").innerText = JSON.stringify(data));
+                    },
                     data: function() {
                         return getJSONData(document.querySelector("#" + this.id.replace(/\./, "\\.")));
                     },
@@ -1257,6 +1260,10 @@
                         var msburndown = this.msBurndown(msid);
                         var dates = [...Object.keys(msburndown)];
                         return msburndown[msburndown.length - 1];
+                    },
+                    sprint: function() {
+                        var msrow = document.querySelector("#scheduleEditor #" + this.id.replace(/\./, "\\."));
+                        return msrow.closest("tr").id;
                     }
                 }
             },
@@ -1392,6 +1399,13 @@
                 document.querySelector("#backlog #list").innerHTML = "";
             },
             ms: {
+                clear: function() {
+                    var mseditor = document.querySelector("#milestoneEditor");
+                    mseditor.querySelector("tbody#developer").innerHTML = '';
+                    mseditor.querySelector("tbody#tester").innerHTML = '';
+                    mseditor.querySelector("#msbacklog tbody").innerHTML = '';
+                    mseditor.querySelector("#qabacklog tbody").innerHTML = '';
+                },
                 hide: function(target) {
                     target.closest("td").querySelectorAll("div:not(.minholder)").forEach(div => div.style.display = "none");
                     var minholder = target.closest(".minholder");
@@ -1415,31 +1429,13 @@
                     var msid = document.querySelector("#milestoneEditor .scheduleMS").id;
                     var selector = "#scheduleEditor #" + msid.replace(/\./, "\\.") + " .scheduleMS";
                     var milestone = document.querySelector(selector);
-                    var mseditor = document.querySelector("#milestoneEditor");
-                    // Clear the previous MS editing session
-                    mseditor.querySelector("tbody#developer").innerHTML = '';
-                    mseditor.querySelector("tbody#tester").innerHTML = '';
-                    mseditor.querySelector("#msbacklog tbody").innerHTML = '';
-                    mseditor.querySelector("#qabacklog tbody").innerHTML = '';
+                    this.clear();
                     // Set up start and end dates in header
                     var ms = project.milestones.get(milestone);
                     var dateRange = ms.startDate() == null ? "Start date not set" :
                         ms.startDate().toDateString() + " - " + ms.endDate().toDateString();
                     document.querySelector("#milestoneEditor #header").innerText = dateRange;
-                    // For each team member, create a row in developer or tester table
-                    document.querySelectorAll('#teamDiv #team .teamMember').forEach(dev => {
-                        var msrow = document.querySelector("#msTemplate").content.cloneNode(true);
-                        msrow.querySelector(".msicon").innerHTML = "";
-                        var devwidget = dev.closest(".teamMember").cloneNode(true);
-                        devwidget.classList.add("undraggable");
-                        var controls = devwidget.querySelector(".controls");
-                        controls.parentElement.removeChild(controls);
-                        controls = devwidget.querySelector(".hand");
-                        controls.parentElement.removeChild(controls);
-                        msrow.querySelector(".msicon").appendChild(devwidget);
-                        var role = dev.classList.contains("tester") ? "tester" : "developer";
-                        mseditor.querySelector("tbody#" + role).appendChild(msrow);
-                    });
+                    this.showTeam();
                     // List tasks at end: for all columns in milestone row
                     var msrequirements = milestone.closest("tr").cloneNode(true);
                     var qarequirements = milestone.closest("tr").cloneNode(true);
@@ -1500,6 +1496,21 @@
                         });
                     });
                 },
+                showTeam: function() {
+                    document.querySelectorAll('#teamDiv #team .teamMember').forEach(dev => {
+                        var msrow = document.querySelector("#msTemplate").content.cloneNode(true);
+                        msrow.querySelector(".msicon").innerHTML = "";
+                        var devwidget = dev.closest(".teamMember").cloneNode(true);
+                        devwidget.classList.add("undraggable");
+                        var controls = devwidget.querySelector(".controls");
+                        controls.parentElement.removeChild(controls);
+                        controls = devwidget.querySelector(".hand");
+                        controls.parentElement.removeChild(controls);
+                        msrow.querySelector(".msicon").appendChild(devwidget);
+                        var role = dev.classList.contains("tester") ? "tester" : "developer";
+                        document.querySelector("#milestoneEditor tbody#" + role).appendChild(msrow);
+                    });
+                },
                 syncTabs: function() {
                     console.log("Syncing tabs");
                     var devMSList = project.milestones.getDev();
@@ -1531,10 +1542,31 @@
                     this.refresh();
                 }
             },
+            refresh: function() {
+                this.ms.refresh();
+                this.schedule.refresh();
+            },
             schedule: {
                 edit: function() {
                     document.querySelector("#scheduleEditor").style.display = "flex";
                     document.querySelector("#milestoneEditor").style.display = "none";
+                },
+                refresh: function() {
+                    if (document.querySelector("#scheduleEditor").style.display == "none") return;
+                    var sprintRows = [...document.querySelectorAll("#scheduleEditor #mslist #milestones tr")];
+                    var today = new Date();
+                    sprintRows.forEach(s => {
+                        var ms = project.milestones.get({ id: s.id });
+                        var dateRange = s.querySelector("td:nth-child(1) #schedule");
+                        dateRange.innerText = ms.startDate().toLocaleString("default", { month: "short", day: "numeric"})
+                            + " - " + ms.endDate().toLocaleString("default", { month: "short", day: "numeric"});
+                        if (ms.startDate() <= today && ms.endDate() >= today) {
+                            s.classList.add("current");
+                        }
+                        else {
+                            s.classList.remove("current");
+                        }
+                    });
                 }
             },
             developerView: function() {
@@ -2776,7 +2808,7 @@
             var milestone = params.closest("#milestoneEditor").querySelector(".scheduleMS");
             var msRow = document.querySelector("#scheduleScreen #" + milestone.id.replace(/\./, "\\."));
             var status = [...params.closest("td").classList].filter(f => statuses.filter(s => s == f).length)[0];
-            var data = project.tasks.assign(params, params.closest("td"), role);
+            if (role != '') data = project.tasks.assign(params, params.closest("td"), role);
             params.querySelector("#data").innerText = JSON.stringify(data);
             var taskCopy = params.cloneNode(true);
             taskCopy.querySelector(".burndown").onclick = project.burndown.edit;
