@@ -382,10 +382,6 @@
             <span id="header" style="display: table-cell; width: 100%;"></span>
         </div>
         <table id="devtasklist" class="mslayout tasktable">
-            <colgroup>
-                <col span="1">
-                <col span="4">
-            </colgroup>
             <thead>
                 <tr class="toprow">
                     <th style="width: 100px;">
@@ -1264,6 +1260,11 @@
                     sprint: function() {
                         var msrow = document.querySelector("#scheduleEditor #" + this.id.replace(/\./, "\\."));
                         return msrow.closest("tr").id;
+                    },
+                    status: function() {
+                        var selector = "#scheduleEditor #mslist #" + this.id.replace(/\./, "\\.");
+                        var cell = document.querySelector(selector).closest("#task.status");
+                        return statuses.filter(s => cell.classList.contains(s))[0];
                     }
                 }
             },
@@ -1440,12 +1441,13 @@
                     var msrequirements = milestone.closest("tr").cloneNode(true);
                     var qarequirements = milestone.closest("tr").cloneNode(true);
                     msrequirements.id = "unassigned";
-                    document.querySelector("#msbacklog tbody").appendChild(msrequirements);
-                    document.querySelector("#qabacklog tbody").appendChild(qarequirements);
                     // Clear contents of first cell with MS icon
                     msrequirements.querySelector("td:nth-child(1)").style.removeProperty("border");
                     msrequirements.querySelector("td").innerText = "";
+                    qarequirements.querySelector("td:nth-child(1)").style.removeProperty("border");
                     qarequirements.querySelector("td").innerText = "";
+                    document.querySelector("#msbacklog tbody").appendChild(msrequirements);
+                    document.querySelector("#qabacklog tbody").appendChild(qarequirements);
                     // Copy cell widths
                     var columns = document.querySelectorAll("#devtasklist tr th");
                     var ncolumns = columns.length;
@@ -1514,7 +1516,7 @@
                 syncTabs: function() {
                     console.log("Syncing tabs");
                     var devMSList = project.milestones.getDev();
-                    var scheduledSprints = document.querySelectorAll("#scheduleEditor #milestones tr");
+                    var scheduledSprints = document.querySelectorAll("#scheduleEditor #milestones > tr");
                     if (devMSList.length != scheduledSprints.length) console.log("Sprints in project setup and progress tabs out of sync");
                     for (i = 0; i < devMSList.length; i++) {
                         if (devMSList[i].id != scheduledSprints[i].id) {
@@ -1552,19 +1554,20 @@
                     document.querySelector("#milestoneEditor").style.display = "none";
                 },
                 refresh: function() {
-                    if (document.querySelector("#scheduleEditor").style.display == "none") return;
-                    var sprintRows = [...document.querySelectorAll("#scheduleEditor #mslist #milestones tr")];
+                    var devSprints = project.milestones.getDev();
                     var today = new Date();
-                    sprintRows.forEach(s => {
-                        var ms = project.milestones.get({ id: s.id });
-                        var dateRange = s.querySelector("td:nth-child(1) #schedule");
+                    var sprintRows = [...document.querySelectorAll("#scheduleEditor #mslist #milestones > tr")];
+                    devSprints.forEach(sprint => {
+                        var ms = project.milestones.get(sprint);
+                        var sprintRow = sprintRows.filter(s => s.id == sprint.id)[0];
+                        var dateRange = sprintRow.querySelector("td:nth-child(1) #schedule");
                         dateRange.innerText = ms.startDate().toLocaleString("default", { month: "short", day: "numeric"})
                             + " - " + ms.endDate().toLocaleString("default", { month: "short", day: "numeric"});
                         if (ms.startDate() <= today && ms.endDate() >= today) {
-                            s.classList.add("current");
+                            sprintRow.classList.add("current");
                         }
                         else {
-                            s.classList.remove("current");
+                            sprintRow.classList.remove("current");
                         }
                     });
                 }
