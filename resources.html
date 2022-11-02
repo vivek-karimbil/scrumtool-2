@@ -817,7 +817,7 @@
             // Make the same change in both MS and schedule screens. Detect active screen using table ID
             var tableID = cell.closest("table").id;
             // If task was moved in MS editor screen, clone task to project editor screen
-            if (tableID == "devtasklist") {
+            if (tableID == "devtasklist" || tableID == "msbacklog" || tableID == "qabacklog") {
                 var data = project.tasks.assign(task, cell, role);
                 var taskCopy = task.cloneNode(true);
                 taskCopy.querySelector(".burndown").onclick = project.burndown.edit;
@@ -834,6 +834,18 @@
                         destination.appendChild(t);
                     });
                 }
+                document.querySelectorAll("#" + task.id.replace(/\./, "\\."))
+                    .forEach(t => t.querySelector("#data").innerText = JSON.stringify(data));
+            }
+            if (tableID == "msbacklog") {
+                var data = project.tasks.get(task.id).data();
+                delete data.developer;
+                document.querySelectorAll("#" + task.id.replace(/\./, "\\."))
+                    .forEach(t => t.querySelector("#data").innerText = JSON.stringify(data));
+            }
+            if (tableID == "qabacklog") {
+                var data = project.tasks.get(task.id).data();
+                delete data.tester;
                 document.querySelectorAll("#" + task.id.replace(/\./, "\\."))
                     .forEach(t => t.querySelector("#data").innerText = JSON.stringify(data));
             }
@@ -1798,7 +1810,7 @@
     }
     var graph = {
         init: function() {
-            document.querySelector("#graphsScreen #milestone").addEventListener("click", this.milestoneInitgraph);
+            document.querySelector("#graphsScreen #milestone").addEventListener("click", this.sprintInitgraph);
             document.querySelector("#graphsScreen #project").addEventListener("click", this.projectInitgraph);
             document.querySelector("#graphsScreen #details").addEventListener("click", this.detailsInitgraph);
             document.querySelector("#graphs").setAttribute("data-Init", "graph.refresh");
@@ -1830,7 +1842,7 @@
             document.querySelector("#msChoice").style.display = "";
             return ms;
         },
-        milestoneInitgraph: function() {
+        sprintInitgraph: function() {
             graph.setGraph("#milestone");
             var ms = graph.selectedMS();
             if (!ms) return;
@@ -2448,7 +2460,25 @@
                     });
                     return data;
                 });
-                if (udata.length) udata[0].group = "Start";
+                if (udata.length) {
+                    udata[0].group = "Start";
+                    project.team.getDevelopers().forEach(d => {
+                        var assigned = project.milestones.get(milestone)
+                            .tasks().filter(t => {
+                                var data = project.tasks.get(t.id).data();
+                                return data && data.developer == d;
+                            });
+                        var effort = assigned.length ? assigned
+                            .map(t => project.tasks.get(t.id).estimate())
+                            .reduce((a,b) => a + b) : 0;
+                        udata[0][d] = effort;
+                    });
+                    var unassigned = project.milestones.get(milestone).unassignedDeveloper();
+                    var effort = unassigned.length ? unassigned
+                        .map(t => project.tasks.get(t.id).estimate())
+                        .reduce((a, b) => a + b) : 0;
+                    udata[0]["Unassigned"] = effort;
+                }
                 drawPaper(project, milestone, rightGraph, "Developer Burndown", udata, project.team.getDeveloper);
             }
             
@@ -2524,7 +2554,7 @@
                     .attr("x", -24)
                     .attr("y", 9.5)
                     .attr("dy", "0.35em")
-                    .text(d => labelFn(d).data().name);
+                    .text(d => labelFn(d).data().name ? labelFn(d).data().name : "unassigned");
                 
                 var stackedData = d3.stack()
                     .keys(subgroups)
@@ -2581,7 +2611,7 @@
             this["ui"] = document.querySelector("#" + itemClass + "Form");
             callFunction("initForm_" + itemClass, [this.ui, id]);
             var data = getJSONData(item);
-            Object.keys(data).forEach(feildname => {
+            Object.keys(data).filter(d => d != "").forEach(feildname => {
                 var input = this.ui.querySelector("#" + feildname.replace(/\./, "\\."));
                 if (!input) return;
                 if (["text", "textarea", "date", "week"].filter(t => t == input.type).length)
@@ -2916,13 +2946,15 @@
         requirements = document.querySelector("#requirementsScreen #" + params.id.replace(/\./, "\\."));
         requirements.querySelector(".itemName").innerText = data.name;
     }
+    function oninsert_task(params) { onadd_newTask(params); }
+    function oninsert_team(params) {
+        onadd_teamMember(params);
+    }
     function oninsert_milestones(params) {
         onadd_scheduleMS(params);
         project.ui.ms.syncTabs();
     }
-    function onmovetoend_development(params) {
-        project.ui.ms.syncTabs();
-    }
+    function onmovetoend_development(params) {project.ui.ms.syncTabs();}
     function onmovetoend_scheduleMS(params) {
         console.log("onmovetoend_scheduleMS", params);
         var msno = 0;
@@ -2940,9 +2972,7 @@
             msno++;
         });
     }
-    function onmovetoend_testing(params) {
-        project.ui.ms.syncTabs();
-    }
+    function onmovetoend_testing(params) { project.ui.ms.syncTabs(); }
     function initForm_milestones(params) {
         var capacityTable = params[0].querySelector(".capacitydata");
         var dates = document.querySelector("#milestonesForm #msdates");
