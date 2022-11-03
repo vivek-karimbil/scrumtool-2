@@ -1360,10 +1360,10 @@
             },
             blackoutWeeks: function() {
                 return [...document.querySelectorAll("#settingsScreen .holidayWeek")]
-                    .filter(d => d.hollidayStart).map(d => getJSONData(d)).map(d => {
+                    .map(d => getJSONData(d)).map(d => {
                         var w = parseInt(d.hollidayStart.split("W")[1]);
                         var y = parseInt(d.hollidayStart.split("-")[0]);
-                        var d = (1 + (w - 1) * 7);
+                        var d = (7 - (new Date(y, 0, 1)).getDay()) + 2 + (w - 1) * 7;
                         return new Date(y, 0, d);
                     });
             },
@@ -2755,7 +2755,6 @@
     function callFunction(functionName, params) {
         if (functionName.split(".").length == 1) {
             var argType = typeof window[functionName];
-            console.log("Calling function named [" + functionName + "]");
             if (argType === "function") window[functionName](params);
         }
         else {
@@ -2941,7 +2940,7 @@
         var data = getJSONData(params);
         if (!data.name) return;
         var requirements = document.querySelector("#scheduleScreen #backlog #list");
-        var reqt = requirements.querySelector("#" + params.id.replace(/\./, "\\.") + " p");
+        var reqt = requirements.querySelector("#" + params.id.replace(/\./, "\\.") + " span");
         reqt.innerText = data.name;
         requirements = document.querySelector("#requirementsScreen #" + params.id.replace(/\./, "\\."));
         requirements.querySelector(".itemName").innerText = data.name;
