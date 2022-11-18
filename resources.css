@@ -351,6 +351,9 @@ p.itemName {
     margin-top: 5px;
     width: 100%;
 }
+#savefile {
+    float: right;
+}
 #scheduleTable {
     width: 100%;
     border-width: 2px;

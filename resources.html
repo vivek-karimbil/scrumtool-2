@@ -13,6 +13,9 @@
     <button id="graphs" class="topmenu" title="See progress graphs">
         <img class="menuButton undraggable" src="img/graph.svg"/>
     </button>
+    <button id="savefile" class="inlineButton" title="Save project to local file">
+        <img class="menuButton undraggable" src="img/savefile.svg"/>
+    </button>
 </div>
 
 <div id="settingsScreen">
@@ -22,7 +25,6 @@
         <input type="text" id="projectName" name="projectName" title="Name of project - used while saving">
         <label for="startDate" style="margin-left: 20px;">Start:</label>
         <input type="date" id="startDate" class="monday" name="startDate" title="Start date of project - use a Monday" onchange="project.ui.ms.syncTabs()">
-        <button id="savefile" class="inlineButton" title="Save project to local file"><img class="menuButton undraggable" src="img/savefile.svg"/></button>
     </div>
 
     <div id="teamDiv">
