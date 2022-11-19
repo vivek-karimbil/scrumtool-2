@@ -55,6 +55,16 @@ margin-left: 5;}
     max-height: 75px;
     vertical-align: middle;
 }
+.checklist {
+    border: 1px solid black;
+}
+.checklist .title {
+    border: 2px darkgrey solid;
+    margin-left: 0em;
+    padding: 0.2em 0.2em;
+    background-color: darkgrey;
+    font-weight: bold;
+}
 .rowLabel {
     width: 100px;
     display: inline-block;
@@ -131,6 +141,7 @@ margin-left: 5;}
     width: 20ch;
 }
 .hand {
+    text-align: justify;
     vertical-align: top;
     width: 12px;
 }
@@ -164,7 +175,7 @@ img#holiday {
 }
 .leftDiv {
     float: left;
-    min-width: 60%;
+    width: 60%;
     margin-right: 15px;
 }
 .menuButton {
@@ -175,12 +186,12 @@ img#holiday {
 	text-align: center;
 	height: 60px;
 }
-#milestoneDiv {
+#sprintDiv {
     display: inline;
     float: left;
     width: 60%;
 }
-#milestoneEditor #header {
+#sprintEditor #header {
     display: table-cell;
     font-weight: bold;
     font-size: larger;
@@ -353,6 +364,7 @@ p.itemName {
 }
 #savefile {
     float: right;
+    margin-right: 0px;
 }
 #scheduleTable {
     width: 100%;
@@ -429,10 +441,20 @@ p.itemName {
     font-size: larger;
     background-color: aquamarine;
     margin: 3px;
+    vertical-align: top;
 }
-.weeksetup #week {
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1px;
+.weekday .dayOfWeek {
+    width: 100%;
+}
+.weekday .daytype {
+    width: 100%;
+    text-align: left;
+}
+.weekday #holiday .menuicon {
+    width: 100%;
+}
+.weekdays {
+    border: 3px solid #666;
 }
 #values {
     border: 3px solid #666;
@@ -478,4 +500,8 @@ div.tooltip {
 
 pastms {
     background-color: blue;
+}
+
+#holiday .menuicon {
+    width: 100%;
 }

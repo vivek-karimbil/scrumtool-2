@@ -13,6 +13,9 @@
     <button id="graphs" class="topmenu" title="See progress graphs">
         <img class="menuButton undraggable" src="img/graph.svg"/>
     </button>
+    <button id="dordod" class="topmenu" title="Definition Of Ready / Done criteria">
+        <img class="menuButton undraggable" src="img/checklists.svg"/>
+    </button>
     <button id="savefile" class="inlineButton" title="Save project to local file">
         <img class="menuButton undraggable" src="img/savefile.svg"/>
     </button>
@@ -48,16 +51,16 @@
     <div id="scheduleDiv">
         <div class="leftDiv">
             <div id="msTypes" class="projectComponent">
-                <div id="development" class="item milestone" draggable="true" title="Drag to box below to add a development sprint">
+                <div id="development" class="item sprint" draggable="true" title="Drag to box below to add a development sprint">
                     <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                     <img class="menuicon" src="img/devsprint.svg" draggable="false"/>
                 </div>
-                <div id="testing" class="item milestone" draggable="true" title="Drag to box below to add a non-burndown sprint (testing, investigation, ...)">
+                <div id="testing" class="item sprint" draggable="true" title="Drag to box below to add a non-burndown sprint (testing, investigation, ...)">
                     <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                     <img class="menuicon" src="img/qasprint.svg" draggable="false"/>
                 </div>
             </div>
-            <div id="milestones" class="dropzone droplist schedule" title="Drag sprints here from above"></div>
+            <div id="sprints" class="dropzone droplist schedule" title="Drag sprints here from above"></div>
         </div>
 
         <div class="rightDiv">
@@ -84,14 +87,16 @@
                         <img class="menuicon" src="img/holiday.svg" draggable="false"/>
                     </div>
                 </div>
-                <div id="week" class="dropzone droplist weekdays">
-                    <div id="d1" class="weekday" data-value="1"><div class="dow">Mon</div></div>
-                    <div id="d2" class="weekday" data-value="2"><div class="dow">Tue</div></div>
-                    <div id="d3" class="weekday" data-value="3"><div class="dow">Wed</div></div>
-                    <div id="d4" class="weekday" data-value="4"><div class="dow">Thu</div></div>
-                    <div id="d5" class="weekday" data-value="5"><div class="dow">Fri</div></div>
-                    <div id="d6" class="weekday" data-value="6"><div class="dow">Sat</div></div>
-                    <div id="d0" class="weekday" data-value="0"><div class="dow">Sun</div></div>
+                <div id="week" class="dropzone weekdays">
+                    <table style="width: 100%; table-layout: fixed;"><tr>
+                        <td id="d1" class="weekday" data-value="1"><div class="dow">Mon</div></td>
+                        <td id="d2" class="weekday" data-value="2"><div class="dow">Tue</div></td>
+                        <td id="d3" class="weekday" data-value="3"><div class="dow">Wed</div></td>
+                        <td id="d4" class="weekday" data-value="4"><div class="dow">Thu</div></td>
+                        <td id="d5" class="weekday" data-value="5"><div class="dow">Fri</div></td>
+                        <td id="d6" class="weekday" data-value="6"><div class="dow">Sat</div></td>
+                        <td id="d0" class="weekday" data-value="0"><div class="dow">Sun</div></td>
+                    </tr></table>
                 </div>
             </div>
         </div>
@@ -182,10 +187,10 @@
         </div>
     </div>
 
-    <div id="milestonesForm" class="modal" style="display: none;">
+    <div id="sprintsForm" class="modal" style="display: none;">
         <div class="modal-container">
             <div class="container">
-                <div onclick="document.getElementById('milestonesForm').style.display='none'" class="minbutton">×</div>
+                <div onclick="document.getElementById('sprintsForm').style.display='none'" class="minbutton">×</div>
                 <div>&nbsp;</div>
                 <div>
                     <label for="name">Sprint name:</label>
@@ -235,20 +240,6 @@
                 <input id="filename" type="file"/>
                 <div style="padding-top: 20px;">
                     <button id="yes">Load</button>
-                    <button id="no">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="savefileForm" class="modal" style="display: none;">
-        <div class="modal-container">
-            <div class="container">
-                <div onclick="document.getElementById('savefileForm').style.display='none'" class="minbutton">×</div>
-                <h1>Save Project File</h1>
-                <input id="filename" style="width: 65ch;"/>
-                <div style="padding-top: 20px;">
-                    <button id="yes">Save</button>
                     <button id="no">Cancel</button>
                 </div>
             </div>
@@ -361,11 +352,11 @@
                     <th class="boardtitle" title="Stories completed">Complete</th>
                 </tr>
             </thead>
-            <tbody id="milestones"></tbody>
+            <tbody id="sprints"></tbody>
         </table>
     </div>
 
-    <div id="milestoneEditor" style="display: none; width: 100%;">
+    <div id="sprintEditor" style="display: none; width: 100%;">
         <div style="width: 100%;">
             <div class="return" style="display: flex; float: right;" onclick="project.ui.schedule.edit()">
                 <img class="undraggable" style="width: 170px;" src="img/sprints.svg" title="Switch to project editor"/>
@@ -438,7 +429,7 @@
 
 <div id="graphsScreen" style="display: none;">
     <div style="margin-top: 20px;padding-bottom: 20px;">
-        <button id="milestone" class="graphType graphType-selected">Sprint</button>
+        <button id="sprint" class="graphType graphType-selected">Sprint</button>
         <button id="project"   class="graphType">Project</button>
         <button id="details"   class="graphType">Feature/Developer</button>
     </div>
@@ -448,6 +439,39 @@
         </text>
     </div>
     <div id="graph"></div>
+</div>
+
+<div id="dordodScreen" style="display: none;">
+    <h1>Under Construction</h1>
+    <div id="projectdor"></div>
+    <div id="projectdod"></div>
+
+    <template id="dordod">
+        <fieldset class="checklist">
+            <legend class="title">Project Entry</legend>
+            <img class="togglerow displayed" src="img/arrowright.svg"
+                onclick="project.ui.checklist.show(event.target)" style="display: none;"
+                title="Inflate checklist">
+            <img class="togglerow hidden" src="img/arrowdown.svg"
+                onclick="project.ui.checklist.hide(event.target)"
+                title="Collapse checklist">
+            <div class="items"><ul><li>This is a list item</li><li>And Another</li></ul></div>
+        </fieldset>    
+    </template>
+</div>
+
+<div id="savefileForm" class="modal" style="display: none;">
+    <div class="modal-container">
+        <div class="container">
+            <div onclick="document.getElementById('savefileForm').style.display='none'" class="minbutton">×</div>
+            <h1>Save Project File</h1>
+            <input id="filename" style="width: 65ch;"/>
+            <div style="padding-top: 20px;">
+                <button id="yes">Save</button>
+                <button id="no">Cancel</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="confirmDelete" class="modal" style="display: none;">
@@ -467,7 +491,7 @@
                 <div onclick="document.getElementById('burndownForm').style.display='none'" class="minbutton">×</div>
                 <div>
                     <span style="display: block; padding-top: 20px; padding-bottom: 10px;">
-                        <b style="display: inline-block; width: 10ch;">Sprint:</b><span class="milestones"></span>
+                        <b style="display: inline-block; width: 10ch;">Sprint:</b><span class="sprints"></span>
                     </span>
                     <div>
                         <span style="display: inline-block; width: 10ch;">
@@ -593,9 +617,9 @@
                 { "target": "people", "handler": "dragdrop.add('teamMember', event.target, event)" },
                 { "target": "teamMember", "handler": "dragdrop.insertArtifact('#team', dragdrop.dragged, dropzone, '.' + 'person')" }
             ],
-            "milestone": [
+            "sprint": [
                 { "target": "schedule", "handler": "dragdrop.add('scheduleMS', event.target, event)" },
-                { "target": "scheduleMS", "handler": "dragdrop.insertArtifact('#milestones', dragdrop.dragged, dropzone, '.' + 'milestone')" }
+                { "target": "scheduleMS", "handler": "dragdrop.insertArtifact('#sprints', dragdrop.dragged, dropzone, '.' + 'sprint')" }
             ],
             "blackout": [
                 { "target": "holidayWeeks", "handler": "dragdrop.add('holidayWeek', event.target, event)" },
@@ -868,7 +892,7 @@
     var project = {
         burndown: {
             capacity: function(date) {
-                return project.milestones.getDev().map(m => project.milestones.get(m).capacity(date)).reduce((a, b) => a + b);
+                return project.sprints.getDev().map(m => project.sprints.get(m).capacity(date)).reduce((a, b) => a + b);
             },
             get: function() {
                 var tasks = project.tasks.getAll();
@@ -894,8 +918,8 @@
                     var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
                     capacityData.push({
                         date: dt,
-                        effort: [...project.milestones.getAll()]
-                            .map(m => project.milestones.get(m).capacity(d))
+                        effort: [...project.sprints.getAll()]
+                            .map(m => project.sprints.get(m).capacity(d))
                             .reduce((a, b) => a + b)
                     });
                 });
@@ -920,15 +944,15 @@
                 var id = item.id;
                 var data = getJSONData(item);
                 if (event.target.closest("table.tasktable").id == "mslist")
-                    milestone = event.target.closest("tr.msrequirements");
+                    sprint = event.target.closest("tr.msrequirements");
                 if (event.target.closest("table.tasktable").id == "devtasklist")
-                    milestone = document.querySelector("#milestoneEditor .scheduleMS");
+                    sprint = document.querySelector("#sprintEditor .scheduleMS");
                 bdForm.style.display = 'block';
                 bdForm.querySelector("#taskbrief").innerHTML = data.name;
                 bdForm.querySelector("#estimate").innerHTML = project.tasks.get(id).size() + " ("
                     + project.tasks.get(id).estimate() + ")";
-                bdForm.querySelector(".milestones").id = milestone.id;
-                bdForm.querySelector(".milestones").innerHTML = project.milestones.get(milestone).data().name;
+                bdForm.querySelector(".sprints").id = sprint.id;
+                bdForm.querySelector(".sprints").innerHTML = project.sprints.get(sprint).data().name;
                 var mserrors = [];
                 if (mserrors.length)
                     return project.burndown.error(bdForm, "Set sprint length:<br/>" + mserrors.join("<br/>"));
@@ -936,7 +960,7 @@
                 bdForm.querySelector("#editTask").onclick = function (e) {
                     bdForm.style.display = "none";
                     this.closest(".container").querySelector("#yes").click();
-                    form.edit({ target: milestone.querySelector("#" + id.replace(/\./, "\\.")) });
+                    form.edit({ target: sprint.querySelector("#" + id.replace(/\./, "\\.")) });
                 } 
                 bdForm.querySelector("#yes").onclick = function (event) {
                     document.querySelectorAll("#" + id.replace(/\./, "\\.")).forEach(i => form.saveData(i, bdForm));
@@ -948,19 +972,19 @@
                 };
             },
             show: function(requirement, form) {
-                var id = form.querySelector(".milestones").id;
-                var msid = document.querySelector(".milestones#" + id.replace(/\./, "\\."));
-                var msStartDate = project.milestones.get(msid).startDate();
-                var msWeeks = +project.milestones.get(msid).dataValue("weeks");
-                var msEndDate = project.milestones.get(msid).endDate();
+                var id = form.querySelector(".sprints").id;
+                var msid = document.querySelector(".sprints#" + id.replace(/\./, "\\."));
+                var msStartDate = project.sprints.get(msid).startDate();
+                var msWeeks = +project.sprints.get(msid).dataValue("weeks");
+                var msEndDate = project.sprints.get(msid).endDate();
                 document.querySelector("#daterange").innerText = msStartDate
                     .toLocaleString("default", { month: "short", day: "numeric"}) + " - "
                     + msEndDate.toLocaleString("default", { month: "short", day: "numeric", year: "numeric" });
-                var weeks = project.milestones.get(msid).dataValue("weeks");
+                var weeks = project.sprints.get(msid).dataValue("weeks");
                 var tbody = document.querySelector("#burndownForm table tbody");
                 tbody.innerHTML = "";
                 var data = getJSONData(requirement);
-                for(var week = 0, msdate = project.milestones.get(msid).startDate(); week < weeks; week++) {
+                for(var week = 0, msdate = project.sprints.get(msid).startDate(); week < weeks; week++) {
                     var tr = document.createElement("tr");
                     for(var d = 0; d < 7; d++) {
                         var td = document.createElement("td");
@@ -1015,19 +1039,19 @@
                 document.querySelector("#scheduleScreen #backlog").style.display = "none";
             }
         },
-        milestones: {
+        sprints: {
             get: function(ms) {
                 return {
                     id: ms.id,
                     startDate: function() {
                         var startDate = project.dates.start();
                         if (startDate == null) return null;
-                        var milestones = Array.from(document.querySelectorAll("#settingsScreen .scheduleMS"));
-                        var milestone = milestones.filter(m => m.id == this.id)[0];
+                        var sprints = Array.from(document.querySelectorAll("#settingsScreen .scheduleMS"));
+                        var sprint = sprints.filter(m => m.id == this.id)[0];
                         var weeks = 0;
-                        for (var m = 0; m < milestones.length; m++) {
-                            if (milestones[m].isSameNode(milestone)) break;
-                            weeks += +getJSONData(milestones[m]).weeks;
+                        for (var m = 0; m < sprints.length; m++) {
+                            if (sprints[m].isSameNode(sprint)) break;
+                            weeks += +getJSONData(sprints[m]).weeks;
                         }
                         var dt = new Date(startDate);
                         return new Date(dt.setDate(dt.getDate() + (weeks * 7)));
@@ -1079,12 +1103,10 @@
                         var endDate = this.endDate();
                         var data = this.data();
                         var capacity = 0;
-                        var developers = project.team.getDevelopers();
-                        // Accumulate developer capacity = vacation across team 
-                        developers.forEach(d => {
+                        project.team.developers.forEach(d => {
                             var burnRate = data[d] ?
                                 parseInt(data[d]) / 100
-                                : parseInt(defaults.capacity[project.team.getDeveloper(d).data().role]) / 100;                            
+                                : parseInt(defaults.capacity[project.team.developer(d).data().role]) / 100;                            
                             var vacation = data["vac_" + d] ?
                                 parseInt(data["vac_" + d])
                                 : parseInt(defaults.capacity.vacation);
@@ -1103,16 +1125,16 @@
                             .classList.contains("testing")) return null;
                         var data = this.data();
                         var capacity = [];
-                        var developers = project.team.getDevelopers();
+                        var developers = project.team.developers;
                         developers.forEach(d => {
                             var availability = data[d];
-                            if (!availability) availability = defaults.capacity[project.team.getDeveloper(d).data().role];
+                            if (!availability) availability = defaults.capacity[project.team.developer(d).data().role];
                             var vacation = data["vac_" + d] ? parseInt(data["vac_" + d]) :
                                 defaults.capacity.vacation;
                             var devCapacity = 0;
                             capacity.push({
                                 id: d,
-                                developer: project.team.getDeveloper(d).data().name,
+                                developer: project.team.developer(d).data().name,
                                 availability: availability,
                                 vacation: vacation
                             });
@@ -1191,14 +1213,14 @@
                 return document.querySelectorAll("#settingsScreen .scheduleMS");
             },
             getDev: function() {
-                return [...document.querySelectorAll("#settingsScreen #milestones #development")]
+                return [...document.querySelectorAll("#settingsScreen #sprints #development")]
                     .map(d => d.closest(".scheduleMS"));
             },
             getCurrent: function() {
-                var milestones = [...this.getAll()];
+                var sprints = [...this.getAll()];
                 var today = new Date();
-                for (m in milestones) {
-                    var ms = project.milestones.get(milestones[m]);
+                for (m in sprints) {
+                    var ms = project.sprints.get(sprints[m]);
                     if (today >= ms.startDate() && today <= ms.endDate())
                         return ms;
                 }
@@ -1210,11 +1232,11 @@
                 return {
                     id: taskid,
                     complete: function() {
-                        var sprint = [...project.milestones.getAll()]
+                        var sprint = [...project.sprints.getAll()]
                             .filter(s => 
-                                project.milestones.get(s).tasks().filter(t =>
+                                project.sprints.get(s).tasks().filter(t =>
                                     t.id == this.id).length)[0];
-                        var endDate = project.milestones.get(sprint).endDate();
+                        var endDate = project.sprints.get(sprint).endDate();
                         var today = new Date();
                         if (today < endDate) endDate = today;
                         var dt = "dt_" + (endDate.toISOString().slice(0,10).replace(/-/g,""));
@@ -1261,7 +1283,7 @@
                     },
                     msBurndown: function(msid) {
                         var  taskBurndown = this.projectBurndown();
-                        var dates = project.milestones.get(msid).trackingDates();
+                        var dates = project.sprints.get(msid).trackingDates();
                         burndown = [];
                         dates.forEach(d => {
                             var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
@@ -1316,12 +1338,12 @@
             }
         },
         team: {
-            getDevelopers: function() {
+            get developers() {
                 return Array.from(document.querySelectorAll("#settingsScreen #team .lead"))
                     .concat(Array.from(document.querySelectorAll("#settingsScreen #team .developer")))
                     .map(d => d.id);
             },
-            getDeveloper: function(developerId) {
+            developer: function(developerId) {
                 return {
                     id: developerId,
                     data: function() {
@@ -1333,17 +1355,22 @@
                             return data.developer ? data.developer == this.id : false;
                         });
                     },
-                    getTasksForMS: function(milestoneId) {
-                        return this.tasks().filter(t => t.closest("tr").id == milestoneId);
+                    getTasksForMS: function(sprintId) {
+                        return this.tasks().filter(t => t.closest("tr").id == sprintId);
                     }
                 }
             },
-            getQAs: function() {
+            get QAs()  {
                 return Array.from(document.querySelectorAll("#settingsScreen #team .tester")).map(d => d.id);
             },
-            getTeam: function()  {
+            get team() {
                 return Array.from(document.querySelectorAll("#settingsScreen #team .teammember")).map(d => d.id);
             }
+        },
+        checklists: {
+            entry: [],
+            exit: [],
+            sprints: []
         },
         dates: {
             start: function() {
@@ -1351,9 +1378,9 @@
                     new Date(document.querySelector("#settingsScreen #startDate").value) : null;
             },
             end: function() {
-                var milestones = project.milestones.getAll();
-                var lastMS = milestones[milestones.length - 1];
-                return project.milestones.get(lastMS).endDate();
+                var sprints = project.sprints.getAll();
+                var lastMS = sprints[sprints.length - 1];
+                return project.sprints.get(lastMS).endDate();
             },
             burndownDays: function() {
                 var burndownDays = [];
@@ -1421,8 +1448,20 @@
                 document.querySelector("#requirementsScreen #requirements").innerHTML = "";
                 document.querySelectorAll(".droplist:not(.weekdays)").forEach(d => d.innerHTML = "");
                 document.querySelectorAll(".droplist .weekday .item").forEach(w => w.parentNode.removeChild(w));
-                document.querySelector("#mslist #milestones").innerHTML = "";
+                document.querySelector("#mslist #sprints").innerHTML = "";
                 document.querySelector("#backlog #list").innerHTML = "";
+            },
+            checklist: {
+                hide: function(target) {
+                    target.closest(".checklist").querySelector(".items").style.display = "none";
+                    target.style.display = "none";
+                    target.closest(".checklist").querySelector(".displayed").style.display = "";
+                },
+                show: function(target) {
+                    target.closest(".checklist").querySelector(".items").style.display = "";
+                    target.style.display = "none";
+                    target.closest(".checklist").querySelector(".hidden").style.display = "";
+                }
             },
             sizes: function() {
                 return [...document.querySelector("#estimateTemplate")
@@ -1430,7 +1469,7 @@
             },
             ms: {
                 clear: function() {
-                    var mseditor = document.querySelector("#milestoneEditor");
+                    var mseditor = document.querySelector("#sprintEditor");
                     mseditor.querySelector("tbody#developer").innerHTML = '';
                     mseditor.querySelector("tbody#tester").innerHTML = '';
                     mseditor.querySelector("#msbacklog tbody").innerHTML = '';
@@ -1455,20 +1494,20 @@
                     target.closest("tr").querySelectorAll("td:not(.msicon)").forEach(c => c.style.display = "");
                 },
                 refresh: function() {
-                    if (document.querySelector("#milestoneEditor").style.display == "none") return;
-                    var msid = document.querySelector("#milestoneEditor .scheduleMS").id;
+                    if (document.querySelector("#sprintEditor").style.display == "none") return;
+                    var msid = document.querySelector("#sprintEditor .scheduleMS").id;
                     var selector = "#scheduleEditor #" + msid.replace(/\./, "\\.") + " .scheduleMS";
-                    var milestone = document.querySelector(selector);
+                    var sprint = document.querySelector(selector);
                     this.clear();
                     // Set up start and end dates in header
-                    var ms = project.milestones.get(milestone);
+                    var ms = project.sprints.get(sprint);
                     var dateRange = ms.startDate() == null ? "Start date not set" :
                         ms.startDate().toDateString() + " - " + ms.endDate().toDateString();
-                    document.querySelector("#milestoneEditor #header").innerText = dateRange;
+                    document.querySelector("#sprintEditor #header").innerText = dateRange;
                     this.showTeam();
-                    // List tasks at end: for all columns in milestone row
-                    var msrequirements = milestone.closest("tr").cloneNode(true);
-                    var qarequirements = milestone.closest("tr").cloneNode(true);
+                    // List tasks at end: for all columns in sprint row
+                    var msrequirements = sprint.closest("tr").cloneNode(true);
+                    var qarequirements = sprint.closest("tr").cloneNode(true);
                     msrequirements.id = "unassigned";
                     // Clear contents of first cell with MS icon
                     msrequirements.querySelector("td:nth-child(1)").style.removeProperty("border");
@@ -1539,22 +1578,22 @@
                         controls.parentElement.removeChild(controls);
                         msrow.querySelector(".msicon").appendChild(devwidget);
                         var role = dev.classList.contains("tester") ? "tester" : "developer";
-                        document.querySelector("#milestoneEditor tbody#" + role).appendChild(msrow);
+                        document.querySelector("#sprintEditor tbody#" + role).appendChild(msrow);
                     });
                 },
                 syncTabs: function() {
                     console.log("Syncing tabs");
-                    var devMSList = project.milestones.getDev();
-                    var scheduledSprints = document.querySelectorAll("#scheduleEditor #milestones > tr");
+                    var devMSList = project.sprints.getDev();
+                    var scheduledSprints = document.querySelectorAll("#scheduleEditor #sprints > tr");
                     if (devMSList.length != scheduledSprints.length) console.log("Sprints in project setup and progress tabs out of sync");
                     for (i = 0; i < devMSList.length; i++) {
                         if (devMSList[i].id != scheduledSprints[i].id) {
                             var correctRow = Array.from(scheduledSprints).filter(r => r.id == devMSList[i].id);
                             console.log("Mismatch in row", i, "expected", getJSONData(devMSList[i]).name, "found", getJSONData(scheduledSprints[i]).name);
                             scheduledSprints[i].parentNode.insertBefore(correctRow[0], scheduledSprints[i]);
-                            scheduledSprints = document.querySelectorAll("#scheduleEditor #milestones tr");
+                            scheduledSprints = document.querySelectorAll("#scheduleEditor #sprints tr");
                         }
-                        var sprint = project.milestones.get(devMSList[i]);
+                        var sprint = project.sprints.get(devMSList[i]);
                         var startDate = sprint.startDate();
                         var endDate = sprint.endDate();
                         var dateRange = startDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })
@@ -1562,14 +1601,14 @@
                         scheduledSprints[i].querySelector("#schedule").innerText = dateRange;
                     }
                 },
-                edit: function(milestone) {
-                    // Hide the Project scedule editor (table of milestones)
+                edit: function(sprint) {
+                    // Hide the Project scedule editor (table of sprints)
                     document.querySelector("#scheduleEditor").style.display = "none";
-                    document.querySelector("#milestoneEditor").style.display = "";
+                    document.querySelector("#sprintEditor").style.display = "";
                     document.querySelector("#msicon").innerHTML = '';
                     // Put header icon on top
-                    document.querySelector("#msicon").appendChild(milestone.closest(".scheduleMS").cloneNode(true));
-                    document.querySelector("#milestoneEditor #development").removeAttribute("title");
+                    document.querySelector("#msicon").appendChild(sprint.closest(".scheduleMS").cloneNode(true));
+                    document.querySelector("#sprintEditor #development").removeAttribute("title");
                     this.refresh();
                 }
             },
@@ -1580,14 +1619,14 @@
             schedule: {
                 edit: function() {
                     document.querySelector("#scheduleEditor").style.display = "flex";
-                    document.querySelector("#milestoneEditor").style.display = "none";
+                    document.querySelector("#sprintEditor").style.display = "none";
                 },
                 refresh: function() {
-                    var devSprints = project.milestones.getDev();
+                    var devSprints = project.sprints.getDev();
                     var today = new Date();
-                    var sprintRows = [...document.querySelectorAll("#scheduleEditor #mslist #milestones > tr")];
+                    var sprintRows = [...document.querySelectorAll("#scheduleEditor #mslist #sprints > tr")];
                     devSprints.forEach(sprint => {
-                        var ms = project.milestones.get(sprint);
+                        var ms = project.sprints.get(sprint);
                         var sprintRow = sprintRows.filter(s => s.id == sprint.id)[0];
                         var dateRange = sprintRow.querySelector("td:nth-child(1) #schedule");
                         dateRange.innerText = ms.startDate().toLocaleString("default", { month: "short", day: "numeric"})
@@ -1602,20 +1641,20 @@
                 }
             },
             developerView: function() {
-                document.querySelector("#milestoneEditor #tester").classList.remove("selected");
-                document.querySelector("#milestoneEditor #developer").classList.add("selected");
-                document.querySelector("#milestoneEditor tbody#developer").style.display = "";
-                document.querySelector("#milestoneEditor tbody#tester").style.display = "none";
-                document.querySelector("#milestoneEditor #msbacklog").style.display = "";
-                document.querySelector("#milestoneEditor #qabacklog").style.display = "none";
+                document.querySelector("#sprintEditor #tester").classList.remove("selected");
+                document.querySelector("#sprintEditor #developer").classList.add("selected");
+                document.querySelector("#sprintEditor tbody#developer").style.display = "";
+                document.querySelector("#sprintEditor tbody#tester").style.display = "none";
+                document.querySelector("#sprintEditor #msbacklog").style.display = "";
+                document.querySelector("#sprintEditor #qabacklog").style.display = "none";
             },
             testerView: function() {
-                document.querySelector("#milestoneEditor #developer").classList.remove("selected");
-                document.querySelector("#milestoneEditor #tester").classList.add("selected");
-                document.querySelector("#milestoneEditor tbody#developer").style.display = "none";
-                document.querySelector("#milestoneEditor tbody#tester").style.display = "";
-                document.querySelector("#milestoneEditor #msbacklog").style.display = "none";
-                document.querySelector("#milestoneEditor #qabacklog").style.display = "";
+                document.querySelector("#sprintEditor #developer").classList.remove("selected");
+                document.querySelector("#sprintEditor #tester").classList.add("selected");
+                document.querySelector("#sprintEditor tbody#developer").style.display = "none";
+                document.querySelector("#sprintEditor tbody#tester").style.display = "";
+                document.querySelector("#sprintEditor #msbacklog").style.display = "none";
+                document.querySelector("#sprintEditor #qabacklog").style.display = "";
             }
         },
         file: {
@@ -1669,12 +1708,12 @@
                             teamMember.querySelector(".itemName").innerText = teamData.name;
                             teamMember.querySelector("#data").innerText = JSON.stringify(teamData);
                         }
-                        for (var i in data.milestones) {
-                            var id = data.milestones[i].id;
-                            var msData = data.milestones[i].data;
-                            type = data.milestones[i].data.type;
+                        for (var i in data.sprints) {
+                            var id = data.sprints[i].id;
+                            var msData = data.sprints[i].data;
+                            type = data.sprints[i].data.type;
                             dragdrop.dragged = document.querySelector("#msTypes #" + type);
-                            var ms = dragdrop.add("scheduleMS", document.querySelector("#milestones.schedule"));
+                            var ms = dragdrop.add("scheduleMS", document.querySelector("#sprints.schedule"));
                             trackingMS = document.querySelector("#mslist #" + ms.id.replace(/\./, "\\."));
                             if (trackingMS) {
                                 trackingMS.id = id;
@@ -1722,10 +1761,10 @@
             },
             loadTrackingData: function(burndown) {
                 var table = document.querySelector("#mslist");
-                burndown.forEach(milestone => {
-                    var tr = table.querySelector("tr#" + milestone.id.replace(/\./, "\\."));
+                burndown.forEach(sprint => {
+                    var tr = table.querySelector("tr#" + sprint.id.replace(/\./, "\\."));
                     statuses.forEach(status => {
-                        milestone[status].forEach(task => {
+                        sprint[status].forEach(task => {
                             var data = task.data;
                             dragdrop.dragged = document.querySelector("#mslist #development");
                             var newTask = dragdrop.add("newTask", tr.querySelector("." + status));
@@ -1780,7 +1819,7 @@
                     projectInfo: {},
                     defaults: {},
                     team: [],
-                    milestones: [],
+                    sprints: [],
                     holidayWeeks: [],
                     requirements: [],
                     burndown: []
@@ -1802,8 +1841,8 @@
                 document.querySelectorAll("#team .teamMember").forEach(t => {
                     json.team.push({ id: t.id, data: getJSONData(t) });
                 });
-                document.querySelectorAll("#scheduleDiv #milestones .scheduleMS").forEach(t => {
-                    json.milestones.push({ id: t.id, data: getJSONData(t) });
+                document.querySelectorAll("#scheduleDiv #sprints .scheduleMS").forEach(t => {
+                    json.sprints.push({ id: t.id, data: getJSONData(t) });
                 });
                 document.querySelectorAll("#holidayWeeks .holidayWeek").forEach(t => {
                     json.holidayWeeks.push({ id: t.id, data: getJSONData(t) });
@@ -1813,11 +1852,11 @@
                 });
                 document.querySelectorAll("#mslist tbody tr.msrequirements").forEach(ms => {
                     var last = json.burndown.push({ id: ms.id }) - 1;
-                    var milestone = json.burndown[last];
+                    var sprint = json.burndown[last];
                     statuses.forEach(status => {
-                        milestone[status] = [];
+                        sprint[status] = [];
                         ms.querySelectorAll("." + status + " .taskbrief").forEach(task => {
-                            milestone[status].push({ id: task.id, data: getJSONData(task)});
+                            sprint[status].push({ id: task.id, data: getJSONData(task)});
                         })
                     });
                 });
@@ -1827,7 +1866,7 @@
     }
     var graph = {
         init: function() {
-            document.querySelector("#graphsScreen #milestone").addEventListener("click", this.sprintInitgraph);
+            document.querySelector("#graphsScreen #sprint").addEventListener("click", this.sprintInitgraph);
             document.querySelector("#graphsScreen #project").addEventListener("click", this.projectInitgraph);
             document.querySelector("#graphsScreen #details").addEventListener("click", this.detailsInitgraph);
             document.querySelector("#graphs").setAttribute("data-Init", "graph.refresh");
@@ -1839,17 +1878,17 @@
             document.querySelector("#graphsScreen " + selected).classList.add("graphType-selected");
         },
         selectedMS: function() {
-            var milestones = project.milestones.getDev();
-            if (milestones.length == 0) return;
-            var ms = milestones[0];
+            var sprints = project.sprints.getDev();
+            if (sprints.length == 0) return;
+            var ms = sprints[0];
             if (document.querySelector("#selectMS").selectedOptions.length) {
                 var selectedMS = document.querySelector("#selectMS").selectedOptions[0].value;
-                ms = [...milestones].filter(m => m.id == selectedMS)[0];
+                ms = [...sprints].filter(m => m.id == selectedMS)[0];
             }
             var msSelect = document.querySelector("#selectMS");
             document.querySelector("#selectMS").innerHTML = "";
-            milestones.forEach(m => {
-                var data = project.milestones.get(m).data();
+            sprints.forEach(m => {
+                var data = project.sprints.get(m).data();
                 var option = document.createElement("option");
                 option.value = m.id;
                 option.innerText = data.name;
@@ -1860,7 +1899,7 @@
             return ms;
         },
         sprintInitgraph: function() {
-            graph.setGraph("#milestone");
+            graph.setGraph("#sprint");
             var ms = graph.selectedMS();
             if (!ms) return;
             var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -1875,12 +1914,12 @@
                 .style("height", height);
             // Select MS dropdown
             board.select("#selectMS")
-                .selectAll("milestones")
-                .data(project.milestones.getDev())
+                .selectAll("sprints")
+                .data(project.sprints.getDev())
                 .enter()
                 .append("option")
-                .text(d => project.milestones.get(d).data().name)
-                .attr("value", d => project.milestones.get(d).id);
+                .text(d => project.sprints.get(d).data().name)
+                .attr("value", d => project.sprints.get(d).id);
             d3.select('#selectMS').property('value', ms.id);
             var leftGraph = board.append("div")
                 .attr("id", "leftGraph")
@@ -1902,10 +1941,10 @@
                 var msid = d3.select("#selectMS").property("value");
                 var ms = document.querySelector("#" + msid.replace(/\./, "\\."));
                 if (!ms.classList.contains("development")) return;
-                var capacity = project.milestones.get(ms).capacity();
-                var tasks =  project.milestones.get(ms).tasks();
-                var total = project.milestones.get(ms).burndown();
-                var target = project.milestones.get(ms).targetBurndown();
+                var capacity = project.sprints.get(ms).capacity();
+                var tasks =  project.sprints.get(ms).tasks();
+                var total = project.sprints.get(ms).burndown();
+                var target = project.sprints.get(ms).targetBurndown();
                 var width = (screen.width / 2) - 50;
                 var height = screen.height - 450;
 
@@ -1914,10 +1953,10 @@
                 if (total.length) burndown.push ({
                     week: "Start",
                     total: total.length ? total[0].effort : 0,
-                    target: project.milestones.get(ms).capacity()
+                    target: project.sprints.get(ms).capacity()
                 });
                 var today = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
-                project.milestones.get(ms).trackingDates().forEach(d => {
+                project.sprints.get(ms).trackingDates().forEach(d => {
                     var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
                     var week = d.toDateString().split(" ")[1] + " " + d.getDate();
                     var totalValue = +dt.substr(3) <= +today ?
@@ -2057,32 +2096,32 @@
                     .text(d => Math.floor(d.target + stretch));
 
         //--------------------------------------------------------------------------------------------
-                var milestone = project.milestones.get(ms);
-                var capacity = milestone.capacityConfig();
-                var workingDays = milestone.workingDays().length;
-                var scope = project.milestones.get(ms).tasks();
+                var sprint = project.sprints.get(ms);
+                var capacity = sprint.capacityConfig();
+                var workingDays = sprint.workingDays().length;
+                var scope = project.sprints.get(ms).tasks();
                 var today = new Date();
                 var data = capacity.map(c => {
-                    if (today > project.milestones.get(ms).endDate()) {
+                    if (today > project.sprints.get(ms).endDate()) {
                         remainingDays = 0;
                     }
                     else {
                         capacity.filter(d => d.developer == c.developer)[0];
-                        if (today <= project.milestones.get(ms).startDate())
-                            remainingDays = milestone.developerCapacity(c.id);
-                        remainingDays = milestone.developerCapacity(c.id, today);
+                        if (today <= project.sprints.get(ms).startDate())
+                            remainingDays = sprint.developerCapacity(c.id);
+                        remainingDays = sprint.developerCapacity(c.id, today);
                     }
                     return {
                         "id": c.id,
                         "Developer": c.developer,
                         "Planned availability": workingDays * parseInt(c.availability) / 100 - c.vacation,
-                        "Assigned work": (project.team.getDeveloper(c.id).getTasksForMS(milestone.id)
-                            .map(t => project.tasks.get(t.id).msBurndown(milestone)[0].effort)
+                        "Assigned work": (project.team.developer(c.id).getTasksForMS(sprint.id)
+                            .map(t => project.tasks.get(t.id).msBurndown(sprint)[0].effort)
                             .reduce((pr, cv) => { return pr + cv }, 0)).toFixed(2),
                         "Remaining days": remainingDays.toFixed(2),
-                        "Remaining work": (project.team.getDeveloper(c.id).getTasksForMS(milestone.id)
-                            .map(t => project.tasks.get(t.id).msBurndown(milestone)
-                                [project.tasks.get(t.id).msBurndown(milestone).length - 1].effort)
+                        "Remaining work": (project.team.developer(c.id).getTasksForMS(sprint.id)
+                            .map(t => project.tasks.get(t.id).msBurndown(sprint)
+                                [project.tasks.get(t.id).msBurndown(sprint).length - 1].effort)
                             .reduce((pr, cv) => { return pr + cv }, 0)).toFixed(2)
                     }
                 });
@@ -2221,7 +2260,7 @@
                     .call(xAxis);
 
                 document.querySelectorAll("#developerid text").forEach(developer => {
-                    developer.innerHTML = project.team.getDeveloper(developer.innerHTML).data().name;
+                    developer.innerHTML = project.team.developer(developer.innerHTML).data().name;
                 });
 
                 g.append("g")
@@ -2235,7 +2274,7 @@
         projectInitgraph: function() {
             document.querySelector("#msChoice").style.display = "none";
             graph.setGraph("#project");
-            var ms = project.milestones.getAll()[0];
+            var ms = project.sprints.getAll()[0];
             if (!ms) return;
 
             var margin = {top: 20, right: 20, bottom: 50, left: 40},
@@ -2411,21 +2450,21 @@
             var xScale, yScale, svg, div, g;
             
             function drawGraphs() {
-                var milestones = project.milestones.getDev();
-                if (milestones.length == 0) return;
+                var sprints = project.sprints.getDev();
+                if (sprints.length == 0) return;
                 var today = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
                 var ms = document.querySelector("#selectMS") ?
                     document.querySelector("#selectMS").selectedOptions[0].value
-                    : milestones[0].id;
-                var milestone = [...milestones].filter(m => m.id == ms)[0];
-                var taskData = project.milestones.get(milestone).tasks().map(t => {
+                    : sprints[0].id;
+                var sprint = [...sprints].filter(m => m.id == ms)[0];
+                var taskData = project.sprints.get(sprint).tasks().map(t => {
                     return {
                         name: t.id,
-                        burndown: project.tasks.get(t.id).msBurndown(milestone),
+                        burndown: project.tasks.get(t.id).msBurndown(sprint),
                         estimate: project.tasks.get(t.id).estimate()
                     }
                 });
-                var trackingDates = project.milestones.get(milestone).trackingDates();
+                var trackingDates = project.sprints.get(sprint).trackingDates();
                 var fdata = trackingDates.map(d => {
                     var dtParts = d.toDateString().split(" ");
                     var data = { group: dtParts[1] + " " + dtParts[2] };
@@ -2437,14 +2476,14 @@
                 var initData = { group: "Start" };
                 taskData.forEach(t => initData[t.name] = t.estimate);
                 fdata.unshift(initData);
-                drawPaper(project, milestone, leftGraph, "Feature Burndown", fdata, project.tasks.get);
+                drawPaper(project, sprint, leftGraph, "Feature Burndown", fdata, project.tasks.get);
 
-                var trackingDates = project.milestones.get(milestone).trackingDates();
-                var startDate = project.milestones.get(milestone).startDate();
+                var trackingDates = project.sprints.get(sprint).trackingDates();
+                var startDate = project.sprints.get(sprint).startDate();
                 if (startDate) trackingDates.unshift(startDate);
-                var msBurndown = project.team.getDevelopers().map(d => {
-                    var taskData = project.team.getDeveloper(d).getTasksForMS(milestone.id)
-                        .map(t => project.tasks.get(t.id).msBurndown(milestone));
+                var msBurndown = project.team.developers.map(d => {
+                    var taskData = project.team.developer(d).getTasksForMS(sprint.id)
+                        .map(t => project.tasks.get(t.id).msBurndown(sprint));
                     var developerBurndown = trackingDates.map(d => {
                         var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
                         var taskList = taskData.map(r => r.filter(s => s.date == dt)[0].effort);
@@ -2456,8 +2495,8 @@
                         assigned: developerBurndown
                     }
                 });
-                taskData = project.milestones.get(milestone).unassignedDeveloper()
-                    .map(t => project.tasks.get(t.id).msBurndown(milestone));
+                taskData = project.sprints.get(sprint).unassignedDeveloper()
+                    .map(t => project.tasks.get(t.id).msBurndown(sprint));
                 taskBurndown = trackingDates.map(d => {
                     var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
                     var taskList = taskData.map(r => r.filter(s => s.date == dt)[0].effort);
@@ -2479,8 +2518,8 @@
                 });
                 if (udata.length) {
                     udata[0].group = "Start";
-                    project.team.getDevelopers().forEach(d => {
-                        var assigned = project.milestones.get(milestone)
+                    project.team.developers.forEach(d => {
+                        var assigned = project.sprints.get(sprint)
                             .tasks().filter(t => {
                                 var data = project.tasks.get(t.id).data();
                                 return data && data.developer == d;
@@ -2490,20 +2529,20 @@
                             .reduce((a,b) => a + b) : 0;
                         udata[0][d] = effort;
                     });
-                    var unassigned = project.milestones.get(milestone).unassignedDeveloper();
+                    var unassigned = project.sprints.get(sprint).unassignedDeveloper();
                     var effort = unassigned.length ? unassigned
                         .map(t => project.tasks.get(t.id).estimate())
                         .reduce((a, b) => a + b) : 0;
                     udata[0]["Unassigned"] = effort;
                 }
-                drawPaper(project, milestone, rightGraph, "Developer Burndown", udata, project.team.getDeveloper);
+                drawPaper(project, sprint, rightGraph, "Developer Burndown", udata, project.team.developer);
             }
             
             function drawPaper(project, ms, paper, title, data, labelFn) {
-                var capacity = project.milestones.get(ms).capacity();
-                var ymax = project.milestones.get(ms).burndown().map(b => b.effort)
+                var capacity = project.sprints.get(ms).capacity();
+                var ymax = project.sprints.get(ms).burndown().map(b => b.effort)
                     .concat(capacity).reduce((a, b) => a > b ?  a : b);
-                var workingweeks = project.milestones.get(ms).trackingDates();
+                var workingweeks = project.sprints.get(ms).trackingDates();
                 
                 var groups = data.map(d => d.group);
                 var subgroups = data.length == 0 ? [] :
@@ -2789,7 +2828,7 @@
     function scheduleInit() {
         var today = new Date();
         document.querySelectorAll("#mslist tbody tr").forEach(r => {
-            var ms = project.milestones.get(r);
+            var ms = project.sprints.get(r);
             var age = ms.endDate() < today ? r.style.backgroundColor = "#eeeeee" :
                 ms.startDate() > today ? r.style.backgroundColor = "#eeeeff" :
                 r.style.backgroundColor = "#ffffff";
@@ -2856,8 +2895,8 @@
         params.querySelector("#data").innerText = JSON.stringify(data);
         var dropTable = params.closest("table");
         if (dropTable.id == "devtasklist" || dropTable.id == "msbacklog" || dropTable.id == "qabacklog") {
-            var milestone = params.closest("#milestoneEditor").querySelector(".scheduleMS");
-            var msRow = document.querySelector("#scheduleScreen #" + milestone.id.replace(/\./, "\\."));
+            var sprint = params.closest("#sprintEditor").querySelector(".scheduleMS");
+            var msRow = document.querySelector("#scheduleScreen #" + sprint.id.replace(/\./, "\\."));
             var status = [...params.closest("td").classList].filter(f => statuses.filter(s => s == f).length)[0];
             if (role != '') data = project.tasks.assign(params, params.closest("td"), role);
             params.querySelector("#data").innerText = JSON.stringify(data);
@@ -2866,7 +2905,7 @@
             taskCopy.querySelector(".edit").onclick = form.edit;
             taskCopy.querySelector(".delete").onclick = deleteItem;
             msRow.querySelector("." + status).appendChild(taskCopy);
-            project.ui.ms.edit(milestone);
+            project.ui.ms.edit(sprint);
         }
     }
     function onadd_scheduleMS(params) {
@@ -2877,8 +2916,8 @@
         data.weeks = defaults.sprintLenth;
         params.querySelector("#data").innerText = JSON.stringify(data);
         if (mstype != 'development') return;
-        project.team.getDevelopers().forEach(dev => {
-            var role = project.team.getDeveloper(dev).data().role;
+        project.team.developers.forEach(dev => {
+            var role = project.team.developer(dev).data().role;
             data[dev] = defaults.capacity[role];
             data["vac_" + dev] = defaults.capacity.vacation;
         });
@@ -2890,18 +2929,18 @@
         msnode.querySelector("#development").addEventListener("click", function(event) {
             project.ui.ms.edit(event.target.closest(".scheduleMS"));
         });
-        msnode.querySelector("#development").setAttribute("title", "Click to edit this milestone");
+        msnode.querySelector("#development").setAttribute("title", "Click to edit this sprint");
         var hand = msnode.querySelector(".hand");
         hand.parentElement.removeChild(hand);
         msnode.querySelectorAll(".controls").forEach(r => r.parentElement.removeChild(r));
         var msdiv = document.querySelector("#msTemplate").content.cloneNode(true);
-        var currentMS = project.milestones.getCurrent();
+        var currentMS = project.sprints.getCurrent();
         if (currentMS && params.id == currentMS.id) {
             msdiv.querySelector("tr").classList.add("current");
         }
         var dateRange = "[Not set]";
-        if (start = project.milestones.get(params).startDate()) {
-            var end = project.milestones.get(params).endDate();
+        if (start = project.sprints.get(params).startDate()) {
+            var end = project.sprints.get(params).endDate();
             dateRange = start.toLocaleDateString(undefined, { month: "short", day: "numeric" })
                 + " - " + end.toLocaleDateString(undefined, { month: "short", day: "numeric" });
             var schedule = msdiv.querySelector("#schedule");
@@ -2909,7 +2948,7 @@
         }
         msdiv.querySelector(".msrequirements").id = params.id;
         msdiv.querySelector(".msicon").appendChild(msnode);
-        var devSprints = document.querySelector("#mslist #milestones");
+        var devSprints = document.querySelector("#mslist #sprints");
         devSprints.appendChild(msdiv);
     }
     function onadd_teamMember(params) {
@@ -2918,7 +2957,7 @@
         var data = getJSONData(params);
         data.role = role;
         if (role == "developer" || role == "lead") {
-            project.milestones.getDev().forEach(msdiv => {
+            project.sprints.getDev().forEach(msdiv => {
                 var msdata = getJSONData(msdiv);
                 msdata[params.id] = defaults.capacity[role];
                 msdata["vac_" + params.id] = defaults.capacity.vacation;
@@ -2968,7 +3007,7 @@
     function oninsert_team(params) {
         onadd_teamMember(params);
     }
-    function oninsert_milestones(params) {
+    function oninsert_sprints(params) {
         onadd_scheduleMS(params);
         project.ui.ms.syncTabs();
     }
@@ -2991,10 +3030,10 @@
         });
     }
     function onmovetoend_testing(params) { project.ui.ms.syncTabs(); }
-    function initForm_milestones(params) {
+    function initForm_sprints(params) {
         var capacityTable = params[0].querySelector(".capacitydata");
-        var dates = document.querySelector("#milestonesForm #msdates");
-        var ms = [...project.milestones.getAll()].filter(m => m.id == params[1])[0];
+        var dates = document.querySelector("#sprintsForm #msdates");
+        var ms = [...project.sprints.getAll()].filter(m => m.id == params[1])[0];
         if (ms.classList.contains("development")) {
             mstype = "development";
             staff = [...document.querySelectorAll("#settingsScreen #team #lead")]
@@ -3005,12 +3044,12 @@
             staff = [...document.querySelectorAll("#settingsScreen #team #tester")]
         }
 
-        var startDate = project.milestones.get(ms).startDate();
+        var startDate = project.sprints.get(ms).startDate();
         if (startDate == null) {
             dates.innerText = "Project start date not set";
         }
         else {
-            var endDate = project.milestones.get(ms).endDate();
+            var endDate = project.sprints.get(ms).endDate();
             dates.innerText = startDate.toLocaleDateString() + " - " + endDate.toLocaleDateString();
         }
 
@@ -3061,7 +3100,7 @@
     }
     function initForm_team(params) {
         var id = params.filter(t => typeof(t) == 'string' && t.match(/^team/))[0];
-        var role = project.team.getDeveloper(id).data().role;
+        var role = project.team.developer(id).data().role;
         document.querySelector(".formDescription").innerText = "Role: " + role;
     }
 </script>
