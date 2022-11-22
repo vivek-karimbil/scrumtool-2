@@ -325,10 +325,14 @@
             </div>
             <img id="show" class="reqtIcon" src="img/backlog.svg">
         </span>
-        <span id="backlog" title="Requirements added in project backlog">
+        <span id="backlog" title="Hide / Show unscheduled backlog">
             <div id="backlogDiv">
                 <div class="divheader">
-                    <b>Backlog</b><div onclick="project.backlog.hide()" class="minbutton">X</div>
+                    <b>Backlog</b>
+                    <div onclick="project.backlog.hide()" class="minbutton">X</div>
+                    <div id="filterButton" onclick="project.ui.backlog.toggle()" class="minbutton">
+                        <img id="filter" src="img/filter.svg">
+                    </div>
                 </div>
                 <div id="list" class="reqtlist" title="Drag requirement to sprint row"></div>
             </div>
@@ -1036,6 +1040,23 @@
             hide: function() {
                 document.querySelector("#scheduleScreen #backlogsummary").style.display = "";
                 document.querySelector("#scheduleScreen #backlog").style.display = "none";
+            },
+            scheduled: function() {
+                var taskdata = project.tasks.getAll()
+                    .filter(t => {
+                        var data = getJSONData(t);
+                        return data.reference;
+                    })
+                    .map(t => {
+                        return { id: t.id, data: getJSONData(t) };
+                    });
+                return this.getAll().filter(r =>
+                    taskdata.filter(t => t.data.reference == r.id).length
+                );
+            },
+            unscheduled: function() {
+                var scheduled = this.scheduled();
+                return this.getAll().filter(r => scheduled.filter(s => s.id == r.id).length == 0);
             }
         },
         sprints: {
@@ -1337,11 +1358,6 @@
             }
         },
         team: {
-            get developers() {
-                return Array.from(document.querySelectorAll("#settingsScreen #team .lead"))
-                    .concat(Array.from(document.querySelectorAll("#settingsScreen #team .developer")))
-                    .map(d => d.id);
-            },
             developer: function(developerId) {
                 return {
                     id: developerId,
@@ -1358,6 +1374,11 @@
                         return this.tasks().filter(t => t.closest("tr").id == sprintId);
                     }
                 }
+            },
+            get developers() {
+                return Array.from(document.querySelectorAll("#settingsScreen #team .lead"))
+                    .concat(Array.from(document.querySelectorAll("#settingsScreen #team .developer")))
+                    .map(d => d.id);
             },
             get QAs()  {
                 return Array.from(document.querySelectorAll("#settingsScreen #team .tester")).map(d => d.id);
@@ -1442,6 +1463,36 @@
             }
         },
         ui: {
+            backlog: {
+                get filtered() {
+                    var button = document.querySelector("#scheduleScreen #backlog #filterButton");
+                    return button && button.classList.contains("filtered");
+                },
+                hidesSheduled: function() {
+                    [...document.querySelectorAll("#scheduleScreen #backlog #filterButton")]
+                        .forEach(n => n.classList.add("filtered"));
+                    project.backlog.scheduled().forEach(r => {
+                        [...document.querySelectorAll("#scheduleScreen #" + r.id.replace(".", "\\."))]
+                            .forEach(n => n.classList.add("hidden"));
+                    })
+                },
+                showAll: function() {
+                    project.backlog.getAll().forEach(r => {
+                        [...document.querySelectorAll("#scheduleScreen .filtered")]
+                            .forEach(n => n.classList.remove("filtered"));
+                        [...document.querySelectorAll("#scheduleScreen .hidden")]
+                            .forEach(n => n.classList.remove("hidden"));
+                    })
+                },
+                toggle: function() {
+                    if (this.filtered) {
+                        this.showAll();
+                    }
+                    else {
+                        this.hidesSheduled();
+                    }
+                }
+            },
             clear: function() {
                 document.querySelectorAll("#projectInfo input").forEach(f => f.value = "");
                 document.querySelector("#requirementsScreen #requirements").innerHTML = "";
@@ -2908,6 +2959,10 @@
                 });
         });
         params.querySelector("#data").innerText = JSON.stringify(data);
+        if (project.ui.backlog.filtered) {
+            [...document.querySelectorAll("#scheduleEditor #backlog #list #" + data.reference.replace(".", "\\."))]
+                .forEach(r => r.classList.add("hidden"));
+        }
     }
     function onadd_dayOfWeek(params) {
         var dropzone = params.closest(".weekday");
@@ -3023,7 +3078,7 @@
             reqt.classList.add("highlight");
             [...document.querySelectorAll("#sprints .taskbrief")].forEach(r => {
                 var data = getJSONData(r);
-                if(data.reference == event.target.id) r.classList.add("highlight");
+                if(data.reference == reqt.id) r.classList.add("highlight");
             });
             [...document.querySelectorAll("#scheduleEditor .highlight")]
                 .forEach(r => {

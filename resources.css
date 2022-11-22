@@ -2,6 +2,9 @@
     border: 3px solid #666;
     width: 25%;
 }
+#backlog #filterButton.filtered {
+    background-color: yellow;
+}
 #backlogDiv #backlog {
     border: 0px solid #666;
     background-color: #aaaaaa59;
@@ -13,10 +16,15 @@
     z-index: 10;
     width: min-content;
 }
+#backlogDiv #filter {
+    height: 19px;
+    width: 15px;
+}
 .bdData {
     width: 3.5ch;
     text-align: center;
-margin-left: 5;}
+    margin-left: 5;
+}
 #scheduleScreen #backlogsummary {
     border: 3px solid #666;
 }
@@ -181,8 +189,8 @@ img#holiday {
     width: 60%;
     margin-right: 15px;
 }
-#list .backlogitem.highlight {
-    border: 3px solid white;
+#list .reqt.hidden {
+    display: none;
 }
 .menuButton {
 	text-align: center;
@@ -371,9 +379,6 @@ p.itemName {
     border: 3px solid #666;
     height: fit-content;
     padding: 1px;
-}
-#sprints .taskbrief.highlight {
-    background-color: white;
 }
 #sprintDiv {
     display: inline;
