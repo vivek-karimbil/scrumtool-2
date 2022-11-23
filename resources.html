@@ -265,21 +265,35 @@
     <div id="backlogDiv">
         <div id="backlog" class="projectComponent">
             <div class="item task level1" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color:gold;" class="postIt" draggable="true">
+                <div style="background-color:#ffd700;" class="postIt" draggable="true">
                     <span style="float: left; padding: 3px;">
                         <img class="hand" src="img/dragable.svg" title="Drag this">
                     </span>
                 </div>
             </div>
             <div class="item task level2" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color:hotpink;" class="postIt" draggable="true">
+                <div style="background-color:#ff69b4;" class="postIt" draggable="true">
                     <span style="float: left; padding: 3px;">
                         <img class="hand" src="img/dragable.svg" title="Drag this">
                     </span>
                 </div>
             </div>
             <div class="item task level3" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color:rgb(142, 103, 194);" class="postIt" draggable="true">
+                <div style="background-color: #8e67c2;" class="postIt" draggable="true">
+                    <span style="float: left; padding: 3px;">
+                        <img class="hand" src="img/dragable.svg" title="Drag this">
+                    </span>
+                </div>
+            </div>
+            <div class="item task level4" title="Drag and drop requirement to board below. Colours just for display.">
+                <div style="background-color:#9bee9b;" class="postIt" draggable="true">
+                    <span style="float: left; padding: 3px;">
+                        <img class="hand" src="img/dragable.svg" title="Drag this">
+                    </span>
+                </div>
+            </div>
+            <div class="item task level5" title="Drag and drop requirement to board below. Colours just for display.">
+                <div style="background-color: #847576;" class="postIt" draggable="true">
                     <span style="float: left; padding: 3px;">
                         <img class="hand" src="img/dragable.svg" title="Drag this">
                     </span>
@@ -308,6 +322,10 @@
                     <label for="option" id="optional">Optional</label>
                 </div>
                 <div id="estimate"></div>
+                <div id="notedisplay">
+                    <div id="backgroundColor" class="select">Note color:<input id="noteColor" type="color"></div>
+                    <div id="textColor" class="select">Text color:<input id="textColor" type="color"></div>
+                </div>
                 <button id="yes">Save</button>
                 <button id="no">Discard</button>
             </div>
@@ -447,12 +465,13 @@
 
 <div id="dordodScreen" style="display: none;">
     <h1>Under Construction</h1>
-    <div id="projectdor"></div>
-    <div id="projectdod"></div>
+    <div id="projectdor" class="project dordodlist"></div>
+    <div id="sprintsdordod"></div>
+    <div id="projectdod" class="project dordodlist"></div>
 
     <template id="dordod">
         <fieldset class="checklist">
-            <legend class="title">Project Entry</legend>
+            <legend id="title"></legend>
             <img class="togglerow displayed" src="img/arrowright.svg"
                 onclick="project.ui.checklist.show(event.target)" style="display: none;"
                 title="Inflate checklist">
@@ -2716,7 +2735,6 @@
             var id = item.id;
             var data = item.querySelector("#data");
             var itemClass = id.split('.')[0];
-            console.log("Edit [" + itemClass + "], id:", id);
             this["ui"] = document.querySelector("#" + itemClass + "Form");
             callFunction("initForm_" + itemClass, [this.ui, id]);
             var data = getJSONData(item);
@@ -2725,6 +2743,8 @@
                 if (!input) return;
                 if (["text", "textarea", "date", "week"].filter(t => t == input.type).length)
                     input.value = data[feildname];
+                if (input.type == "color")
+                    input.value = rgbCallToHex(data[feildname]);
                 if (input.type == "radio")
                     if (data[feildname])
                         input.checked = true;
@@ -2756,25 +2776,24 @@
             });
             ui.querySelectorAll("textarea").forEach(t => t.value = '');
         },
-        saveData: function (item, ui) {
+        saveData: function (item, form) {
             returnData = {};
             var data = getJSONData(item);
             Object.keys(data).forEach(f => returnData[f] = data[f]);
-            ui.querySelectorAll("input").forEach(f => {
+            form.querySelectorAll("input").forEach(f => {
                 var value;
                 if (f.type == "radio") {
-                    value = f.checked;capacity
+                    if (f.checked) returnData[f.id] = true; else delete returnData[f.id];
                 }
-                if (f.type == "text" || f.type == "date" || f.type == "week")  {
-                    value = f.value;
+                if ([ "text", "date", "week", "color" ].filter(t => f.type == t).length)  {
+                    returnData[f.id] = f.value;
                 }
-                returnData[f.id] = value;
             });
-            ui.querySelectorAll("textarea").forEach(t => returnData[t.id] = t.value);
+            form.querySelectorAll("textarea").forEach(t => returnData[t.id] = t.value);
             if (data = item.querySelector("#data")) data.innerText = JSON.stringify(returnData);
             if (returnData.name.length && item.querySelector(".itemName"))
                 item.querySelector(".itemName").innerText = returnData.name;
-            ui.style.display = 'none';
+            form.style.display = 'none';
         },
         initData: function(formSelector, params) {
             var data = params.querySelector("#data");
@@ -2878,6 +2897,35 @@
             return params[func].apply(params, args);
         }
     }
+    function rgbCallToHex(rgbFuncCall) {
+        if (!rgbFuncCall.match(/^rgb/)) return rgbFuncCall;
+        return "#" + rgbFuncCall.split("(")[1].split(")")[0].split(",")
+            .map(i => (+i).toString(16).padStart(2, "0")).join("");
+    }
+    function dordodInit() {
+        console.log("Sooraj hua mad dumb");
+        var dordodScreen = document.querySelector("#dordodScreen");
+        // dordodScreen.querySelectorAll("div")
+            // .forEach(d => d.innerHTML = "");
+        function makeChecklist(selector, params) {
+            var holder = document.querySelector("#dordodScreen " + selector);
+            var content = document.querySelector("template#dordod").content.cloneNode(true);
+            Object.keys(params).forEach(k => {
+                console.log(k, typeof(k));
+                content.querySelector("#" + k).innerText = params[k];
+            })
+            return content;
+        }
+        dordodScreen.querySelector("#projectdor")
+            .appendChild(makeChecklist("#projectdor", {
+                title: "Project Entry"
+             }));
+        dordodScreen.querySelector("#projectdod")
+            .appendChild(makeChecklist("#projectdor", {
+                title: "Project Exit"
+             }));
+
+    }
     function scheduleInit() {
         var today = new Date();
         document.querySelectorAll("#mslist tbody tr").forEach(r => {
@@ -2921,7 +2969,8 @@
         params.classList.remove("backlogitem");
         params.classList.add("newTask");
         params.querySelector(".burndown").onclick = project.burndown.edit;
-        params.style.backgroundColor = dragdrop.dragged.dataset.oldcolor;
+        params.style.color = dragdrop.dragged.dataset.oldColor;
+        params.style.backgroundColor = dragdrop.dragged.dataset.oldBackgroundColor;
         params.addEventListener('mouseout', (event) => {});
         form.initData("#requirementsForm", params);
         var id = dragdrop.dragged.id;
@@ -2946,7 +2995,8 @@
             [...document.querySelectorAll("#scheduleEditor .highlight")]
                 .forEach(r => {
                     if (r.style.backgroundColor != hlcolor) {
-                        r.dataset.oldcolor = r.style.backgroundColor;
+                        r.dataset.oldBackgroundColor = r.style.backgroundColor;
+                        r.dataset.oldColor = r.style.color;
                         r.style.backgroundColor = hlcolor;
                     }
                 });
@@ -2954,7 +3004,8 @@
         params.addEventListener('mouseout', (event) => {
             [...document.querySelectorAll("#scheduleEditor .highlight")]
                 .forEach(r => {
-                    r.style.backgroundColor = r.dataset.oldcolor;
+                    r.style.backgroundColor = r.dataset.oldBackgroundColor;
+                    r.style.color = r.dataset.oldColor;
                     r.classList.remove("highlight")
                 });
         });
@@ -3061,6 +3112,7 @@
         reqt.id = params.id;
         reqt.classList.add("reqt");
         reqt.classList.add("backlogitem");
+        reqt.style.color = params.style.color;
         reqt.style.backgroundColor = params.style.backgroundColor;
         reqt.setAttribute('draggable', true);
         img = document.createElement("img");
@@ -3083,7 +3135,8 @@
             [...document.querySelectorAll("#scheduleEditor .highlight")]
                 .forEach(r => {
                     if (r.style.backgroundColor != hlcolor) {
-                        r.dataset.oldcolor = r.style.backgroundColor;
+                        r.dataset.oldBackgroundColor = r.style.backgroundColor;
+                        r.style.color = r.dataset.oldColor;
                         r.style.backgroundColor = hlcolor;
                     }
                 });
@@ -3091,7 +3144,8 @@
         reqt.addEventListener('mouseout', (event) => {
             [...document.querySelectorAll("#scheduleEditor .highlight")]
                 .forEach(r => {
-                    r.style.backgroundColor = r.dataset.oldcolor;
+                    r.style.backgroundColor = r.dataset.oldBackgroundColor;
+                    r.style.color = r.dataset.oldColor;
                     r.classList.remove("highlight");
                 });
 
@@ -3102,17 +3156,30 @@
         data.level = level;
         data.left = params.style.left;
         data.top = params.style.top;
+        data.noteColor = params.style.backgroundColor;
+        data.textColor = "black";
         params.querySelector("#data").innerText = JSON.stringify(data);
         requirements.appendChild(reqt);
     }
     function onedit_requirements(params) {
         var data = getJSONData(params);
         if (!data.name) return;
-        var requirements = document.querySelector("#scheduleScreen #backlog #list");
-        var reqt = requirements.querySelector("#" + params.id.replace(/\./, "\\.") + " span");
-        reqt.innerText = data.name;
-        requirements = document.querySelector("#requirementsScreen #" + params.id.replace(/\./, "\\."));
-        requirements.querySelector(".itemName").innerText = data.name;
+        var requirement = document.querySelector("#requirementsScreen #" + params.id.replace(/\./, "\\."));
+        requirement.style.backgroundColor = data.noteColor;
+        var title = requirement.querySelector(".itemName");
+        title.innerText = data.name;
+        title.style.color = data.textColor;
+        var requirements = document.querySelector("#scheduleScreen #backlog #list #" + params.id.replace(/\./, "\\."));
+        requirements.querySelector("span").innerText = data.name;
+        requirements.style.backgroundColor = data.noteColor;
+        requirements.style.color = data.textColor;
+        [...document.querySelectorAll("#scheduleEditor #sprints .taskbrief")].forEach(t => {
+            var tdata = getJSONData(t);
+            if (tdata.reference == params.id) {
+                t.style.backgroundColor = data.noteColor;
+                t.style.color = data.textColor;
+            }
+        });
     }
     function oninsert_task(params) { onadd_newTask(params); }
     function oninsert_team(params) {
