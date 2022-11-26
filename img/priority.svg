@@ -7,7 +7,7 @@
    viewBox="0 0 140 140"
    version="1.1"
    id="svg5"
-   inkscape:version="1.1.1 (c3084ef, 2021-09-22)"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
    sodipodi:docname="priority.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -24,14 +24,16 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="0.66368547"
-     inkscape:cx="344.28959"
-     inkscape:cy="579.3407"
-     inkscape:window-width="1792"
-     inkscape:window-height="993"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:cx="345.04296"
+     inkscape:cy="580.84743"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
   <defs
      id="defs2" />
   <g
@@ -50,14 +52,14 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:128.436px;line-height:1.25;font-family:'Academy Engraved LET';-inkscape-font-specification:'Academy Engraved LET, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.64311;stroke-miterlimit:4;stroke-dasharray:none"
-       x="37.401054"
-       y="130.61125"
+       x="28.01708"
+       y="135.48885"
        id="text1907"
        transform="scale(1.3594504,0.73559139)"><tspan
          sodipodi:role="line"
          id="tspan1905"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:128.436px;font-family:'Academy Engraved LET';-inkscape-font-specification:'Academy Engraved LET, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:5.64311;stroke-miterlimit:4;stroke-dasharray:none"
-         x="37.401054"
-         y="130.61125">!</tspan></text>
+         x="28.01708"
+         y="135.48885">!</tspan></text>
   </g>
 </svg>

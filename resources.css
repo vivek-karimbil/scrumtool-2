@@ -51,10 +51,16 @@
 #burndownForm tr:nth-child(even) {
     background-color: lavender;
 }
-.capacitydata td {
+#capacity .data input, #vacation .data input {
+    width: 3ch;
+}
+#capacitydata #capactytable {
+    border-top: 1px solid #666;
+}
+#capactytable td {
     padding: 3px;
 }
-.capacitydata td input {
+#capactytable td input {
     text-align: center;
 }
 .capacitySetting {
@@ -116,8 +122,8 @@
     border: 3px solid #666;
     display: grid;
     gap: 10px;
-    grid-template-columns: repeat(5, 1fr);
     min-height: 100px;
+    margin-bottom: 5px;
 }
 .droptarget {
     border-style: double;
@@ -162,6 +168,9 @@
     font-weight: bolder;
     padding: 3px;
 }
+#holidayWeeks.holidayweeks {
+    grid-template-columns: repeat(3, 1fr);
+}
 .icons {
 	position: relative;
 }
@@ -180,6 +189,13 @@ img#holiday {
     border-radius: .5em;
     text-align: center;
     width: 100px;
+    min-width: 90px;
+}
+.itemName {
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .itemDescription {
     margin: 0 5 5 5;
@@ -187,6 +203,7 @@ img#holiday {
 }
 .leftDiv {
     float: left;
+    min-width: 750px;
     width: 60%;
     margin-right: 15px;
 }
@@ -282,6 +299,7 @@ p.itemName {
 }
 .people {
     grid-template-columns: repeat(10, 1fr);
+    min-width: 1100px;
 }
 .postIt {
     width: 85px;
@@ -293,12 +311,14 @@ p.itemName {
 }
 .projectComponent {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 10px;
+    max-width: 100%;
 }
 #projectInfo {
     padding-top: 5ch;
     padding-bottom: 5ch;
+    min-width: 600px;
 }
 .reqt {
     background-color: chartreuse;
@@ -361,6 +381,7 @@ p.itemName {
 .rightDiv {
     float: left;
     width: 40%;
+    min-width: 345px;
 }
 #savefile {
     float: right;
@@ -400,6 +421,13 @@ p.itemName {
     text-align: center;
     vertical-align: middle;
     width: 60ch;
+}
+#sprintsForm #sprintinfo {
+    margin-top: 24px;
+}
+#sprints {
+    grid-template-columns: repeat(6, 1fr);
+    min-width: 750px;
 }
 .staffName {
     width: 100%;
@@ -459,15 +487,19 @@ p.itemName {
     -ms-user-select: none;
 }
 .weekday {
+    min-width: 100px;
     text-align: center;
     font-family: sans-serif;
     font-size: larger;
     background-color: aquamarine;
+    padding-right: 8px;
+    padding-left: 2px;
     margin: 3px;
     vertical-align: top;
 }
 .weekday .dayOfWeek {
     width: 100%;
+    max-width: 100%;
 }
 .weekday .daytype {
     width: 100%;
@@ -479,10 +511,12 @@ p.itemName {
 .weekdays {
     border: 3px solid #666;
 }
+#weeksetup 
 #values {
     border: 3px solid #666;
     width: 100%;
-    display: inline-block;
+    display: table-caption;
+    min-width: 210px;
 }
 .bar1 { fill: steelblue; }
 .bar2 { fill: deepskyblue; }
@@ -526,5 +560,5 @@ pastms {
 }
 
 #holiday .menuicon {
-    width: 100%;
+    width: 80%;
 }
