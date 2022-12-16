@@ -475,21 +475,25 @@
 
 <div id="dordodScreen" style="display: none;">
     <h1>Under Construction</h1>
-    <div id="projectdor" class="project dordodlist"></div>
-    <div id="sprintsdordod"></div>
-    <div id="projectdod" class="project dordodlist"></div>
+    <div id="projectdor" class="dordodlist project"><ul></ul></div>
+    <div id="sprintsdordod" class="dordodlist sprints"><ul></ul></div>
+    <div id="projectdod" class="dordodlist project"><ul></ul></div>
 
     <template id="dordod">
-        <fieldset class="checklist">
-            <legend id="title"></legend>
-            <img class="togglerow displayed" src="img/arrowright.svg"
+        <div class="holder">
+            <div>
+                <img class="togglerow displayed" src="img/arrowright.svg"
                 onclick="project.ui.checklist.show(event.target)" style="display: none;"
                 title="Inflate checklist">
-            <img class="togglerow hidden" src="img/arrowdown.svg"
+                <img class="togglerow hidden" src="img/arrowdown.svg"
                 onclick="project.ui.checklist.hide(event.target)"
                 title="Collapse checklist">
-            <div class="items"><ul><li>This is a list item</li><li>And Another</li></ul></div>
-        </fieldset>    
+            </div>
+            <fieldset class="checklist">
+                <legend id="title"></legend>
+                <div class="items"><table><tbody id="list"></tbody></table></div>
+            </fieldset>
+        </div>
     </template>
 </div>
 
@@ -632,7 +636,12 @@
 <script src="https://d3js.org/d3.v6.min.js"></script>
 
 <script>
-    const statuses = ["task", "inprogress", "totest", "done" ];
+    const statuses = [
+            { label: "Task", value: "task" },
+            { label: "In Progress", value: "inprogress" },
+            { label: "To Test", value:  "totest" },
+            { label: "Done", value: "done" }
+    ];
     var defaults = {
         "capacity": { "developer": 80, "lead": 40, "vacation": 1 },
         "estimate": 3,
@@ -885,7 +894,7 @@
                     spRow = oldTask.closest("tr");
                     oldTask.remove();
                     spRow.querySelector("." + Array.from(cell.classList).join('.')).appendChild(taskCopy);
-                    var status = statuses.filter(f => cell.classList.contains(f))[0];
+                    var status = statuses.map(s => s.value).filter(f => cell.classList.contains(f))[0];
                     document.querySelectorAll("#" + task.id).forEach(t => {
                         var destination = t.closest("tr").querySelector("." + status);
                         destination.appendChild(t);
@@ -921,9 +930,15 @@
         "newTask": "taskTemplate"
     };
     var project = {
+        get name() {
+            return document.querySelector("#projectName").value;
+        },
         burndown: {
-            capacity: function(date) {
-                return project.sprints.getDev().map(m => project.sprints.get(m).capacity(date)).reduce((a, b) => a + b);
+            capacity: function(...args) {
+                var date = args.length ? args[0] : new Date();
+                var capacity = project.sprints.getDev()
+                    .map(m => project.sprints.get(m).capacity(date));
+                return capacity.length ? capacity.reduce((a, b) => a + b) : 0;
             },
             get: function() {
                 var tasks = project.tasks.getAll();
@@ -1058,6 +1073,12 @@
                             .querySelector("input#" + this.size()).value;
                         if (!effort) effort = defaults.estimate;
                         return effort;
+                    },
+                    get tasks() {
+                        return project.tasks.getAll().filter(t => {
+                            var data = getJSONData(t);
+                            return data.reference == this.id;
+                        });
                     }
                 }
             },
@@ -1107,7 +1128,8 @@
                     endDate: function() {
                         var dt = this.startDate();
                         if (dt == null) return null;
-                        var returnDate = new Date(dt.setDate(dt.getDate() + (this.dataValue("weeks") * 7) - 1));
+                        var duration = this.dataValue("weeks")
+                        var returnDate = new Date(dt.setDate(dt.getDate() + (duration * 7) - 1));
                         returnDate.setHours(23);
                         returnDate.setMinutes(59);
                         returnDate.setSeconds(59);
@@ -1359,7 +1381,7 @@
                     status: function() {
                         var selector = "#scheduleEditor #mslist #" + this.id;
                         var cell = document.querySelector(selector).closest("#task.status");
-                        return statuses.filter(s => cell.classList.contains(s))[0];
+                        return statuses.map(s => s.value).filter(s => cell.classList.contains(s))[0];
                     }
                 }
             },
@@ -1416,9 +1438,313 @@
             }
         },
         checklists: {
-            entry: [],
-            exit: [],
-            sprints: []
+            get entry() { return [
+                { prompt: "Project name",  value: "this.echeck.projectName()", style: "" },
+                { prompt: "Scope",  value: "this.echeck.scope()", style: "" },
+                { prompt: "Schedule",  value: "this.echeck.schedule()", style: "" },
+                { prompt: "Sprint plan",  value: "this.echeck.sprintPlan()", style: "" },
+                { prompt: "Blackout weeks",  value: "this.echeck.blackouts()", style: "" },
+                { prompt: "Team",  value: "this.echeck.staff('lead')", style: "" },
+                { prompt: "Capacity",  value: "this.echeck.capacity()", style: "" }
+            ]},
+            get exit() { return [
+                { prompt: "Requirement completion",  value: "this.xcheck.backlog()", style: "" },
+                { prompt: "Task completion",  value: "this.xcheck.tasks()", style: "" },
+                { prompt: "Regresstion testing",  value: "", style: "" },
+                { prompt: "Performance testing",  value: "", style: "" },
+                { prompt: "Stress testing",  value: "", style: "" },
+                { prompt: "Security review",  value: "", style: "" },
+                { prompt: "Patent review",  value: "", style: "" }
+            ]},
+            get sprint() { return {
+                get entry() { return [
+                    { prompt: "Schedule",  value: "this.scheck.schedule(sprint)", style: "" },
+                    { prompt: "Payload",  value: "this.scheck.payload(sprint)", style: "" },
+                    { prompt: "Requirement Estimate",  value: "this.scheck.estimate(sprint)", style: "" },
+                    { prompt: "Team Capacity",  value: "this.scheck.developerCapacity(sprint)", style: "" },
+                    { prompt: "Tasks assignment",  value: "this.scheck.assignment(sprint)", style: "" }
+                ]},
+                get exit() { return [
+                    { prompt: "Payload",  value: "this.scheck.payload(sprint)", style: "" },
+                    { prompt: "Completion",  value: "this.scheck.completion(sprint)", style: "" }                    
+                ]}
+            }},
+            make: function(title, list, sprint) {
+                var checklist = document.querySelector("template#dordod").content.cloneNode(true);
+                checklist.querySelector("#title").innerHTML = title;
+                var items = checklist.querySelector("#list");
+                var sprintID = sprint && sprint.id;
+                list.forEach(l => {
+                    var row = document.createElement("tr");
+                    var cell = document.createElement("td");
+                    cell.classList.add("label");
+                    if (sprintID)
+                        l.value = l.value.replace("sprint", `"${sprintID}"`);
+                    cell.innerText = l.prompt;
+                    row.appendChild(cell);
+                    cell = document.createElement("td");
+                    cell.appendChild(this.evaluate(l.value));
+                    row.appendChild(cell);
+                    items.appendChild(row);
+                });
+                return checklist;
+            },
+            evaluate: function(command) {
+                if (command == "") {
+                    var checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    return checkbox;
+                }
+                var div = document.createElement("div");
+                div.innerHTML = eval(command);
+                return div;
+            },
+            warning: function(s) { return "<div class='warning'>" + s + "</div>"},
+            message: function(s) { return "<div class='message'>" + s + "</div>"},
+            echeck: { // Project Entry Checklist
+                projectName: function() {
+                    var warning = project.checklists.warning;
+                    var name = project.name;
+                    if (!name || name.length == 0) name = warning("Not set");
+                    return name;
+                },
+                scope: function() {
+                    var messages = [];
+                    var message = project.checklists.message;
+                    var warning = project.checklists.warning;
+                    var backlog = project.backlog.getAll();
+                    var backlogCount = backlog.length;
+                    messages.push(backlogCount == 0 ? warning("No requirements in backlog")
+                        : message(backlogCount + " requirements in backlog"));
+                    if (backlogCount > 0) {
+                        var plannedReqts = backlog.filter(b => project.backlog.get(b.id).tasks.length > 0);
+                        var plannedCount = plannedReqts.length;
+                        messages.push(plannedCount == backlogCount ? message(`All ${backlogCount} backlog items scheduled`)
+                            : warning(`${plannedCount} of ${backlogCount} backlog items scheduled`));
+                    }
+                    var tasks = project.tasks.getAll();
+                    var taskCount = tasks.length;
+                    messages.push(taskCount == 0 ? warning("No tasks created")
+                        : message(taskCount + " tasks"));
+                    return messages.join("");
+                },
+                schedule: function() {
+                    var start = project.dates.start().toLocaleDateString();
+                    var end = project.dates.end();
+                    end = end != null ? end.toLocaleDateString() : "";
+                    return `${start} - ${end}`;
+                },
+                staff: function() {
+                    var messages = [];
+                    var message = project.checklists.message;
+                    var warning = project.checklists.warning;
+                    var staff = [...document.querySelectorAll("#settingsScreen #team .teammember")];
+                    ["lead", "developer", "tester"].forEach(r => {
+                        var members = staff.filter(s => s.classList.contains(r));
+                        messages.push(members.length == 0 ? warning(`No ${r}s assigned`)
+                            : message(`${members.length} ${members.length == 1 ? r : r + "s"}`));
+                    });
+                    return messages.join("");
+                },
+                sprintPlan: function() {
+                    var messages = [];
+                    var warning = project.checklists.warning;
+                    var message = project.checklists.message;
+                    var sprints = project.sprints.getAll();
+                    messages.push(sprints.length == 0 ? warning("No sprints added")
+                        : message(sprints.length + " total sprints"));
+                    var devsprints = project.sprints.getDev();
+                    messages.push(devsprints.length == 0 ? warning("No development sprints added")
+                        : message(devsprints.length + " development sprints"));
+                    messages.push(sprints.length == devsprints.length ? warning("No hardening sprints added")
+                        : message((sprints.length - devsprints.length) + " hardening sprints"));
+                    return messages.join("");
+                },
+                blackouts: function() {
+                    var warning = project.checklists.warning;
+                    var message = project.checklists.message;
+                    if (!project.dates.start())
+                        return warning("Project start date not set");
+                    if (!project.dates.end())
+                        return warning("Project end date not set");
+                    var blackoutWeeks = project.dates.blackoutWeeks()
+                        .filter(d => d >= project.dates.start() && d <= project.dates.end());
+                    if (blackoutWeeks.length == 0) return message("No blackout weeks during project");
+                    return blackoutWeeks.map(w => {
+                        var endDate = new Date();
+                        endDate.setDate(w.getDate() + 6);
+                        return message(`${w.toLocaleDateString()} - ${endDate.toLocaleDateString()}`);
+                    }).join("");
+                },
+                capacity: function() {
+                    var startDate = project.dates.start();
+                    var capacity = project.burndown.capacity(startDate);
+                    var message = project.checklists.message;
+                    var warning = project.checklists.warning;
+                    if (project.sprints.getDev().length == 0) return message("Cannot evaluate, no sprints added");
+                    return capacity ? message(`${capacity.toFixed(2)} days`) : warning("No development capacity");
+                }
+            },
+            xcheck: { // Project Exit Checklist
+                backlog: function() {
+                    var messages = [];
+                    var message = project.checklists.message;
+                    var warning = project.checklists.warning;
+                    var backlog = project.backlog.getAll();
+                    var tasks = project.tasks.getAll().map(t => { // tasks related to backlog
+                        var data = getJSONData(t);
+                        return {
+                            id: t.id,
+                            reference: data.reference,
+                            status: project.tasks.get(t.id).status()
+                        };
+                    }).filter(t => t.reference);
+                    if (backlog.length == 0) messages.push(warning("No requirememts in backlog"));
+                    var scheduled = backlog.filter(b => tasks.filter(t => t.reference == b.id).length > 0);
+                    if (backlog.length) {
+                        if (backlog.length == scheduled.length)
+                            messages.push(message(`All ${backlog.length} backlog items in schedule`));
+                        else
+                            messages.push(warning(`${scheduled.length} of ${backlog.length} backlog items scheduled`));
+                        var done = tasks.filter(t => t.status == "done");
+                        if (done.length) {
+                            if (done.length == tasks.length)
+                                messages.push(message(`All ${done.length} related tasks completed`));
+                            else {
+                                var notDone = backlog.filter(b => project.backlog.get(b.id)
+                                    .tasks.filter(t => project.tasks.get(t.id).status() != "done").length > 0);
+                                var done = scheduled.length - notDone.length;
+                                messages.push(message(`${done} backlog items of ${scheduled.length} of scheduled completed`));
+                                messages.push(warning(`${notDone.length} backlog items of ${scheduled.length} of scheduled not completed`));
+                            }
+                        }
+                        else {
+                            if (scheduled.length > 0)
+                                messages.push(warning(`${scheduled.length} backlog requirements not competed`));
+                        }
+                    }
+                    return messages.join("");
+                },
+                tasks: function() {
+                    var messages = [];
+                    var message = project.checklists.message;
+                    var warning = project.checklists.warning;
+                    var taskIDs = project.tasks.getAll().map(t => t.id);
+                    if (taskIDs.length == 0) messages.push(warning("No tasks created"));
+                    else {
+                        messages.push(message(`${taskIDs.length} tasks in project`));
+                        messages.push("<table class='exit project'><th>Status</th><th>Backlog</th><th>Tasks</th><th>Total</th>");
+                        statuses.forEach(s => {
+                            var all = taskIDs.filter(t => project.tasks.get(t).status() == s.value);
+                            var count = all.length;
+                            var bcount = all.filter(t => project.tasks.get(t).data().reference).length;
+                            var tcount = count - bcount;
+                            messages.push(`<tr><td>${s.label}</td><td>${bcount}</td><td>${tcount}</td><td>${count}</td></tr>`);
+                        });
+                        messages.push("</table>");
+                    }
+                    return messages.join("");
+                }
+            },
+            scheck: {
+                schedule: function(sprintID) {
+                    const sprint = project.sprints.get({ id: sprintID });
+                    const startDate = sprint.startDate().toLocaleDateString();
+                    const endDate = sprint.endDate().toLocaleDateString();
+                    return project.checklists.message(`${startDate} - ${endDate}`);
+                },
+                payload: function(sprintID) {
+                    var messages = [];
+                    var message = project.checklists.message;
+                    var warning = project.checklists.warning;
+                    var sprint = project.sprints.get({ id: sprintID });
+                    var tasks = sprint.tasks();
+                    var backlog = tasks.filter(t => getJSONData(t).reference);
+                    var uniqueBacklog = backlog.map(b => getJSONData(b).reference)
+                        .filter((value, index, self) => self.indexOf(value) === index);
+                    if (tasks.length == 0) messages.push(warning("No tasks"));
+                    else {
+                        messages.push(message(`${tasks.length} tasks`));
+                        var backlog = tasks.filter(t => getJSONData(t).reference);
+                        if (backlog.length == 0) messages.push(warning("No backlog related tasks in sprint"));
+                        else {
+                            messages.push(message(`${backlog.length} tasks related to ${uniqueBacklog.length} backlog item`));
+                            messages.push(message(`${tasks.length - backlog.length} non backlog related tasks in sprint`));
+                        }
+                    }
+                    return messages.join("");
+                },
+                estimate: function(sprintID) {
+                    const sprint = project.sprints.get({ id: sprintID });
+                    var tasks = sprint.tasks();
+                    var effort = tasks.length == 0 ? 0 :
+                        tasks.map(t => project.tasks.get(t.id).estimate()).reduce((a, b) => a + b);
+                    return project.checklists.message(`${effort.toFixed(2)} days`);
+                },
+                developerCapacity: function(sprintID) {
+                    const sprint = project.sprints.get({ id: sprintID });
+                    var developerCapacity = sprint.capacity();
+                    if (developerCapacity == 0)
+                        return project.checklists.warning(`No development capacity`);
+                    var tasks = sprint.tasks();
+                    var estimate = tasks.length == 0 ? 0 :
+                        tasks.map(t => project.tasks.get(t.id).estimate()).reduce((a, b) => a + b);
+                    return developerCapacity < estimate ?
+                        project.checklists.warning(`${developerCapacity.toFixed(2)} days - less than assigned work`)
+                        : project.checklists.message(`${developerCapacity.toFixed(2)} days`);
+                },
+                assignment: function(sprintID) {
+                    var messages = [];
+                    var message = project.checklists.message;
+                    var warning = project.checklists.warning;
+                    const sprint = project.sprints.get({ id: sprintID });
+                    var noDevs = sprint.unassignedDeveloper();
+                    if (noDevs.length > 0) messages.push(warning(`${noDevs.length} tasks not assigned to a developer`));
+                    var noTester = sprint.unassignedTester();
+                    if (noTester.length) messages.push(warning(`${noTester.length} tasks not assigned to a tester`))
+                    return messages.join("");
+                },
+                payload: function(sprintID) {
+                    var messages = [];
+                    var message = project.checklists.message;
+                    var warning = project.checklists.warning;
+                    const sprint = project.sprints.get({ id: sprintID });
+                    var tasks = sprint.tasks();
+                    var backlog = tasks.filter(t => getJSONData(t).reference);
+                    var uniqueBacklog = backlog.map(b => getJSONData(b).reference)
+                        .filter((value, index, self) => self.indexOf(value) === index);
+                    if (tasks.length == 0) messages.push(warning("No tasks"));
+                    else {
+                        messages.push(message(`${tasks.length} tasks`));
+                        messages.push(message(`${backlog.length} tasks related to ${uniqueBacklog.length} backlog items`));
+                    }
+                    return messages.join("");
+                },
+                completion: function(sprintID) {
+                    var messages = [];
+                    var message = project.checklists.message;
+                    var warning = project.checklists.warning;
+                    const sprint = project.sprints.get({ id: sprintID });
+                    var tasks = sprint.tasks();
+                    var taskIDs = tasks.map(t => t.id);
+                    var backlog = tasks.filter(t => getJSONData(t).reference);
+                    var uniqueBacklog = backlog.map(b => getJSONData(b).reference)
+                        .filter((value, index, self) => self.indexOf(value) === index);
+                    if (tasks.length == 0) messages.push(warning("No tasks"));
+                    else {
+                        messages.push("<table class='exit sprint'><th>Status</th><th>Backlog</th><th>Tasks</th><th>Total</th>");
+                        statuses.forEach(s => {
+                            var all = taskIDs.filter(t => project.tasks.get(t).status() == s.value);
+                            var count = all.length;
+                            var bcount = all.filter(t => project.tasks.get(t).data().reference).length;
+                            var tcount = count - bcount;
+                            messages.push(`<tr><td>${s.label}</td><td>${bcount}</td><td>${tcount}</td><td>${count}</td></tr>`);
+                        });
+                        messages.push("</table>");
+                    }
+                    return messages.join("");
+                }
+            }
         },
         dates: {
             start: function() {
@@ -1427,8 +1753,8 @@
             },
             end: function() {
                 var sprints = project.sprints.getAll();
-                var lastMS = sprints[sprints.length - 1];
-                return project.sprints.get(lastMS).endDate();
+                var lastMS = sprints.length ? sprints[sprints.length - 1] : null;
+                return lastMS ? project.sprints.get(lastMS).endDate() : null;
             },
             burndownDays: function() {
                 var burndownDays = [];
@@ -1448,25 +1774,14 @@
             },
             blackoutWeeks: function() {
                 return [...document.querySelectorAll("#settingsScreen .holidayWeek")]
-                    .map(d => getJSONData(d)).map(d => {
+                    .map(d => getJSONData(d))
+                    .filter(d => d.hollidayStart)
+                    .map(d => {
                         var w = parseInt(d.hollidayStart.split("W")[1]);
                         var y = parseInt(d.hollidayStart.split("-")[0]);
                         var d = (7 - (new Date(y, 0, 1)).getDay()) + 2 + (w - 1) * 7;
                         return new Date(y, 0, d);
                     });
-            },
-            blackoutDays: function() {
-                var holidays = [];
-                this.blackoutWeeks().forEach(w => {
-                    if (!w) return;
-                    var d = new Date(w);
-                    var workdaysPerWeek = 7 - defaults.weeklyHolidays.length;
-                    for (i = 0; i < workdaysPerWeek; i++) {
-                        holidays.push(new Date(d));
-                        d.setDate(d.getDate() + 1);
-                    }
-                });
-                return holidays;
             },
             trackingDates: function() {
                 var date = new Date(this.start());
@@ -1484,8 +1799,8 @@
                 return trackingDates;
             },
             isHoliday: function(date) {
-                var blackoutDays = this.blackoutDays();
-                if (blackoutDays.filter(d => d.getDate() == date.getDate()).length > 0) return true;
+                var blackoutWeeks = this.blackoutWeeks();
+                if (blackoutWeeks.filter(d => d.getDate() == date.getDate()).length > 0) return true;
                 var dow = date.getDay();
                 return project.dates.weeklyHolidays().filter(d => d == dow).length > 0;
             }
@@ -1531,14 +1846,14 @@
             },
             checklist: {
                 hide: function(target) {
-                    target.closest(".checklist").querySelector(".items").style.display = "none";
+                    target.closest(".holder").querySelector(".items").style.display = "none";
                     target.style.display = "none";
-                    target.closest(".checklist").querySelector(".displayed").style.display = "";
+                    target.closest(".holder").querySelector(".displayed").style.display = "";
                 },
                 show: function(target) {
-                    target.closest(".checklist").querySelector(".items").style.display = "";
+                    target.closest(".holder").querySelector(".items").style.display = "";
                     target.style.display = "none";
-                    target.closest(".checklist").querySelector(".hidden").style.display = "";
+                    target.closest(".holder").querySelector(".hidden").style.display = "";
                 }
             },
             sizes: function() {
@@ -1611,7 +1926,7 @@
                     // For each task status, move tasks to developer row
                     document.querySelectorAll("#msbacklog td:not(.msicon)").forEach(status => {
                         // Get the column status to search for the right column in the table above
-                        var columnStatus = statuses.filter(s => status.classList.contains(s))[0];
+                        var columnStatus = statuses.map(s => s.value).filter(s => status.classList.contains(s))[0];
                         // For each task in status column
                         status.querySelectorAll(".taskbrief").forEach(task => {
                             task.querySelector(".burndown").onclick = project.burndown.edit;
@@ -1628,7 +1943,7 @@
                     });
                     document.querySelectorAll("#qabacklog td:not(.msicon)").forEach(status => {
                         // Get the column status to search for the right column in the table above
-                        var columnStatus = statuses.filter(s => status.classList.contains(s))[0];
+                        var columnStatus = statuses.map(s => s.value).filter(s => status.classList.contains(s))[0];
                         // For each task in status column
                         status.querySelectorAll(".taskbrief").forEach(task => {
                             task.querySelector(".burndown").onclick = project.burndown.edit;
@@ -1841,7 +2156,7 @@
                 var table = document.querySelector("#mslist");
                 burndown.forEach(sprint => {
                     var tr = table.querySelector("tr#" + sprint.id);
-                    statuses.forEach(status => {
+                    statuses.map(s => s.value).forEach(status => {
                         sprint[status].forEach(task => {
                             var data = task.data;
                             dragdrop.dragged = document.querySelector("#mslist #development");
@@ -1862,7 +2177,7 @@
                 var form = document.querySelector("#savefileForm");
                 form.style.display = "";
                 var dt = (new Date()).toISOString().split(".")[0];
-                var projectName = document.querySelector("#projectName").value;
+                var projectName = project.name;
                 if (projectName == "") projectName = "Project";
                 form.querySelector("#filename").value = projectName + "." + dt;
                 form.querySelector("#yes").addEventListener("click", function() {
@@ -1934,7 +2249,7 @@
                 document.querySelectorAll("#mslist tbody tr.msrequirements").forEach(ms => {
                     var last = json.burndown.push({ id: ms.id }) - 1;
                     var sprint = json.burndown[last];
-                    statuses.forEach(status => {
+                    statuses.map(s => s.value).forEach(status => {
                         sprint[status] = [];
                         ms.querySelectorAll("." + status + " .taskbrief").forEach(task => {
                             sprint[status].push({ id: task.id, data: getJSONData(task)});
@@ -1944,7 +2259,7 @@
                 return json;
             }
         }
-    }
+    };
     var graph = {
         init: function() {
             document.querySelector("#graphsScreen #sprint").addEventListener("click", this.sprintInitgraph);
@@ -2913,28 +3228,32 @@
             .map(i => (+i).toString(16).padStart(2, "0")).join("");
     }
     function dordodInit() {
-        console.log("Sooraj hua mad dumb");
         var dordodScreen = document.querySelector("#dordodScreen");
-        // dordodScreen.querySelectorAll("div")
-            // .forEach(d => d.innerHTML = "");
-        function makeChecklist(selector, params) {
-            var holder = document.querySelector("#dordodScreen " + selector);
-            var content = document.querySelector("template#dordod").content.cloneNode(true);
-            Object.keys(params).forEach(k => {
-                console.log(k, typeof(k));
-                content.querySelector("#" + k).innerText = params[k];
-            })
-            return content;
-        }
-        dordodScreen.querySelector("#projectdor")
-            .appendChild(makeChecklist("#projectdor", {
-                title: "Project Entry"
-             }));
-        dordodScreen.querySelector("#projectdod")
-            .appendChild(makeChecklist("#projectdor", {
-                title: "Project Exit"
-             }));
+        dordodScreen.querySelectorAll(".dordodlist")
+            .forEach(d => d.innerText = "");
 
+        var checklist = project.checklists.entry;
+        dordodScreen.querySelector("#projectdor")
+            .appendChild(project.checklists.make("Project Entry", checklist));
+
+        project.sprints.getDev().forEach(s => {
+            var sprint = project.sprints.get(s);
+            var sprintName = sprint.data().name;
+            checklist = [];
+            var sprintFrame = project.checklists.make("Sprint: " + sprintName, checklist, sprint);
+
+            checklist = project.checklists.sprint.entry;
+            sprintFrame.querySelector(".items")
+                .appendChild(project.checklists.make("Sprint Entry", checklist, sprint));
+            checklist = project.checklists.sprint.exit;
+            sprintFrame.querySelector(".items")
+                .appendChild(project.checklists.make("Sprint Exit", checklist, sprint));
+            dordodScreen.querySelector("#sprintsdordod").appendChild(sprintFrame);
+        });
+
+        checklist = project.checklists.exit;
+        dordodScreen.querySelector("#projectdod")
+            .appendChild(project.checklists.make("Project Exit", checklist));
     }
     function scheduleInit() {
         var today = new Date();
@@ -3050,7 +3369,7 @@
         if (dropTable.id == "devtasklist" || dropTable.id == "msbacklog" || dropTable.id == "qabacklog") {
             var sprint = params.closest("#sprintEditor").querySelector(".scheduleMS");
             var spRow = document.querySelector("#scheduleScreen #" + sprint.id);
-            var status = [...params.closest("td").classList].filter(f => statuses.filter(s => s == f).length)[0];
+            var status = [...params.closest("td").classList].filter(f => statuses.map(s => s.value).filter(s => s == f).length)[0];
             if (role != '') data = project.tasks.assign(params, params.closest("td"), role);
             params.querySelector("#data").innerText = JSON.stringify(data);
             var taskCopy = params.cloneNode(true);

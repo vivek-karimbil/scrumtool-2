@@ -74,6 +74,8 @@
 }
 .checklist {
     border: 1px solid black;
+    padding-top: 0;
+    padding-right: 0;
 }
 .checklist #title {
     border: 0px darkgrey solid;
@@ -117,7 +119,15 @@
     display: inline-block;
     width: 100%;
 }
-
+#dordodScreen #list > tr:nth-child(even) {
+    background: #eee;
+}
+#dordodScreen td.label {
+    min-width: 300px;
+}
+#dordodScreen .warning {
+    background-color: yellow;
+}
 .droplist {
     border: 3px solid #666;
     display: grid;
