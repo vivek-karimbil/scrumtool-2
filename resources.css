@@ -74,8 +74,9 @@
 }
 .checklist {
     border: 1px solid black;
-    padding-top: 0;
-    padding-right: 0;
+    margin-top: 5px;
+    padding-right: 10px;
+    /* display: none; */
 }
 .checklist #title {
     border: 0px darkgrey solid;
@@ -118,6 +119,9 @@
     background-color: burlywood;
     display: inline-block;
     width: 100%;
+}
+#dordodScreen .dordodlist {
+    display: inline-block;
 }
 #dordodScreen #list > tr:nth-child(even) {
     background: #eee;
@@ -316,9 +320,6 @@ p.itemName {
     height: 65px;
     margin: 10px;
 }
-.project.dordodlist {
-    margin-top: 5px;
-}
 .projectComponent {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -410,6 +411,40 @@ p.itemName {
     width: 100%;
     border-width: 2px;
 }
+#sections #sprints {
+    max-width: 750px;
+    min-width: 50px;
+    overflow: auto;
+}
+#sections #sprints img {
+    margin-top: 5px;
+    max-width: 67px;
+}
+#sections .clSelector {
+    display: table-cell;
+    min-width: 100px;
+    max-width: 100px;
+    width: 100px;
+}
+#sections .clSelector:hover img {
+    background-color: #aaa;
+}
+#sections .clSelector .imgHolder {
+    display: flex;
+    justify-content: center;
+}
+#sections .clSelector .name {
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+#sections #start, #sections #stop {
+    vertical-align: top;
+}
+#start img, #sections #stop img {
+    padding: 15 10 5 10;
+}
 .selected {
     border: 2px solid #666;
     border-radius: 5px;
@@ -423,6 +458,9 @@ p.itemName {
     display: inline;
     float: left;
     width: 60%;
+}
+#sprintsdordod .holder {
+    display: none;
 }
 #sprintEditor #header {
     display: table-cell;

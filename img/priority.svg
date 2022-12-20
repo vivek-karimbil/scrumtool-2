@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.66368547"
-     inkscape:cx="345.04296"
-     inkscape:cy="580.84743"
+     inkscape:zoom="1.3273709"
+     inkscape:cx="174.4049"
+     inkscape:cy="254.26201"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
@@ -40,26 +40,22 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <rect
-       style="fill:#928282;stroke:#612d2d;stroke-width:2.565;stroke-linecap:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       id="rect1153"
-       width="88.502007"
-       height="90.096649"
-       x="55.246304"
-       y="-47.097672"
-       ry="11.162427"
-       transform="rotate(45.368457)" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:128.436px;line-height:1.25;font-family:'Academy Engraved LET';-inkscape-font-specification:'Academy Engraved LET, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.64311;stroke-miterlimit:4;stroke-dasharray:none"
-       x="28.01708"
-       y="135.48885"
-       id="text1907"
-       transform="scale(1.3594504,0.73559139)"><tspan
-         sodipodi:role="line"
-         id="tspan1905"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:128.436px;font-family:'Academy Engraved LET';-inkscape-font-specification:'Academy Engraved LET, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:5.64311;stroke-miterlimit:4;stroke-dasharray:none"
-         x="28.01708"
-         y="135.48885">!</tspan></text>
+    <g
+       id="g9034">
+      <path
+         id="rect1153"
+         style="fill:#928282;stroke:#612d2d;stroke-width:2.565;stroke-linecap:round"
+         transform="rotate(45.368457)"
+         d="m 66.408731,-47.097672 h 66.177149 c 6.18399,0 11.16243,4.978443 11.16243,11.162427 v 67.771796 c 0,6.183984 -4.97844,11.162427 -11.16243,11.162427 H 66.408731 c -6.183985,0 -11.162427,-4.978443 -11.162427,-11.162427 v -67.771796 c 0,-6.183984 4.978442,-11.162427 11.162427,-11.162427 z" />
+      <g
+         aria-label="!"
+         transform="scale(1.3594504,0.73559139)"
+         id="text1907"
+         style="font-size:128.436px;line-height:1.25;font-family:'Academy Engraved LET';-inkscape-font-specification:'Academy Engraved LET, Normal';stroke-width:5.64311">
+        <path
+           d="M 60.31422,42.109348 58.683685,109.77656 H 48.022493 L 46.266532,42.109348 Z m -0.627129,93.379502 h -12.79343 v -13.23242 h 12.79343 z"
+           id="path9050" />
+      </g>
+    </g>
   </g>
 </svg>

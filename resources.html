@@ -474,26 +474,50 @@
 </div>
 
 <div id="dordodScreen" style="display: none;">
-    <h1>Under Construction</h1>
-    <div id="projectdor" class="dordodlist project"><ul></ul></div>
-    <div id="sprintsdordod" class="dordodlist sprints"><ul></ul></div>
-    <div id="projectdod" class="dordodlist project"><ul></ul></div>
+    <h1 style="display: none;">Under Construction</h1>
+    <table id="sections">
+        <td id="start">
+            <div class="clSelector">
+                <div class="imgHolder">
+                    <img class="menuButton undraggable" src="img/start.svg" title="Project entry checklist"/>
+                </div>
+            </div>
+        </td>
+        <td id="sprints"></td>
+        <td id="stop">
+            <div class="clSelector">
+                <div class="imgHolder">
+                    <img class="menuButton undraggable" src="img/stop.svg" title="Project exit checklist"/>
+                </div>
+            </div>
+        </td>
+    </table>
+    <div id="startDD" class="dordodlist project"></div>
+    <div id="sprintsDD" class="dordodlist sprints"></div>
+    <div id="stopDD" class="dordodlist project"></div>
 
     <template id="dordod">
         <div class="holder">
-            <div>
-                <img class="togglerow displayed" src="img/arrowright.svg"
-                onclick="project.ui.checklist.show(event.target)" style="display: none;"
-                title="Inflate checklist">
-                <img class="togglerow hidden" src="img/arrowdown.svg"
-                onclick="project.ui.checklist.hide(event.target)"
-                title="Collapse checklist">
-            </div>
             <fieldset class="checklist">
                 <legend id="title"></legend>
                 <div class="items"><table><tbody id="list"></tbody></table></div>
             </fieldset>
         </div>
+    </template>
+
+    <template id="sprintCell">
+        <div class="clSelector">
+            <div class="imgHolder"><img class="undraggable" src="img/devsprint.svg"/></div>
+            <div class="name"></div>
+        </div>
+    </template>
+
+    <template id="clItem">
+        <span id="items">
+            <input id="result" type="checkbox">
+            <input id="description" placeholder="Optional text or URL" onchange="project.checklists.change()">
+            <a id="link" target="_blank" style="display: none;">link</a>
+        </span>
     </template>
 </div>
 
@@ -1450,11 +1474,11 @@
             get exit() { return [
                 { prompt: "Requirement completion",  value: "this.xcheck.backlog()", style: "" },
                 { prompt: "Task completion",  value: "this.xcheck.tasks()", style: "" },
-                { prompt: "Regresstion testing",  value: "", style: "" },
-                { prompt: "Performance testing",  value: "", style: "" },
-                { prompt: "Stress testing",  value: "", style: "" },
-                { prompt: "Security review",  value: "", style: "" },
-                { prompt: "Patent review",  value: "", style: "" }
+                { prompt: "Regression testing",  value: "", style: "", id: "regression" },
+                { prompt: "Performance testing",  value: "", style: "", id: "performance" },
+                { prompt: "Stress testing",  value: "", style: "", id: "stress" },
+                { prompt: "Security review",  value: "", style: "", id: "security" },
+                { prompt: "Patent review",  value: "", style: "", id: "patent" }
             ]},
             get sprint() { return {
                 get entry() { return [
@@ -1483,21 +1507,39 @@
                     cell.innerText = l.prompt;
                     row.appendChild(cell);
                     cell = document.createElement("td");
-                    cell.appendChild(this.evaluate(l.value));
+                    cell.appendChild(this.evaluate(l));
                     row.appendChild(cell);
                     items.appendChild(row);
                 });
                 return checklist;
             },
-            evaluate: function(command) {
-                if (command == "") {
-                    var checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-                    return checkbox;
+            evaluate: function(item) {
+                if (item.value == "") {
+                    var response = document.querySelector("template#clItem").content.cloneNode(true);
+                    response.id = item.id;
+                    return response;
                 }
                 var div = document.createElement("div");
-                div.innerHTML = eval(command);
+                div.innerHTML = eval(item.value);
                 return div;
+            },
+            show: function(selector) {
+                document.querySelectorAll("#startDD, #stopDD, #sprintsDD > .holder")
+                    .forEach(c => c.style.display = "none");
+                var checklist = document.querySelector("#dordodScreen " + selector);
+                checklist.style.display = "";
+            },
+            change: function() {
+                var target = event.target;
+                try {
+                    new URL(target.value);
+                    var link = target.parentNode.querySelector("#link");
+                    link.style.display = "";
+                    link.href = target.value;
+                }
+                catch (e) {
+                    target.parentNode.querySelector("#link").style.display = "none";
+                }
             },
             warning: function(s) { return "<div class='warning'>" + s + "</div>"},
             message: function(s) { return "<div class='message'>" + s + "</div>"},
@@ -1843,18 +1885,6 @@
                 document.querySelectorAll(".weeksetup #week .item").forEach(w => w.parentNode.removeChild(w));
                 document.querySelector("#mslist #sprints").innerHTML = "";
                 document.querySelector("#backlog #list").innerHTML = "";
-            },
-            checklist: {
-                hide: function(target) {
-                    target.closest(".holder").querySelector(".items").style.display = "none";
-                    target.style.display = "none";
-                    target.closest(".holder").querySelector(".displayed").style.display = "";
-                },
-                show: function(target) {
-                    target.closest(".holder").querySelector(".items").style.display = "";
-                    target.style.display = "none";
-                    target.closest(".holder").querySelector(".hidden").style.display = "";
-                }
             },
             sizes: function() {
                 return [...document.querySelector("#estimateTemplate")
@@ -3228,19 +3258,36 @@
             .map(i => (+i).toString(16).padStart(2, "0")).join("");
     }
     function dordodInit() {
+        var today = new Date();
         var dordodScreen = document.querySelector("#dordodScreen");
         dordodScreen.querySelectorAll(".dordodlist")
             .forEach(d => d.innerText = "");
 
         var checklist = project.checklists.entry;
-        dordodScreen.querySelector("#projectdor")
+        dordodScreen.querySelector("#startDD")
             .appendChild(project.checklists.make("Project Entry", checklist));
-
+        dordodScreen.querySelector("#start")
+            .addEventListener('mouseover', () => project.checklists.show("#startDD"));
+        if (today < project.dates.start()) project.checklists.show("#startDD");
+        
+        document.querySelector("#dordodScreen #sections #sprints").innerText = "";
         project.sprints.getDev().forEach(s => {
             var sprint = project.sprints.get(s);
             var sprintName = sprint.data().name;
             checklist = [];
+
+            var clSelector = document.querySelector("template#sprintCell").content.cloneNode(true);
+            clSelector.querySelector("img").title = "Checklist for " + sprintName;
+            clSelector.querySelector("img")
+                .addEventListener('mouseover', () => project.checklists.show(`#sprintsDD #${sprint.id}`));
+            clSelector.querySelector(".name").innerText = sprintName;
+            document.querySelector("#dordodScreen #sections #sprints")
+                .appendChild(clSelector);
+
             var sprintFrame = project.checklists.make("Sprint: " + sprintName, checklist, sprint);
+            var holder = sprintFrame.querySelector(".holder");
+            holder.id = sprint.id;
+            holder.style.display = "none";
 
             checklist = project.checklists.sprint.entry;
             sprintFrame.querySelector(".items")
@@ -3248,12 +3295,17 @@
             checklist = project.checklists.sprint.exit;
             sprintFrame.querySelector(".items")
                 .appendChild(project.checklists.make("Sprint Exit", checklist, sprint));
-            dordodScreen.querySelector("#sprintsdordod").appendChild(sprintFrame);
+            dordodScreen.querySelector("#sprintsDD").appendChild(sprintFrame);
+            if (today >= sprint.startDate() && today <= sprint.endDate())
+                project.checklists.show(`#${sprint.id}`);
         });
 
         checklist = project.checklists.exit;
-        dordodScreen.querySelector("#projectdod")
+        dordodScreen.querySelector("#stopDD")
             .appendChild(project.checklists.make("Project Exit", checklist));
+        dordodScreen.querySelector("#stop")
+            .addEventListener('mouseover', () => project.checklists.show("#stopDD"));
+        if (project.dates.end() && today > project.dates.end()) project.checklists.show("#stopDD");
     }
     function scheduleInit() {
         var today = new Date();
