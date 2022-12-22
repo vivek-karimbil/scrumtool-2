@@ -1507,6 +1507,10 @@
                     cell.innerText = l.prompt;
                     row.appendChild(cell);
                     cell = document.createElement("td");
+                    if (l.id) {
+                        cell.id = l.id;
+                        cell.classList.add("userinput")
+                    }
                     cell.appendChild(this.evaluate(l));
                     row.appendChild(cell);
                     items.appendChild(row);
@@ -1528,6 +1532,44 @@
                     .forEach(c => c.style.display = "none");
                 var checklist = document.querySelector("#dordodScreen " + selector);
                 checklist.style.display = "";
+            },
+            fromJSON: function(checklists) {
+                checklists.forEach(checklist => {
+                    var table = document.querySelector(`.dordodlist #${checklist.id}`);
+                    table.querySelectorAll("input").forEach(input => {
+                        if (input.type == "checkbox") input.checked = false;
+                        else input.value = '';
+                    });
+                    checklist.items.forEach(l => {
+                        Object.keys(l).filter(k => k != 'id').forEach(k => {
+                            var input = table.querySelector(`#${l.id} #${k}`);
+                            if (input.type == "checkbox") input.checked = l[k];
+                            else {
+                                input.value = l[k];
+                                var evt = document.createEvent("HTMLEvents");
+                                evt.initEvent("change", false, true);
+                                input.dispatchEvent(evt);
+                            }
+                        });
+                    });
+                });
+            },
+            toJSON: function() {
+                var checklists = [];
+                document.querySelectorAll(".dordodlist > .holder").forEach(c => {
+                    var checklist = { id: c.id, items: [] };
+                    c.querySelectorAll(".userinput").forEach(i => {
+                        var item = { id: i.id };
+                        i.querySelectorAll("input").forEach(n => {    
+                            var value = n.type == "checkbox" ? n.checked : n.value;                        
+                            item[n.id] = value;
+                        });
+                        checklist.items.push(item);
+                    });
+                    if (checklist.items.length > 0)
+                        checklists.push(checklist);
+                });
+                return checklists;
             },
             change: function() {
                 var target = event.target;
@@ -1885,6 +1927,7 @@
                 document.querySelectorAll(".weeksetup #week .item").forEach(w => w.parentNode.removeChild(w));
                 document.querySelector("#mslist #sprints").innerHTML = "";
                 document.querySelector("#backlog #list").innerHTML = "";
+                document.querySelectorAll("#dordodScreen input").forEach(i => i.type == "checkbox" ? i.checked = false : i.value = "");
             },
             sizes: function() {
                 return [...document.querySelector("#estimateTemplate")
@@ -2174,6 +2217,7 @@
                             oldReq.querySelector("span").innerText = rqtData.name;
                             oldReq.id = id;
                         }
+                        project.checklists.fromJSON(data.checklists);
                         project.file.loadTrackingData(data.burndown);
                     }
                     form.style.display = "none";
@@ -2245,7 +2289,8 @@
                     sprints: [],
                     holidayWeeks: [],
                     requirements: [],
-                    burndown: []
+                    burndown: [],
+                    checklists: []
                 };
                 document.querySelectorAll("#projectInfo input").forEach (v => {
                     json.projectInfo[v.id] = v.value;
@@ -2286,6 +2331,7 @@
                         })
                     });
                 });
+                json.checklists = project.checklists.toJSON();
                 return json;
             }
         }
@@ -3226,6 +3272,7 @@
             estimate.selected = d.id == defaults.size ? true : d.checked;
             document.querySelector("select#size").appendChild(estimate);
         });
+        dordodInit();
         // Drag and drop handlers
         document.addEventListener("dragstart", (event) => dragdrop.dragstart(event), false);
         document.addEventListener("dragover", (event) => event.preventDefault(), false);
@@ -3259,6 +3306,7 @@
     }
     function dordodInit() {
         var today = new Date();
+        var savedLists = project.checklists.toJSON();
         var dordodScreen = document.querySelector("#dordodScreen");
         dordodScreen.querySelectorAll(".dordodlist")
             .forEach(d => d.innerText = "");
@@ -3268,6 +3316,7 @@
             .appendChild(project.checklists.make("Project Entry", checklist));
         dordodScreen.querySelector("#start")
             .addEventListener('mouseover', () => project.checklists.show("#startDD"));
+        dordodScreen.querySelector("#startDD .holder").id = "start";
         if (today < project.dates.start()) project.checklists.show("#startDD");
         
         document.querySelector("#dordodScreen #sections #sprints").innerText = "";
@@ -3305,7 +3354,9 @@
             .appendChild(project.checklists.make("Project Exit", checklist));
         dordodScreen.querySelector("#stop")
             .addEventListener('mouseover', () => project.checklists.show("#stopDD"));
+        dordodScreen.querySelector("#stopDD .holder").id = "stop";
         if (project.dates.end() && today > project.dates.end()) project.checklists.show("#stopDD");
+        project.checklists.fromJSON(savedLists);
     }
     function scheduleInit() {
         var today = new Date();
