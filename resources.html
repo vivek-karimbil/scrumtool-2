@@ -778,7 +778,7 @@
                     callback.length + " handlers found\n" : "\n")
                 + "\tDragged [" + callbackentry
                 + "] on [" + (callback[0].target ? callback[0].target : "<no target>")
-                + "] Handler: " + (callback[0].handler ? callback[0].handler : "<no handler>")
+                + "]\nHandler: " + (callback[0].handler ? callback[0].handler : "<no handler>")
                 + "\n-----------\n");
             eval(callback[0].handler);
         },
@@ -1583,7 +1583,7 @@
                     target.parentNode.querySelector("#link").style.display = "none";
                 }
             },
-            warning: function(s) { return "<div class='warning'>" + s + "</div>"},
+            warning: function(s) { return "<div class='warning'><img src='img/warning.svg'>" + s + "</div>"},
             message: function(s) { return "<div class='message'>" + s + "</div>"},
             echeck: { // Project Entry Checklist
                 projectName: function() {
@@ -1665,7 +1665,7 @@
                     var capacity = project.burndown.capacity(startDate);
                     var message = project.checklists.message;
                     var warning = project.checklists.warning;
-                    if (project.sprints.getDev().length == 0) return message("Cannot evaluate, no sprints added");
+                    if (project.sprints.getDev().length == 0) return warning("Cannot evaluate, no sprints added");
                     return capacity ? message(`${capacity.toFixed(2)} days`) : warning("No development capacity");
                 }
             },
@@ -1774,7 +1774,7 @@
                     var estimate = tasks.length == 0 ? 0 :
                         tasks.map(t => project.tasks.get(t.id).estimate()).reduce((a, b) => a + b);
                     return developerCapacity < estimate ?
-                        project.checklists.warning(`${developerCapacity.toFixed(2)} days - less than assigned work`)
+                        project.checklists.warning(`${developerCapacity.toFixed(2)} days - less than required estimate`)
                         : project.checklists.message(`${developerCapacity.toFixed(2)} days`);
                 },
                 assignment: function(sprintID) {
@@ -2214,7 +2214,7 @@
                             rqt.querySelector(".itemName").innerText = rqtData.name;
                             rqt.querySelector("#data").innerText = JSON.stringify(rqtData);
                             var oldReq = document.querySelector("#backlog #list #" + origId);
-                            oldReq.querySelector("span").innerText = rqtData.name;
+                            oldReq.querySelector("div.summary").innerText = rqtData.name;
                             oldReq.id = id;
                         }
                         project.checklists.fromJSON(data.checklists);
@@ -3558,7 +3558,8 @@
         img.draggable = "false";
         img.title = "Drag this";
         reqt.appendChild(img);
-        para = document.createElement("span");
+        para = document.createElement("div");
+        para.classList.add("summary");
         para.innerText = description;
         reqt.appendChild(para);
         var hlcolor = "lightgray";
@@ -3607,7 +3608,7 @@
         title.innerText = data.name;
         title.style.color = data.textColor;
         var requirements = document.querySelector("#scheduleScreen #backlog #list #" + params.id);
-        requirements.querySelector("span").innerText = data.name;
+        requirements.querySelector(".summary").innerText = data.name;
         requirements.style.backgroundColor = data.noteColor;
         requirements.style.color = data.textColor;
         [...document.querySelectorAll("#scheduleEditor #sprints .taskbrief")].forEach(t => {

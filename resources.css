@@ -25,9 +25,6 @@
     text-align: center;
     margin-left: 5;
 }
-#scheduleScreen #backlogsummary {
-    border: 3px solid #666;
-}
 .boardtitle {
     background-color: peachpuff;
     border: 3px solid #666;
@@ -131,6 +128,11 @@
 }
 #dordodScreen .warning {
     background-color: yellow;
+    align-items: center;
+    display: flex;
+}
+#dordodScreen .warning img {
+    width: 25px;
 }
 .droplist {
     border: 3px solid #666;
@@ -140,7 +142,6 @@
     margin-bottom: 5px;
 }
 .droptarget {
-    border-style: double;
     background-color: rgb(182, 198, 185);
 }
 .editorsettings {
@@ -176,6 +177,8 @@
     text-align: justify;
     vertical-align: top;
     width: 12px;
+    float: left;
+    margin-right: 5px;
 }
 .header {
     background-color: #c5bdbd;
@@ -201,7 +204,6 @@ img#holiday {
 }
 .item {
     border-radius: .5em;
-    text-align: center;
     width: 100px;
     min-width: 90px;
 }
@@ -209,6 +211,7 @@ img#holiday {
     width: 100px;
     white-space: nowrap;
     overflow: hidden;
+    text-align: center;
     text-overflow: ellipsis;
 }
 .itemDescription {
@@ -229,7 +232,6 @@ img#holiday {
 	height: 50px;
 }
 .menuIcon {
-	text-align: center;
 	height: 60px;
 }
 .minbutton {
@@ -294,15 +296,16 @@ img#holiday {
 }
 p.itemName {
     color: black;
-    max-width: 50ch;
     display: -webkit-box;
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
     margin-top: 0;
     margin-bottom: 0;
     overflow: hidden;
+    text-align: left;
     text-overflow: ellipsis;
-    height: 90px;
+    white-space: normal;
+    width: auto;
 }
 .parameters {
     padding-left: 3px;
@@ -334,30 +337,18 @@ p.itemName {
 .reqt {
     background-color: chartreuse;
     border: 1px solid #666;
-    width: 90%;
+    margin: 5px 5px 5px 5px;
     margin-bottom: 5px;
     padding-left: 5px;
     padding-right: 5px;
 }
 .reqt.backlogitem p {
     max-width: 40ch;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 .reqticon {
     width: 50px;
 }
 .reqtlist {
-    list-style-type: none;
-    margin: 0;
-    padding-left: 5%;
-    padding-top: 5px;
-    overflow: hidden;
 }
 .requirement {
     height: 50px;
@@ -387,7 +378,6 @@ p.itemName {
     width: 175px;
     margin: 0;
     height: 130px;
-    position: relative;
 }
 .rightDiv {
     float: left;
@@ -406,6 +396,9 @@ p.itemName {
     display: flex;
     margin-top: 5px;
     width: 100%;
+}
+#scheduleScreen #backlogsummary {
+    border: 3px solid #666;
 }
 #scheduleTable {
     width: 100%;
@@ -443,7 +436,7 @@ p.itemName {
     vertical-align: top;
 }
 #start img, #sections #stop img {
-    padding: 15 10 5 10;
+    padding: 7px 10 5 10;
 }
 .selected {
     border: 2px solid #666;
@@ -489,14 +482,25 @@ p.itemName {
     border-spacing: 0;
     padding: 0 0 0 0;
 }
+.summary {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-top: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    width: auto;
+}
 .taskbrief {
     color: black;
     background-color: rosybrown;
     border-radius: 0;
     display: inline-block;
     margin: 1.5%;
+    width: 121px;
     vertical-align: top;
-    width: 45%;
 }
 .taskcontrols img {
     height: 20px;

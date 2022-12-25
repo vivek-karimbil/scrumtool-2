@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="200mm"
+   height="175mm"
+   viewBox="0 0 200 175"
+   version="1.1"
+   id="svg346"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   sodipodi:docname="warning.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview348"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.0129245"
+     inkscape:cx="334.18088"
+     inkscape:cy="307.52538"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs343" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="path1088"
+       style="fill:#bbc710;fill-opacity:1;stroke:#716e00;stroke-width:1.414;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:transform-center-y="-27.158624"
+       d="M 99.258642,5.609817 5.1785972,168.56111 H 193.3392 Z m 0,34.867639 66.486378,115.157824 H 32.772262 Z" />
+    <text
+       xml:space="preserve"
+       style="font-size:122.882px;fill:#cfcf10;fill-opacity:1;stroke:#796200;stroke-width:1.44;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
+       x="47.777443"
+       y="200.66823"
+       id="text1167"
+       transform="scale(1.3864496,0.72126676)"><tspan
+         id="tspan1165"
+         style="font-size:122.882px;fill:#cfcf10;fill-opacity:1;stroke:#796200;stroke-width:1.44;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
+         x="47.777443"
+         y="200.66823"
+         sodipodi:role="line">!</tspan></text>
+  </g>
+</svg>
