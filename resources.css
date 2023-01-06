@@ -16,9 +16,28 @@
     z-index: 10;
     width: min-content;
 }
+#backlogDiv .divheader {
+    text-align: center;
+}
 #backlogDiv #filter {
     height: 19px;
     width: 15px;
+}
+#backlogDiv #filterButton {
+    float: left;
+}
+#backlogDiv #filters {
+    background-color: wheat;
+    border: 1px solid black;
+    padding: 5px 5px 5px 5px;
+    position: absolute;
+    visibility: hidden;
+    z-index: 10;
+}
+#backlogDiv #filters .group {
+    border: 1px solid #666;
+    margin-bottom: 5px;
+    padding: 0 5 0 0;
 }
 .bdData {
     width: 3.5ch;
@@ -348,8 +367,6 @@ p.itemName {
 .reqticon {
     width: 50px;
 }
-.reqtlist {
-}
 .requirement {
     height: 50px;
 }
@@ -393,12 +410,13 @@ p.itemName {
     width: 100%;
 }
 #scheduleScreen {
-    display: flex;
+    display: block;
     margin-top: 5px;
     width: 100%;
 }
 #scheduleScreen #backlogsummary {
     border: 3px solid #666;
+    display: inline-block;
 }
 #scheduleTable {
     width: 100%;

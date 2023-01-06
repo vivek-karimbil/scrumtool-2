@@ -316,21 +316,11 @@
         <div class="modal-container">
             <div class="container">
                 <div onclick="document.getElementById('requirementsForm').style.display='none'" class="minbutton">×</div>
-                <div>&nbsp;</div>
                 <div><input id="name" class="teamData" placeholder="Requirement"></div>
                 <div>
                     <textarea id="description" class="teamData" placeholder="Details"></textarea>
                 </div>
-                <div id="priorities">
-                    <input type="radio" name="priority" class="teamData" id="musthave"/>
-                    <label for="musthave" id="musthave">Must have</label>
-                    <input type="radio" name="priority" class="teamData" id="shouldhave" checked/>
-                    <label for="shouldhave" id="shouldhave">Should have</label>
-                    <input type="radio" name="priority" class="teamData" id="nicetohave"/>
-                    <label for="nicetohave" id="nicetohave">Nice to have</label>
-                    <input type="radio" name="priority" class="teamData" id="optional"/>
-                    <label for="option" id="optional">Optional</label>
-                </div>
+                <div id="priorities"></div>
                 <div id="estimate"></div>
                 <div id="notedisplay">
                     <div id="backgroundColor" class="select">Note color:<input id="noteColor" type="color"></div>
@@ -348,7 +338,7 @@
         <span id="backlogsummary" style="display: none;">
             <div id="backlogicon" class="divheader">
                 <div class="divheader">
-                    <div onclick="project.backlog.show()" class="minbutton">[]</div>
+                    <div onclick="project.ui.backlog.list.show()" class="minbutton">[]</div>
                 </div>
             </div>
             <img id="show" class="reqtIcon" src="img/backlog.svg">
@@ -357,10 +347,24 @@
             <div id="backlogDiv">
                 <div class="divheader">
                     <b>Backlog</b>
-                    <div onclick="project.backlog.hide()" class="minbutton">X</div>
-                    <div id="filterButton" onclick="project.ui.backlog.toggle()" class="minbutton">
+                    <div onclick="project.ui.backlog.list.hide()" class="minbutton">X</div>
+                    <div id="filterButton" class="minbutton"
+                        onclick="project.ui.backlog.toggle()">
                         <img id="filter" src="img/filter.svg">
                     </div>
+                </div>
+                <div id="filters">
+                    <div id="scheduling" class="group">
+                        <input type="radio" name="scheduled" class="reqtPlan" id="all" checked/>
+                        <label for="all" id="all">All</label>
+                        <input type="radio" name="scheduled" class="reqtPlan" id="unscheduled"/>
+                        <label for="unscheduled" id="unscheduled">Unscheduled</label>
+                    </div>
+                    <div id="priorities" class="group"></div>
+                    <button style="width: 60px;" title="Apply filter to displayed backlog"
+                        onclick="project.ui.backlog.applyFilter()">Apply</button>
+                    <button style="width: 60px;" title="Do not apply these filters"
+                        onclick="project.ui.backlog.hideOptions()">Cancel</button>
                 </div>
                 <div id="list" class="reqtlist" title="Drag requirement to sprint row"></div>
             </div>
@@ -444,12 +448,13 @@
         <div class="modal-container">
             <div class="container">
                 <div onclick="document.getElementById('taskForm').style.display='none'" class="minbutton">×</div>
-                <div>&nbsp;</div>
                 <div>
-                    <input id="name" class="teamData" placeholder="Label" />
+                    <input id="name" class="teamData" placeholder="Label" style="width: 450px; margin-top: 35px;"/>
                     <img id="editBurndown" src="img/flame.svg" style="height: 20px;" draggable="false" title="Edit burndown"/>
                 </div>
-                <div><input id="details" class="teamData" placeholder="Details" /></div>
+                <div><textarea id="details" class="teamData" placeholder="Details"
+                    style="width: 450px; margin: 5px 0 0 0;"/></textarea></div>
+                <div id="priorities"></div>
                 <div id="estimate"></div>
                 <button id="yes">Save</button>
                 <button id="no">Discard</button>
@@ -657,6 +662,17 @@
     <label for="mountain" id="mountain">Mountain</label>
 </template>
 
+<template id="priorityTemplate">
+    <input type="radio" name="priority" class="teamData" id="musthave"/>
+    <label for="musthave" id="musthave">Must have</label>
+    <input type="radio" name="priority" class="teamData" id="shouldhave"/>
+    <label for="shouldhave" id="shouldhave">Should have</label>
+    <input type="radio" name="priority" class="teamData" id="nicetohave"/>
+    <label for="nicetohave" id="nicetohave">Nice to have</label>
+    <input type="radio" name="priority" class="teamData" id="optional"/>
+    <label for="option" id="optional">Optional</label>
+</template>
+
 <script src="https://d3js.org/d3.v6.min.js"></script>
 
 <script>
@@ -669,7 +685,7 @@
     var defaults = {
         "capacity": { "developer": 80, "lead": 40, "vacation": 1 },
         "estimate": 3,
-        "priority": "nicetohave",
+        "priority": "shouldhave",
         "size": "pebble",
         "sprintLenth": 2,
         "burndownDays": [1, 3, 5],
@@ -1086,6 +1102,12 @@
                     data: function() {
                         return getJSONData(document.querySelector("#" + this.id));
                     },
+                    priority: function() {
+                        var data = this.data();
+                        var priorities = project.ui.priorities().filter(d => data[d]);
+                        if (priorities.length == 0) return defaults.priority;
+                        return priorities[priorities.length - 1];
+                    },
                     size: function() {
                         var data = this.data();
                         var sizes = project.ui.sizes().filter(d => data[d]);
@@ -1105,14 +1127,6 @@
                         });
                     }
                 }
-            },
-            show: function () {
-                document.querySelector("#scheduleScreen #backlogsummary").style.display = "none";
-                document.querySelector("#scheduleScreen #backlog").style.display = "";
-            },
-            hide: function() {
-                document.querySelector("#scheduleScreen #backlogsummary").style.display = "";
-                document.querySelector("#scheduleScreen #backlog").style.display = "none";
             },
             scheduled: function() {
                 var taskdata = project.tasks.getAll()
@@ -1891,33 +1905,70 @@
         },
         ui: {
             backlog: {
-                get filtered() {
-                    var button = document.querySelector("#scheduleScreen #backlog #filterButton");
-                    return button && button.classList.contains("filtered");
+                list: {
+                    show: function () {
+                        document.querySelector("#scheduleScreen #backlogsummary").style.display = "none";
+                        document.querySelector("#scheduleScreen #backlog").style.display = "";
+                    },
+                    hide: function() {
+                        document.querySelector("#scheduleScreen #backlogsummary").style.display = "";
+                        document.querySelector("#scheduleScreen #backlog").style.display = "none";
+                        project.ui.backlog.hideOptions();
+                    }
                 },
-                hidesSheduled: function() {
+                applyFilter: function() {
+                    this.hideOptions();
+                    const options = document.querySelector("#backlog #filters");
+                    const schedule = [...options.querySelectorAll("input[name='scheduled'")]
+                        .filter(o => o.checked)[0].id;
+                    // Set filter button background to yellow
                     [...document.querySelectorAll("#scheduleScreen #backlog #filterButton")]
                         .forEach(n => n.classList.add("filtered"));
-                    project.backlog.scheduled().forEach(r => {
-                        [...document.querySelectorAll("#scheduleScreen #" + r.id)]
-                            .forEach(n => n.classList.add("hidden"));
-                    })
+                    var scheduled = [];
+                    if (schedule == "unscheduled")
+                        scheduled = project.backlog.scheduled();
+                    scheduled.forEach(r => {
+                            [...document.querySelectorAll("#scheduleScreen #" + r.id)]
+                                .forEach(n => n.classList.add("hidden"));
+                    });
+                    const priorities = [...options.querySelectorAll("input[type='checkbox']")]
+                        .filter(c => c.checked).map(i => i.id);
+                    [...project.backlog.getAll()].filter(b => {
+                        var data = project.backlog.get(b.id).data();
+                        return priorities.filter(p => data[p] == true).length == 0;
+                    }).forEach(n => {
+                        document.querySelector(`#list #${n.id}`).classList.add("hidden");
+                    });
                 },
                 showAll: function() {
-                    project.backlog.getAll().forEach(r => {
-                        [...document.querySelectorAll("#scheduleScreen .filtered")]
-                            .forEach(n => n.classList.remove("filtered"));
-                        [...document.querySelectorAll("#scheduleScreen .hidden")]
-                            .forEach(n => n.classList.remove("hidden"));
-                    })
+                    [...document.querySelectorAll("#scheduleScreen .filtered")]
+                        .forEach(n => n.classList.remove("filtered"));
+                    [...document.querySelectorAll("#scheduleScreen .hidden")]
+                        .forEach(n => n.classList.remove("hidden"));
                 },
                 toggle: function() {
-                    if (this.filtered) {
+                    var filtered = document.querySelector("#backlog #filterButton.filtered");
+                    if (filtered) {
                         this.showAll();
+                        filtered.classList.remove("filtered");
                     }
                     else {
-                        this.hidesSheduled();
+                        var visibility = document.querySelector("#backlogDiv #filters").style.visibility;
+                        if (visibility == "visible") {
+                            visibility = "hidden";
+                            this.hideOptions();
+                        }
+                        else {
+                            visibility = "visible";
+                            this.options();
+                        }
                     }
+                },
+                options: function() {
+                    document.querySelector("#backlogDiv #filters").style.visibility = "visible";
+                },
+                hideOptions: function() {
+                    document.querySelector("#backlogDiv #filters").style.visibility = "hidden";
                 }
             },
             clear: function() {
@@ -1931,7 +1982,12 @@
             },
             sizes: function() {
                 return [...document.querySelector("#estimateTemplate")
-                            .content.querySelectorAll("input")].map(s => s.id);
+                    .content.querySelectorAll("input")].map(s => s.id);
+            },
+            priorities: function() {
+                return [...document.querySelector("#priorityTemplate")
+                    .content.querySelectorAll("input")].map(s => s.id);
+
             },
             sprint: {
                 clear: function() {
@@ -3205,6 +3261,7 @@
                 f.value = "";
             });
             returnData["name"] = params.querySelector(".itemName").innerText;
+            returnData[defaults.priority] = true;
             returnData[defaults.size] = true;
             data.innerText = JSON.stringify(returnData);
             params.querySelector(".itemName").innerText = returnData.name;
@@ -3240,13 +3297,22 @@
             var estimate = document.getElementById("estimateTemplate");
             d.appendChild(estimate.content.cloneNode(true));
         });
-        document.querySelectorAll("div#priorities input").forEach(d => {
-            var label = d.parentNode.querySelector("label#" + d.id);
-            var priority = document.createElement("option");
-            priority.id = d.id;
-            priority.innerText = label.innerText;
-            priority.selected = d.checked;
-            document.querySelector("select#priority").appendChild(priority);
+        document.querySelectorAll(".modal div#priorities").forEach(d => {
+            var priorities = document.getElementById("priorityTemplate");
+            d.appendChild(priorities.content.cloneNode(true));
+        });
+        document.querySelectorAll("#requirementsForm #priorities").forEach(n => {
+            const priorities = document.querySelector("#backlog #priorities");
+            n.querySelectorAll("input").forEach(d => {
+                var priority = document.createElement("input");
+                priority.id = d.id;
+                priority.type = "checkbox";
+                priority.checked = true;
+                priorities.appendChild(priority);
+                var label = d.parentNode.querySelector("label#" + d.id);
+                priorities.appendChild(document.createTextNode(label.innerText));
+                priorities.appendChild(document.createElement("br"));
+            });
         });
         document.querySelectorAll("div#roles input").forEach(d => {
             var label = d.parentNode.querySelector("label#" + d.id);
@@ -3271,6 +3337,14 @@
             estimate.innerText = label.innerText;
             estimate.selected = d.id == defaults.size ? true : d.checked;
             document.querySelector("select#size").appendChild(estimate);
+        });
+        document.querySelector("#priorityTemplate").content.querySelectorAll("input").forEach(d => {
+            var label = d.parentNode.querySelector("label#" + d.id);
+            var priority = document.createElement("option");
+            priority.id = d.id;
+            priority.innerText = label.innerText;
+            priority.selected = d.id == defaults.priority ? true : d.checked;
+            document.querySelector("select#priority").appendChild(priority);
         });
         dordodInit();
         // Drag and drop handlers
@@ -3403,13 +3477,14 @@
         params.querySelector(".burndown").onclick = project.burndown.edit;
         params.style.color = dragdrop.dragged.dataset.oldColor;
         params.style.backgroundColor = dragdrop.dragged.dataset.oldBackgroundColor;
-        params.addEventListener('mouseout', (event) => {});
         form.initData("#requirementsForm", params);
         var id = dragdrop.dragged.id;
         var data = getJSONData(params);
         var hlcolor = "lightgray";
         project.ui.sizes().forEach(s => delete data[s]);
         data[project.backlog.get(id).size()] = true;
+        project.ui.priorities().forEach(s => delete data[s]);
+        data[project.backlog.get(id).priority()] = true;        
         data.reference = id;
         params.addEventListener('mouseover', (event) => {
             [...document.querySelectorAll("#scheduleEditor #backlog #list .reqt")]
