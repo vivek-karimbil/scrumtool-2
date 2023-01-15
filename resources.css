@@ -1,7 +1,3 @@
-#backlog {
-    border: 3px solid #666;
-    width: 25%;
-}
 #backlog #filterButton.filtered {
     background-color: yellow;
 }
@@ -49,6 +45,9 @@
     border: 3px solid #666;
     padding: 10px;
     width: 25%;
+}
+body {
+    background-color: gainsboro;
 }
 #burndownForm table {
     padding-right: 10px;
@@ -147,17 +146,26 @@
 }
 #dordodScreen .warning {
     background-color: yellow;
-    align-items: center;
-    display: flex;
+    width: 320px;
+    display: inline-block;
+}
+#dordodScreen .warning div {
+    display: inline;
 }
 #dordodScreen .warning img {
     width: 25px;
+}
+#dordodScreen #list .checks {
+    display: grid;
+}
+div#graph {
+    min-height: 600px;
 }
 .droplist {
     border: 3px solid #666;
     display: grid;
     gap: 10px;
-    min-height: 100px;
+    min-height: 90px;
     margin-bottom: 5px;
 }
 .droptarget {
@@ -181,6 +189,10 @@
 .formDescription {
     margin-top: 3ch;
     font-size: large;
+}
+#graphsScreen div {
+    margin-bottom: 1ch;
+    padding-top: 10px;
 }
 .graphType {
     background-color: darkgray;
@@ -296,6 +308,9 @@ img#holiday {
     border: none;
     vertical-align: top;
 }
+#msChoice {
+    max-height: 2ch;
+}
 .mslayout {
     border: 3px solid #666;
     border-collapse: collapse;
@@ -349,8 +364,8 @@ p.itemName {
     max-width: 100%;
 }
 #projectInfo {
-    padding-top: 5ch;
-    padding-bottom: 5ch;
+    padding-top: 2ch;
+    padding-bottom: 3ch;
     min-width: 600px;
 }
 .reqt {
@@ -381,17 +396,21 @@ p.itemName {
 #requirementsForm #notedisplay .select {
     display: contents;
 }
-#requirementsScreen #requirements {
+#scheduleEditor #backlog {
+    border: 3px solid #666;
+    width: 25%;
+}
+#backlogScreen #requirements {
     position: relative;
     width: 100%;
     height: 400%;
     border: 3px solid #666;
     top: 93px;
 }
-#requirementsScreen #requirements.droptarget {
+#backlogScreen #requirements.droptarget {
     border: 6px double #666;
 }
-#requirementsScreen #requirements .item {
+#backlogScreen #requirements .item {
     width: 175px;
     margin: 0;
     height: 130px;
@@ -411,7 +430,8 @@ p.itemName {
 }
 #scheduleScreen {
     display: block;
-    margin-top: 5px;
+    margin-top: 0;
+    padding-top: 10px;
     width: 100%;
 }
 #scheduleScreen #backlogsummary {
@@ -439,6 +459,7 @@ p.itemName {
 }
 #sections .clSelector:hover img {
     background-color: #aaa;
+    border: 1px solid;
 }
 #sections .clSelector .imgHolder {
     display: flex;
@@ -535,10 +556,17 @@ p.itemName {
     width: 20px;
     float: right;
 }
+.toolScreen {
+    background-color: white;
+    min-height: 800px;
+}
 .topmenu {
     background-color: darkgray;
     border-bottom: 0;
-    width: 20ch;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    width: 15ch;
+    height: 61px;
 }
 .topmenu:hover {
     background-color: grey;

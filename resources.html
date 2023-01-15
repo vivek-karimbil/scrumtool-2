@@ -1,11 +1,11 @@
 <link rel="stylesheet" href="resources.css">
 
 <div style="min-width: 900px;">
+    <button id="backlog" class="topmenu" title="Edit project backlog">
+        <img class="menuButton undraggable" src="img/backlog.svg"/>
+    </button>
     <button id="settings" class="topmenu" title="Settings to edit project">
         <img class="menuButton undraggable" src="img/settings.svg"/>
-    </button>
-    <button id="requirements" class="topmenu" title="Edit project backlog">
-        <img class="menuButton undraggable" src="img/backlog.svg"/>
     </button>
     <button id="schedule" class="topmenu" data-init="project.ui.refresh" title="Edit progress of work">
         <img class="menuButton undraggable" src="img/schedule.svg"/>
@@ -21,7 +21,69 @@
     </button>
 </div>
 
-<div id="settingsScreen">
+<div id="backlogScreen" class="toolScreen">
+    <div id="backlogDiv">
+        <div id="backlog" class="projectComponent">
+            <div class="item task level1" title="Drag and drop requirement to board below. Colours just for display.">
+                <div style="background-color:#ffd700;" class="postIt" draggable="true">
+                    <span style="float: left; padding: 3px;">
+                        <img class="hand" src="img/dragable.svg" title="Drag this">
+                    </span>
+                </div>
+            </div>
+            <div class="item task level2" title="Drag and drop requirement to board below. Colours just for display.">
+                <div style="background-color:#ff69b4;" class="postIt" draggable="true">
+                    <span style="float: left; padding: 3px;">
+                        <img class="hand" src="img/dragable.svg" title="Drag this">
+                    </span>
+                </div>
+            </div>
+            <div class="item task level3" title="Drag and drop requirement to board below. Colours just for display.">
+                <div style="background-color: #8e67c2;" class="postIt" draggable="true">
+                    <span style="float: left; padding: 3px;">
+                        <img class="hand" src="img/dragable.svg" title="Drag this">
+                    </span>
+                </div>
+            </div>
+            <div class="item task level4" title="Drag and drop requirement to board below. Colours just for display.">
+                <div style="background-color:#9bee9b;" class="postIt" draggable="true">
+                    <span style="float: left; padding: 3px;">
+                        <img class="hand" src="img/dragable.svg" title="Drag this">
+                    </span>
+                </div>
+            </div>
+            <div class="item task level5" title="Drag and drop requirement to board below. Colours just for display.">
+                <div style="background-color: #847576;" class="postIt" draggable="true">
+                    <span style="float: left; padding: 3px;">
+                        <img class="hand" src="img/dragable.svg" title="Drag this">
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div id="requirements" class="dropzone backlog" title="Drop requirement notes above the box, and arrange them"></div>
+    </div>
+    <div id="requirementsForm" class="modal" style="display: none;">
+        <div class="modal-container">
+            <div class="container">
+                <div onclick="document.getElementById('requirementsForm').style.display='none'" class="minbutton">×</div>
+                <div><input id="name" class="teamData" placeholder="Requirement"></div>
+                <div>
+                    <textarea id="description" class="teamData" placeholder="Details"></textarea>
+                </div>
+                <div id="priorities"></div>
+                <div id="estimate"></div>
+                <div id="notedisplay">
+                    <div id="backgroundColor" class="select">Note color:<input id="noteColor" type="color"></div>
+                    <div id="textColor" class="select">Text color:<input id="textColor" type="color"></div>
+                </div>
+                <button id="yes">Save</button>
+                <button id="no">Discard</button>
+            </div>
+        </div>
+    </div>    
+</div>
+
+<div id="settingsScreen" class="toolScreen" style="display: none;">
     <div id="projectInfo">
         <button id="loadfile" class="inlineButton" title="Load saved project file"><img class="menuButton undraggable" src="img/readfile.svg"/></button>
         <label for="projectName">Project name:</label>
@@ -51,11 +113,11 @@
     <div id="scheduleDiv">
         <div class="leftDiv">
             <div id="msTypes" class="projectComponent">
-                <div id="development" class="item sprint" draggable="true" title="Drag to box below to add a development sprint. (Order according to time)">
+                <div id="development" class="item newSprint" draggable="true" title="Drag to box below to add a development sprint. (Order according to time)">
                     <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                     <img class="menuicon" src="img/devsprint.svg" draggable="false"/>
                 </div>
-                <div id="testing" class="item sprint" draggable="true" title="Drag to box below to add a non-burndown sprint (testing, investigation, ... Order according to time)">
+                <div id="testing" class="item newSprint" draggable="true" title="Drag to box below to add a non-burndown sprint (testing, investigation, ... Order according to time)">
                     <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
                     <img class="menuicon" src="img/qasprint.svg" draggable="false"/>
                 </div>
@@ -157,14 +219,14 @@
                         <td class="capacitySetting" style="border-right: 3px solid #666;">
                             <img class="rowLabel undraggable" src="img/priority.svg"
                                 style="width: 100px; height: 75px; margin-left: 3px;"
-                                title="Default priority">
-                            <select name="priority" id="priority" class="default"></select>
+                                title="Default story priority">
+                            <select name="priority" id="priority" class="default" onchange="defaults.setPriority()"></select>
                         </td>
                         <td class="capacitySetting">
                             <img class="rowLabel undraggable" src="img/measure.svg"
                                 style="width: 100px; height: 75px;"
-                                title="Default size">
-                            <select name="size" id="size" class="default"></select>
+                                title="Default story size in days">
+                            <select name="size" id="size" class="default" onchange="defaults.setSize()"></select>
                         </td>
                     </tr>
                 </table>
@@ -271,69 +333,7 @@
     </template>
 </div>
 
-<div id="requirementsScreen" style="display: none;">
-    <div id="backlogDiv">
-        <div id="backlog" class="projectComponent">
-            <div class="item task level1" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color:#ffd700;" class="postIt" draggable="true">
-                    <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg" title="Drag this">
-                    </span>
-                </div>
-            </div>
-            <div class="item task level2" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color:#ff69b4;" class="postIt" draggable="true">
-                    <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg" title="Drag this">
-                    </span>
-                </div>
-            </div>
-            <div class="item task level3" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color: #8e67c2;" class="postIt" draggable="true">
-                    <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg" title="Drag this">
-                    </span>
-                </div>
-            </div>
-            <div class="item task level4" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color:#9bee9b;" class="postIt" draggable="true">
-                    <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg" title="Drag this">
-                    </span>
-                </div>
-            </div>
-            <div class="item task level5" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color: #847576;" class="postIt" draggable="true">
-                    <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg" title="Drag this">
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div id="requirements" class="dropzone backlog" title="Drop requirement notes above the box, and arrange them"></div>
-    </div>
-    <div id="requirementsForm" class="modal" style="display: none;">
-        <div class="modal-container">
-            <div class="container">
-                <div onclick="document.getElementById('requirementsForm').style.display='none'" class="minbutton">×</div>
-                <div><input id="name" class="teamData" placeholder="Requirement"></div>
-                <div>
-                    <textarea id="description" class="teamData" placeholder="Details"></textarea>
-                </div>
-                <div id="priorities"></div>
-                <div id="estimate"></div>
-                <div id="notedisplay">
-                    <div id="backgroundColor" class="select">Note color:<input id="noteColor" type="color"></div>
-                    <div id="textColor" class="select">Text color:<input id="textColor" type="color"></div>
-                </div>
-                <button id="yes">Save</button>
-                <button id="no">Discard</button>
-            </div>
-        </div>
-    </div>    
-</div>
-
-<div id="scheduleScreen" style="display: none;">
+<div id="scheduleScreen" class="toolScreen" style="display: none;">
     <div id="scheduleEditor" style="display: flex; width: 100%">
         <span id="backlogsummary" style="display: none;">
             <div id="backlogicon" class="divheader">
@@ -464,8 +464,8 @@
 
 </div>
 
-<div id="graphsScreen" style="display: none;">
-    <div style="margin-top: 20px;padding-bottom: 20px;">
+<div id="graphsScreen" class="toolScreen" style="display: none;">
+    <div>
         <button id="sprint" class="graphType graphType-selected">Sprint</button>
         <button id="project"   class="graphType">Project</button>
         <button id="details"   class="graphType">Feature/Developer</button>
@@ -478,10 +478,10 @@
     <div id="graph"></div>
 </div>
 
-<div id="dordodScreen" style="display: none;">
+<div id="dordodScreen" class="toolScreen" style="display: none;">
     <h1 style="display: none;">Under Construction</h1>
     <table id="sections">
-        <td id="start">
+        <td id="start" onmouseover="project.checklists.show('#startDD')">
             <div class="clSelector">
                 <div class="imgHolder">
                     <img class="menuButton undraggable" src="img/start.svg" title="Project entry checklist"/>
@@ -489,7 +489,7 @@
             </div>
         </td>
         <td id="sprints"></td>
-        <td id="stop">
+        <td id="stop" onmouseover="project.checklists.show('#stopDD')">
             <div class="clSelector">
                 <div class="imgHolder">
                     <img class="menuButton undraggable" src="img/stop.svg" title="Project exit checklist"/>
@@ -507,6 +507,13 @@
                 <legend id="title"></legend>
                 <div class="items"><table><tbody id="list"></tbody></table></div>
             </fieldset>
+        </div>
+    </template>
+
+    <template id="dordodWarning">
+        <div class='warning'>
+            <img src='img/warning.svg' style="vertical-align: middle;">
+            <div id="message"></div><img src='img/spanner.svg' style="float: right;">
         </div>
     </template>
 
@@ -683,13 +690,27 @@
             { label: "Done", value: "done" }
     ];
     var defaults = {
-        "capacity": { "developer": 80, "lead": 40, "vacation": 1 },
-        "estimate": 3,
-        "priority": "shouldhave",
-        "size": "pebble",
-        "sprintLenth": 2,
-        "burndownDays": [1, 3, 5],
-        "weeklyHolidays": [0, 6]
+        capacity: { "developer": 80, "lead": 40, "vacation": 1 },
+        estimate: 3,
+        _priority: "shouldhave",
+        get priority() {
+            var pr = document.querySelector("#defaultsDiv select#priority option:checked");
+            return pr ? pr.id : "shouldhave";
+        },
+        setPriority: function() {
+            this._size = document.querySelector("#defaultsDiv select#priority option:checked").id;
+        },
+        _size: "pebble",
+        get size() {
+            var sz = document.querySelector("#defaultsDiv select#size option:checked");
+            return sz ? sz.id : "pebble";
+        },
+        setSize: function() {
+            this._size = document.querySelector("#defaultsDiv select#size option:checked").id;
+        },
+        sprintLenth: 2,
+        burndownDays: [1, 3, 5],
+        weeklyHolidays: [0, 6]
     };
     var dragdrop = {
         dragged: null, left: 0, top: 0,
@@ -699,9 +720,9 @@
                 { "target": "people", "handler": "dragdrop.add('teamMember', event.target, event)" },
                 { "target": "teamMember", "handler": "dragdrop.insertArtifact('#team', dragdrop.dragged, dropzone, '.person', 'teamMember')" }
             ],
-            "sprint": [
-                { "target": "schedule", "handler": "dragdrop.add('scheduleMS', event.target, event)" },
-                { "target": "scheduleMS", "handler": "dragdrop.insertArtifact('#sprints', dragdrop.dragged, dropzone, '.sprint', 'scheduleMS')" }
+            "newSprint": [
+                { "target": "schedule", "handler": "dragdrop.add('sprint', event.target, event)" },
+                { "target": "sprint", "handler": "dragdrop.insertArtifact('#sprints', dragdrop.dragged, dropzone, '.sprint', 'sprint')" }
             ],
             "blackout": [
                 { "target": "holidayWeeks", "handler": "dragdrop.add('holidayWeek', event.target, event)" },
@@ -713,7 +734,8 @@
             ],
             "postIt": [
                 { "target": "backlog", "handler": "dragdrop.add('workItem', event.target, event)" },
-                { "target": "workItem", "handler": "dragdrop.insertArtifact('div#requirements', dragdrop.dragged, dropzone, '.requirement', 'workItem')" }
+                { "target": "workItem", "handler": "dragdrop.insertArtifact('div#requirements', dragdrop.dragged, dropzone, '.requirement', 'workItem')" },
+                { "target": "taskbrief", "handler": "dragdrop.add('workItem', event.target, event)" }
             ],
             "daytype": [
                 { "target": "weekdays", "handler": "dragdrop.add('dayOfWeek', event.target, event)" },
@@ -732,9 +754,9 @@
                 { "target": "people", "handler": "dragdrop.moveChildToEnd(dragdrop.dragged, event.target)" },
                 { "target": "teamMember", "handler": "dragdrop.moveChildBefore(dragdrop.dragged, event.target)" }
             ],
-            "scheduleMS": [
+            "sprint": [
                 { "target": "schedule", "handler": "dragdrop.moveChildToEnd(dragdrop.dragged, event.target)" },
-                { "target": "scheduleMS", "handler": "dragdrop.moveChildBefore(dragdrop.dragged, event.target)" }
+                { "target": "sprint", "handler": "dragdrop.moveChildBefore(dragdrop.dragged, event.target)" }
             ],
             "holidayWeek": [
                 { "target": "holidayWeeks", "handler": "dragdrop.moveChildToEnd(dragdrop.dragged, event.target)" },
@@ -803,15 +825,18 @@
             var id = newInstance.firstElementChild.id;
             var item = newInstance.querySelector(".item");
             item.classList.add(itemClass);
-            target.appendChild(newInstance);
+            if (target.closest(".backlog")) target.closest(".backlog").appendChild(newInstance);
+            else target.appendChild(newInstance);
             if (itemClass == "workItem") {
                 item.classList.remove("workItem");
                 item.style.backgroundColor = dragdrop.dragged.style.backgroundColor;
                 item.style.position = "absolute";
                 var rect = ev.target.getBoundingClientRect();
+                if (target.closest(".dropzone").classList.contains("taskbrief"))
+                    rect = document.querySelector("#backlogDiv #requirements").getBoundingClientRect();
                 var x = ev.clientX - rect.left - this.left;
-                if (x < 0) x = 0;
                 var y = ev.clientY - rect.top - this.top;
+                if (x < 0) x = 0;
                 if (y < 0) y = 0;
                 item.style.left = x.toString();
                 item.style.top = y.toString();
@@ -895,7 +920,7 @@
             weekday.appendChild(child);
         },
         moveTask: function (task, ev) {
-            if (ev.target.closest("#requirementsScreen")) {
+            if (ev.target.closest("#backlogScreen")) {
                 var rect = ev.target.closest("#requirements").getBoundingClientRect();
                 var x = ev.clientX - rect.left - this.left;
                 if (x < 0) x = 0;
@@ -907,7 +932,8 @@
             }
             var prevTask = ev.target.closest(".taskbrief");
             if (prevTask) {
-                prevTask.parentElement.insertBefore(task, prevTask);
+                prevTask.parentNode.insertBefore(task, prevTask);
+                project.ui.task(task.id).status = project.tasks.get(prevTask.id).status();
             }
             if (ev.target.closest("#task.status.done"))
                 project.tasks.get(task.id).complete();
@@ -940,20 +966,17 @@
                         destination.appendChild(t);
                     });
                 }
-                document.querySelectorAll("#" + task.id)
-                    .forEach(t => t.querySelector("#data").innerText = JSON.stringify(data));
+                project.tasks.get(task.id).setData(data);
             }
             if (tableID == "msbacklog") {
                 var data = project.tasks.get(task.id).data();
                 delete data.developer;
-                document.querySelectorAll("#" + task.id)
-                    .forEach(t => t.querySelector("#data").innerText = JSON.stringify(data));
+                project.tasks.task(task.id).setData(data);
             }
             if (tableID == "qabacklog") {
                 var data = project.tasks.get(task.id).data();
                 delete data.tester;
-                document.querySelectorAll("#" + task.id)
-                    .forEach(t => t.querySelector("#data").innerText = JSON.stringify(data));
+                project.tasks.task(task.id).setData(data);
             }
             if (cell.classList.contains("done"))
                 project.tasks.get(task.id).complete();
@@ -962,7 +985,7 @@
     var draggables = Object.keys(dragdrop.config);
     var instanceTemplates = {
         "teamMember": "itemTemplate",
-        "scheduleMS": "itemTemplate",
+        "sprint": "itemTemplate",
         "holidayWeek": "itemTemplate",
         "dayOfWeek": "itemTemplate",
         "workItem": "reqtTemplate",
@@ -1032,7 +1055,7 @@
                 if (event.target.closest("table.tasktable").id == "mslist")
                     sprint = event.target.closest("tr.msrequirements");
                 if (event.target.closest("table.tasktable").id == "devtasklist")
-                    sprint = document.querySelector("#sprintEditor .scheduleMS");
+                    sprint = document.querySelector("#sprintEditor .sprint");
                 bdForm.style.display = 'block';
                 bdForm.querySelector("#taskbrief").innerHTML = data.name;
                 bdForm.querySelector("#estimate").innerHTML = project.tasks.get(id).size() + " ("
@@ -1153,7 +1176,7 @@
                     startDate: function() {
                         var startDate = project.dates.start();
                         if (startDate == null) return null;
-                        var sprints = Array.from(document.querySelectorAll("#settingsScreen .scheduleMS"));
+                        var sprints = Array.from(document.querySelectorAll("#settingsScreen .sprint"));
                         var sprint = sprints.filter(m => m.id == this.id)[0];
                         var weeks = 0;
                         for (var m = 0; m < sprints.length; m++) {
@@ -1214,7 +1237,7 @@
                         project.team.developers.forEach(d => {
                             var burnRate = data[d] ?
                                 parseInt(data[d]) / 100
-                                : parseInt(defaults.capacity[project.team.developer(d).data().role]) / 100;                            
+                                : parseInt(defaults.capacity[project.team.member(d).data().role]) / 100;                            
                             var vacation = data["vac_" + d] ?
                                 parseInt(data["vac_" + d])
                                 : parseInt(defaults.capacity.vacation);
@@ -1236,13 +1259,13 @@
                         var developers = project.team.developers;
                         developers.forEach(d => {
                             var availability = data[d];
-                            if (!availability) availability = defaults.capacity[project.team.developer(d).data().role];
+                            if (!availability) availability = defaults.capacity[project.team.member(d).data().role];
                             var vacation = data["vac_" + d] ? parseInt(data["vac_" + d]) :
                                 defaults.capacity.vacation;
                             var devCapacity = 0;
                             capacity.push({
                                 id: d,
-                                developer: project.team.developer(d).data().name,
+                                developer: project.team.member(d).data().name,
                                 availability: availability,
                                 vacation: vacation
                             });
@@ -1318,11 +1341,11 @@
                 }
             },
             getAll: function() {
-                return document.querySelectorAll("#settingsScreen .scheduleMS");
+                return document.querySelectorAll("#settingsScreen .sprint");
             },
             getDev: function() {
                 return [...document.querySelectorAll("#settingsScreen #sprints #development")]
-                    .map(d => d.closest(".scheduleMS"));
+                    .map(d => d.closest(".sprint"));
             },
             getCurrent: function() {
                 var sprints = [...this.getAll()];
@@ -1412,6 +1435,10 @@
                         var dates = [...Object.keys(msburndown)];
                         return msburndown[msburndown.length - 1];
                     },
+                    setData: function(data) {
+                        document.querySelectorAll("#" + this.id)
+                            .forEach(t => t.querySelector("#data").innerText = JSON.stringify(data));
+                    },
                     sprint: function() {
                         var msrow = document.querySelector("#scheduleEditor #" + this.id);
                         return msrow.closest("tr").id;
@@ -1446,9 +1473,9 @@
             }
         },
         team: {
-            developer: function(developerId) {
+            member: function(id) {
                 return {
-                    id: developerId,
+                    id: id,
                     data: function() {
                         return getJSONData(document.querySelector("#settingsScreen #" + this.id));
                     },
@@ -1538,6 +1565,7 @@
                     return response;
                 }
                 var div = document.createElement("div");
+                div.classList.add("checks")
                 div.innerHTML = eval(item.value);
                 return div;
             },
@@ -1597,7 +1625,11 @@
                     target.parentNode.querySelector("#link").style.display = "none";
                 }
             },
-            warning: function(s) { return "<div class='warning'><img src='img/warning.svg'>" + s + "</div>"},
+            warning: function(message) {
+                var warning = document.querySelector("template#dordodWarning").content.cloneNode(true);
+                warning.querySelector("#message").innerText = message;
+                return warning.querySelector("div").outerHTML;
+            },
             message: function(s) { return "<div class='message'>" + s + "</div>"},
             echeck: { // Project Entry Checklist
                 projectName: function() {
@@ -1973,7 +2005,7 @@
             },
             clear: function() {
                 document.querySelectorAll("#projectInfo input").forEach(f => f.value = "");
-                document.querySelector("#requirementsScreen #requirements").innerHTML = "";
+                document.querySelector("#backlogScreen #requirements").innerHTML = "";
                 document.querySelectorAll(".droplist:not(.weekdays)").forEach(d => d.innerHTML = "");
                 document.querySelectorAll(".weeksetup #week .item").forEach(w => w.parentNode.removeChild(w));
                 document.querySelector("#mslist #sprints").innerHTML = "";
@@ -2017,8 +2049,8 @@
                 },
                 refresh: function() {
                     if (document.querySelector("#sprintEditor").style.display == "none") return;
-                    var msid = document.querySelector("#sprintEditor .scheduleMS").id;
-                    var selector = "#scheduleEditor #" + msid + " .scheduleMS";
+                    var msid = document.querySelector("#sprintEditor .sprint").id;
+                    var selector = "#scheduleEditor #" + msid + " .sprint";
                     var sprint = document.querySelector(selector);
                     this.clear();
                     // Set up start and end dates in header
@@ -2129,9 +2161,21 @@
                     document.querySelector("#sprintEditor").style.display = "";
                     document.querySelector("#msicon").innerHTML = '';
                     // Put header icon on top
-                    document.querySelector("#msicon").appendChild(sprint.closest(".scheduleMS").cloneNode(true));
+                    document.querySelector("#msicon").appendChild(sprint.closest(".sprint").cloneNode(true));
                     document.querySelector("#sprintEditor #development").removeAttribute("title");
                     this.refresh();
+                }
+            },
+            task: function(taskId) {
+                return {
+                    id: taskId,
+                    set status(s) {
+                        [...document.querySelectorAll("#scheduleScreen #" + this.id)].forEach(task => {
+                            var row = task.closest("tr");
+                            var dest = row.querySelector("." + s);
+                            if (!dest.contains(task)) dest.appendChild(task);
+                        })
+                    }
                 }
             },
             refresh: function() {
@@ -2235,12 +2279,12 @@
                             var msData = data.sprints[i].data;
                             type = data.sprints[i].data.type;
                             dragdrop.dragged = document.querySelector("#msTypes #" + type);
-                            var ms = dragdrop.add("scheduleMS", document.querySelector("#sprints.schedule"));
+                            var ms = dragdrop.add("sprint", document.querySelector("#sprints.schedule"));
                             trackingMS = document.querySelector("#mslist #" + ms.id);
                             if (trackingMS) {
                                 trackingMS.id = id;
                                 trackingMS.querySelector(".itemName").innerText = msData.name;
-                                trackingMS.querySelector(".scheduleMS").id = id;
+                                trackingMS.querySelector(".sprint").id = id;
                             }
                             ms.id = id;
                             ms.querySelector(".itemName").innerText = msData.name;
@@ -2262,7 +2306,7 @@
                             var event = {
                                 clientX: parseInt(rqtData.left),
                                 clientY: parseInt(rqtData.top),
-                                target: document.querySelector("#requirementsScreen #requirements")
+                                target: document.querySelector("#backlogScreen #requirements")
                             }
                             var rqt = dragdrop.add("workItem", document.querySelector("#backlogDiv #requirements"), event);
                             var origId = rqt.id;
@@ -2365,7 +2409,7 @@
                 document.querySelectorAll("#team .teamMember").forEach(t => {
                     json.team.push({ id: t.id, data: getJSONData(t) });
                 });
-                document.querySelectorAll("#scheduleDiv #sprints .scheduleMS").forEach(t => {
+                document.querySelectorAll("#scheduleDiv #sprints .sprint").forEach(t => {
                     json.sprints.push({ id: t.id, data: getJSONData(t) });
                 });
                 document.querySelectorAll("#holidayWeeks .holidayWeek").forEach(t => {
@@ -2546,7 +2590,7 @@
                     .on("click", function(event, d) {
                         document.querySelector("#schedule").click();
                         msId = document.querySelector("#selectMS").value;
-                        project.ui.sprint.edit(document.querySelector("#scheduleEditor div#" + msId + ".scheduleMS"));
+                        project.ui.sprint.edit(document.querySelector("#scheduleEditor div#" + msId + ".sprint"));
                     });
                 // labels on the bar chart
                 bar.append("text")
@@ -2643,11 +2687,11 @@
                         "id": c.id,
                         "Developer": c.developer,
                         "Planned availability": workingDays * parseInt(c.availability) / 100 - c.vacation,
-                        "Assigned work": (project.team.developer(c.id).getTasksForMS(sprint.id)
+                        "Assigned work": (project.team.member(c.id).getTasksForMS(sprint.id)
                             .map(t => project.tasks.get(t.id).msBurndown(sprint)[0].effort)
                             .reduce((pr, cv) => { return pr + cv }, 0)).toFixed(2),
                         "Remaining days": remainingDays.toFixed(2),
-                        "Remaining work": (project.team.developer(c.id).getTasksForMS(sprint.id)
+                        "Remaining work": (project.team.member(c.id).getTasksForMS(sprint.id)
                             .map(t => project.tasks.get(t.id).msBurndown(sprint)
                                 [project.tasks.get(t.id).msBurndown(sprint).length - 1].effort)
                             .reduce((pr, cv) => { return pr + cv }, 0)).toFixed(2)
@@ -2764,7 +2808,7 @@
                     .on("click", function(event, d) {
                         document.querySelector("#schedule").click();
                         msId = document.querySelector("#selectMS").value;
-                        project.ui.sprint.edit(document.querySelector("#scheduleEditor div#" + msId + ".scheduleMS"));
+                        project.ui.sprint.edit(document.querySelector("#scheduleEditor div#" + msId + ".sprint"));
                     })
 
                 bar.selectAll("text")
@@ -2788,7 +2832,7 @@
                     .call(xAxis);
 
                 document.querySelectorAll("#developerid text").forEach(developer => {
-                    developer.innerHTML = project.team.developer(developer.innerHTML).data().name;
+                    developer.innerHTML = project.team.member(developer.innerHTML).data().name;
                 });
 
                 g.append("g")
@@ -3010,7 +3054,7 @@
                 var startDate = project.sprints.get(sprint).startDate();
                 if (startDate) trackingDates.unshift(startDate);
                 var msBurndown = project.team.developers.map(d => {
-                    var taskData = project.team.developer(d).getTasksForMS(sprint.id)
+                    var taskData = project.team.member(d).getTasksForMS(sprint.id)
                         .map(t => project.tasks.get(t.id).msBurndown(sprint));
                     var developerBurndown = trackingDates.map(d => {
                         var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
@@ -3063,7 +3107,7 @@
                         .reduce((a, b) => a + b) : 0;
                     udata[0]["Unassigned"] = effort;
                 }
-                drawPaper(project, sprint, rightGraph, "Developer Burndown", udata, project.team.developer);
+                drawPaper(project, sprint, rightGraph, "Developer Burndown", udata, project.team.member);
             }
             
             function drawPaper(project, ms, paper, title, data, labelFn) {
@@ -3179,7 +3223,7 @@
                         .on("click", function(d) {
                             document.querySelector("#schedule").click();
                             msId = document.querySelector("#selectMS").value;
-                            project.ui.sprint.edit(document.querySelector("#scheduleEditor div#" + msId + ".scheduleMS"));
+                            project.ui.sprint.edit(document.querySelector("#scheduleEditor div#" + msId + ".sprint"));
                         })
             }
             drawGraphs(project, ms);
@@ -3258,7 +3302,7 @@
             var returnData = {};
             form.querySelectorAll("input").forEach(f => {
                 returnData[f.id] = "";
-                f.value = "";
+                if (f.type != "color") f.value = "";
             });
             returnData["name"] = params.querySelector(".itemName").innerText;
             returnData[defaults.priority] = true;
@@ -3335,17 +3379,17 @@
             var estimate = document.createElement("option");
             estimate.id = d.id;
             estimate.innerText = label.innerText;
-            estimate.selected = d.id == defaults.size ? true : d.checked;
             document.querySelector("select#size").appendChild(estimate);
         });
+        document.querySelector("#defaultsDiv select#size option#" + defaults._size).selected = true;
         document.querySelector("#priorityTemplate").content.querySelectorAll("input").forEach(d => {
             var label = d.parentNode.querySelector("label#" + d.id);
             var priority = document.createElement("option");
             priority.id = d.id;
             priority.innerText = label.innerText;
-            priority.selected = d.id == defaults.priority ? true : d.checked;
             document.querySelector("select#priority").appendChild(priority);
         });
+        document.querySelector("#defaultsDiv select#priority option#" + defaults._priority).selected = true;
         dordodInit();
         // Drag and drop handlers
         document.addEventListener("dragstart", (event) => dragdrop.dragstart(event), false);
@@ -3388,8 +3432,6 @@
         var checklist = project.checklists.entry;
         dordodScreen.querySelector("#startDD")
             .appendChild(project.checklists.make("Project Entry", checklist));
-        dordodScreen.querySelector("#start")
-            .addEventListener('mouseover', () => project.checklists.show("#startDD"));
         dordodScreen.querySelector("#startDD .holder").id = "start";
         if (today < project.dates.start()) project.checklists.show("#startDD");
         
@@ -3426,8 +3468,6 @@
         checklist = project.checklists.exit;
         dordodScreen.querySelector("#stopDD")
             .appendChild(project.checklists.make("Project Exit", checklist));
-        dordodScreen.querySelector("#stop")
-            .addEventListener('mouseover', () => project.checklists.show("#stopDD"));
         dordodScreen.querySelector("#stopDD .holder").id = "stop";
         if (project.dates.end() && today > project.dates.end()) project.checklists.show("#stopDD");
         project.checklists.fromJSON(savedLists);
@@ -3493,7 +3533,8 @@
                         r.classList.add("highlight");
                     }
                 });
-            event.target.closest("#sprints").querySelectorAll(".taskbrief").forEach(r => {
+            const sprints = event.target.closest("#sprints")
+            sprints && sprints.querySelectorAll(".taskbrief").forEach(r => {
                 var data = getJSONData(r);
                 if (data.reference == id) {
                     r.classList.add("highlight");
@@ -3545,7 +3586,7 @@
         params.querySelector("#data").innerText = JSON.stringify(data);
         var dropTable = params.closest("table");
         if (dropTable.id == "devtasklist" || dropTable.id == "msbacklog" || dropTable.id == "qabacklog") {
-            var sprint = params.closest("#sprintEditor").querySelector(".scheduleMS");
+            var sprint = params.closest("#sprintEditor").querySelector(".sprint");
             var spRow = document.querySelector("#scheduleScreen #" + sprint.id);
             var status = [...params.closest("td").classList].filter(f => statuses.map(s => s.value).filter(s => s == f).length)[0];
             if (role != '') data = project.tasks.assign(params, params.closest("td"), role);
@@ -3558,7 +3599,7 @@
             project.ui.sprint.edit(sprint);
         }
     }
-    function onadd_scheduleMS(params) {
+    function onadd_sprint(params) {
         var mstype = params.querySelector("#development") ? "development" : "testing";
         params.classList.add(mstype);
         var data = getJSONData(params);
@@ -3567,7 +3608,7 @@
         params.querySelector("#data").innerText = JSON.stringify(data);
         if (mstype != 'development') return;
         project.team.developers.forEach(dev => {
-            var role = project.team.developer(dev).data().role;
+            var role = project.team.member(dev).data().role;
             data[dev] = defaults.capacity[role];
             data["vac_" + dev] = defaults.capacity.vacation;
         });
@@ -3577,7 +3618,7 @@
         msnode.draggable = false;
         msnode.classList.remove("dragable");
         msnode.querySelector("#development").addEventListener("click", function(event) {
-            project.ui.sprint.edit(event.target.closest(".scheduleMS"));
+            project.ui.sprint.edit(event.target.closest(".sprint"));
         });
         msnode.querySelector("#development").setAttribute("title", "Click to edit this sprint");
         var hand = msnode.querySelector(".hand");
@@ -3677,7 +3718,7 @@
     function onedit_requirements(params) {
         var data = getJSONData(params);
         if (!data.name) return;
-        var requirement = document.querySelector("#requirementsScreen #" + params.id);
+        var requirement = document.querySelector("#backlogScreen #" + params.id);
         requirement.style.backgroundColor = data.noteColor;
         var title = requirement.querySelector(".itemName");
         title.innerText = data.name;
@@ -3694,20 +3735,20 @@
             }
         });
     }
-    function oninsert_task(params) { onadd_newTask(params); }
+    function oninsert_task(params) { onadd_backlogitem(params); }
     function oninsert_team(params) { onadd_teamMember(params); }
     function oninsert_sprints(params) {
-        onadd_scheduleMS(params);
+        onadd_sprint(params);
         project.ui.sprint.syncTabs();
     }
     function onmovetoend_development(params) {project.ui.sprint.syncTabs();}
-    function onmovetoend_scheduleMS(params) {
-        console.log("onmovetoend_scheduleMS", params);
+    function onmovetoend_sprint(params) {
+        console.log("onmovetoend_sprint", params);
         var msno = 0;
         document.querySelectorAll("#scheduleDiv #itemImage #development").forEach(img => {
-            var msid1 = img.closest(".scheduleMS").id;
+            var msid1 = img.closest(".sprint").id;
             var tr1 = document.querySelectorAll("#scheduleScreen .mslayout tr.msrequirements")[msno];
-            var msid2 = tr1.querySelector(".scheduleMS").id;
+            var msid2 = tr1.querySelector(".sprint").id;
             if (msid2 != msid1) {
                 tr1 = document.querySelectorAll("#scheduleScreen #" + msid1)[0].closest("tr");
                 tr2 = document.querySelectorAll("#scheduleScreen #" + msid2)[0].closest("tr");
@@ -3719,6 +3760,9 @@
         });
     }
     function onmovetoend_testing(params) { project.ui.sprint.syncTabs(); }
+    function initForm_requirements(params) {
+        params[0].querySelector(".container").style.width = "500px";
+    }
     function initForm_sprints(params) {
         var capacityTable = params[0].querySelector("#capacitytable tbody");
         capacityTable.closest(".container").querySelector("#weeks").value = defaults.sprintLenth;
@@ -3764,7 +3808,7 @@
         var vacationCells = capacityTable.querySelectorAll("tr#vacation .data");
         var capacityConfig = sprint.capacityConfig();
         staff.forEach(s => {
-            var data = project.team.developer(s).data();
+            var data = project.team.member(s).data();
             var vkey = "vac_" + s;
             var capacity = capacityConfig ? capacityConfig.filter(c => c.id == s)
                 : [{ vacation: data[vkey] ? data[vkey] : defaults.capacity.vacation }];
@@ -3786,12 +3830,9 @@
         capacity = capacityTable.querySelectorAll("#capacity");
         capacity.forEach(c => c.style.display = sprintType == "testing" ? "none" : "");
     }
-    function initForm_requirements(params) {
-        params[0].querySelector(".container").style.width = "500px";
-    }
     function initForm_team(params) {
         var id = params.filter(t => typeof(t) == 'string' && t.match(/^team/))[0];
-        var role = project.team.developer(id).data().role;
+        var role = project.team.member(id).data().role;
         document.querySelector(".formDescription").innerText = "Role: " + role;
     }
 </script>
