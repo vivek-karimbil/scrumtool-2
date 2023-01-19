@@ -72,6 +72,9 @@ body {
 #capacitydata #capactytable {
     border-top: 1px solid #666;
 }
+#capacitydata .data .itemName {
+    text-align: left;
+}
 #capactytable td {
     padding: 3px;
 }
@@ -91,7 +94,6 @@ body {
     border: 1px solid black;
     margin-top: 5px;
     padding-right: 10px;
-    /* display: none; */
 }
 .checklist #title {
     border: 0px darkgrey solid;
@@ -101,7 +103,7 @@ body {
     font-weight: bold;
 }
 .rowLabel {
-    width: 100px;
+    width: 65px;
     display: inline-block;
     background-color: gainsboro;
 }
@@ -531,6 +533,9 @@ p.itemName {
     text-overflow: ellipsis;
     white-space: normal;
     width: auto;
+}
+table#capacitytable .data {
+    text-align: left;
 }
 .taskbrief {
     color: black;
