@@ -731,63 +731,63 @@
         config: {
             // Droppin object class in bin or other item to create item or insert item in list
             "person": [
-                { "target": "people", "handler": "dragdrop.add('teamMember', event.target, event)" },
+                { "target": "people", "handler": "dragdrop.add('teamMember', ev.target, ev)" },
                 { "target": "teamMember", "handler": "dragdrop.insertArtifact('#team', dragdrop.dragged, dropzone, '.person', 'teamMember')" }
             ],
             "newSprint": [
-                { "target": "schedule", "handler": "dragdrop.add('sprint', event.target, event)" },
+                { "target": "schedule", "handler": "dragdrop.add('sprint', ev.target, ev)" },
                 { "target": "sprint", "handler": "dragdrop.insertArtifact('#sprints', dragdrop.dragged, dropzone, '.sprint', 'sprint')" }
             ],
             "blackout": [
-                { "target": "holidayWeeks", "handler": "dragdrop.add('holidayWeek', event.target, event)" },
+                { "target": "holidayWeeks", "handler": "dragdrop.add('holidayWeek', ev.target, ev)" },
                 { "target": "holidayWeek", "handler": "dragdrop.insertArtifact('#blackouts', dragdrop.dragged, dropzone, '.blackout', 'holidayWeek')" }
             ],
             "requirement": [
-                { "target": "backlog", "handler": "dragdrop.add('workItem', event.target, event)" },
+                { "target": "backlog", "handler": "dragdrop.add('workItem', ev.target, ev)" },
                 { "target": "workItem", "handler": "dragdrop.insertArtifact('div#requirements', dragdrop.dragged, dropzone, '.requirement', 'workItem')" }
             ],
             "postIt": [
-                { "target": "backlog", "handler": "dragdrop.add('workItem', event.target, event)" },
+                { "target": "backlog", "handler": "dragdrop.add('workItem', ev.target, ev)" },
                 { "target": "workItem", "handler": "dragdrop.insertArtifact('div#requirements', dragdrop.dragged, dropzone, '.requirement', 'workItem')" },
-                { "target": "taskbrief", "handler": "dragdrop.add('workItem', event.target, event)" }
+                { "target": "taskbrief", "handler": "dragdrop.add('workItem', ev.target, ev)" }
             ],
             "daytype": [
-                { "target": "weekdays", "handler": "dragdrop.add('dayOfWeek', event.target, event)" },
-                { "target": "dayOfWeek", "handler": "dragdrop.add('dayOfWeek', event.target, event)" }
+                { "target": "weekdays", "handler": "dragdrop.add('dayOfWeek', ev.target, ev)" },
+                { "target": "dayOfWeek", "handler": "dragdrop.add('dayOfWeek', ev.target, ev)" }
             ],
             "newtask": [
-                { "target": "status", "handler": "dragdrop.add('newTask', event.target, event)" },
-                { "target": "taskbrief", "handler": "dragdrop.insertTask(dropzone, dropzone.closest('td'), event)" }
+                { "target": "status", "handler": "dragdrop.add('newTask', ev.target, ev)" },
+                { "target": "taskbrief", "handler": "dragdrop.insertTask(dropzone, dropzone.closest('td'), ev)" }
             ],
             "backlogitem": [
-                { "target": "status", "handler": "dragdrop.add('backlogitem', event.target, event)" },
-                { "target": "taskbrief", "handler": "dragdrop.insertTask(dropzone, dropzone.closest('td'), event)" }
+                { "target": "status", "handler": "dragdrop.add('backlogitem', ev.target, ev)" },
+                { "target": "taskbrief", "handler": "dragdrop.insertTask(dropzone, dropzone.closest('td'), ev)" }
             ],
             // Droping item on another item in bin or at end of bin
             "teamMember": [
-                { "target": "people", "handler": "dragdrop.moveChildToEnd(dragdrop.dragged, event.target)" },
-                { "target": "teamMember", "handler": "dragdrop.moveChildBefore(dragdrop.dragged, event.target)" }
+                { "target": "people", "handler": "dragdrop.moveChildToEnd(dragdrop.dragged, ev.target)" },
+                { "target": "teamMember", "handler": "dragdrop.moveChildBefore(dragdrop.dragged, ev.target)" }
             ],
             "sprint": [
-                { "target": "schedule", "handler": "dragdrop.moveChildToEnd(dragdrop.dragged, event.target)" },
-                { "target": "sprint", "handler": "dragdrop.moveChildBefore(dragdrop.dragged, event.target)" }
+                { "target": "schedule", "handler": "dragdrop.moveChildToEnd(dragdrop.dragged, ev.target)" },
+                { "target": "sprint", "handler": "dragdrop.moveChildBefore(dragdrop.dragged, ev.target)" }
             ],
             "holidayWeek": [
-                { "target": "holidayWeeks", "handler": "dragdrop.moveChildToEnd(dragdrop.dragged, event.target)" },
-                { "target": "holidayWeek", "handler": "dragdrop.moveChildBefore(dragdrop.dragged, event.target)" }
+                { "target": "holidayWeeks", "handler": "dragdrop.moveChildToEnd(dragdrop.dragged, ev.target)" },
+                { "target": "holidayWeek", "handler": "dragdrop.moveChildBefore(dragdrop.dragged, ev.target)" }
             ],
             "dayOfWeek": [
-                { "target": "weekdays", "handler": "dragdrop.moveChildTo(dragdrop.dragged, event.target)" },
-                { "target": "dayOfWeek", "handler": "dragdrop.moveChildTo(dragdrop.dragged, event.target)" }
+                { "target": "weekdays", "handler": "dragdrop.moveChildTo(dragdrop.dragged, ev.target)" },
+                { "target": "dayOfWeek", "handler": "dragdrop.moveChildTo(dragdrop.dragged, ev.target)" }
             ],
             "workItem": [
-                { "target": "backlog", "handler": "dragdrop.moveChildToEnd(dragdrop.dragged, event.target)" },
-                { "target": "workItem", "handler": "dragdrop.moveChildBefore(dragdrop.dragged, event.target)" }
+                { "target": "backlog", "handler": "dragdrop.moveChildToEnd(dragdrop.dragged, ev.target)" },
+                { "target": "workItem", "handler": "dragdrop.moveChildBefore(dragdrop.dragged, ev.target)" }
             ],
             "taskbrief": [
-                { "target": "status", "handler": "dragdrop.appendDraggedTask(dragdrop.dragged, event.target)" },
-                { "target": "backlog", "handler": "dragdrop.moveTask(dragdrop.dragged, event)" },
-                { "target": "taskbrief", "handler": "dragdrop.moveTask(dragdrop.dragged, event)" }
+                { "target": "status", "handler": "dragdrop.appendDraggedTask(dragdrop.dragged, ev.target)" },
+                { "target": "backlog", "handler": "dragdrop.moveTask(dragdrop.dragged, ev)" },
+                { "target": "taskbrief", "handler": "dragdrop.moveTask(dragdrop.dragged, ev)" }
             ]
         },
         dragstart: function (ev) {
@@ -3258,7 +3258,10 @@
             var data = getJSONData(item);
             Object.keys(data).filter(d => d != "").forEach(feildname => {
                 var input = this.ui.querySelector("#" + feildname);
-                if (!input) return;
+                if (!input) {
+                    console.log("Error getting value of", feildname);
+                    return;
+                }
                 if (["text", "textarea", "date", "week"].filter(t => t == input.type).length)
                     input.value = data[feildname];
                 if (input.type == "color")
@@ -3529,20 +3532,21 @@
         return data;
     }
     function onadd_backlogitem(params) {
+        var hlcolor = "lightgray";
+        var id = dragdrop.dragged.id;
         var data = getJSONData(params);
-        params.querySelector(".itemName").innerText = data.name.trim();
+        var backlogItem = project.backlog.get(id);
+        params.querySelector(".itemName").innerText = backlogItem.data().name.trim();
         params.classList.remove("backlogitem");
         params.classList.add("newTask");
         params.querySelector(".burndown").onclick = project.burndown.edit;
         params.style.color = dragdrop.dragged.dataset.oldColor;
         params.style.backgroundColor = dragdrop.dragged.dataset.oldBackgroundColor;
         form.initData("#requirementsForm", params);
-        var id = dragdrop.dragged.id;
-        var hlcolor = "lightgray";
         project.ui.sizes().forEach(s => delete data[s]);
-        data[project.backlog.get(id).size()] = true;
         project.ui.priorities().forEach(s => delete data[s]);
-        data[project.backlog.get(id).priority()] = true;        
+        data[backlogItem.size()] = true;
+        data[backlogItem.priority()] = true;
         data.reference = id;
         params.addEventListener('mouseover', (event) => {
             [...document.querySelectorAll("#scheduleEditor #backlog #list .reqt")]
