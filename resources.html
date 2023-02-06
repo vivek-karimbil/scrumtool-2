@@ -481,7 +481,7 @@
 <div id="dordodScreen" class="toolScreen" style="display: none;">
     <h1 style="display: none;">Under Construction</h1>
     <table id="sections">
-        <td id="start" onmouseover="project.checklists.show('#startDD')">
+        <td id="start" onclick="project.checklists.show('#startDD')">
             <div class="clSelector">
                 <div class="imgHolder">
                     <img class="menuButton undraggable" src="img/start.svg" title="Project entry checklist"/>
@@ -489,7 +489,7 @@
             </div>
         </td>
         <td id="sprints"></td>
-        <td id="stop" onmouseover="project.checklists.show('#stopDD')">
+        <td id="stop" onclick="project.checklists.show('#stopDD')">
             <div class="clSelector">
                 <div class="imgHolder">
                     <img class="menuButton undraggable" src="img/stop.svg" title="Project exit checklist"/>
@@ -824,11 +824,11 @@
             }
             console.log("\nDragged:\n\t"
                 + dragdrop.dragged.tagName.toLocaleLowerCase()
-                + "#" + dragdrop.dragged.id + ".[" + dragdrop.dragged.classList + "]\nDropped on:\n\t"
+                + "#" + dragdrop.dragged.id + "." + [...dragdrop.dragged.classList].join(".") + "\nDropped on:\n\t"
                 + ev.target.tagName.toLocaleLowerCase() + "#"
-                + ev.target.id + ".[" + ev.target.classList + "]\nClosets dropzone:\n\t"
+                + ev.target.id + "." + [...ev.target.classList].join(".") + "\nClosets dropzone:\n\t"
                 + dropzone.tagName.toLocaleLowerCase() + "#" + dropzone.id
-                + ".[" + dropzone.classList + "]\nCallback handler:\n\t"
+                + "." + [...dropzone.classList].join(".") + "\nCallback handler:\n\t"
                 + callback[0].handler
                 + (callback.length > 1 ?
                     callback.length + " handlers found\n" : "\n")
@@ -3541,7 +3541,9 @@
         params.classList.add("newTask");
         params.querySelector(".burndown").onclick = project.burndown.edit;
         params.style.color = dragdrop.dragged.dataset.oldColor;
-        params.style.backgroundColor = dragdrop.dragged.dataset.oldBackgroundColor;
+        var oldBackgroundColor = dragdrop.dragged.dataset.oldBackgroundColor;
+        if (!oldBackgroundColor) oldBackgroundColor = dragdrop.dragged.style.backgroundColor;
+        params.style.backgroundColor = oldBackgroundColor;
         form.initData("#requirementsForm", params);
         project.ui.sizes().forEach(s => delete data[s]);
         project.ui.priorities().forEach(s => delete data[s]);
@@ -3684,6 +3686,7 @@
         var description = params.querySelector(".itemName").innerText;
         var reqt = document.createElement("div");
         var level = [...dragdrop.dragged.parentElement.classList].filter(c => c.match(/level/))[0];
+        var hlcolor = "lightgray";
         reqt.id = params.id;
         reqt.classList.add("reqt");
         reqt.classList.add("backlogitem");
@@ -3700,7 +3703,6 @@
         para.classList.add("summary");
         para.innerText = description;
         reqt.appendChild(para);
-        var hlcolor = "lightgray";
         reqt.addEventListener('mouseover', (event) => {
             var reqt = event.target.closest(".reqt");
             reqt.classList.add("highlight");
