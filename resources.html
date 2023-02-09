@@ -3465,7 +3465,7 @@
             var clSelector = document.querySelector("template#sprintCell").content.cloneNode(true);
             clSelector.querySelector("img").title = "Checklist for " + sprintName;
             clSelector.querySelector("img")
-                .addEventListener('mouseover', () => project.checklists.show(`#sprintsDD #${sprint.id}`));
+                .addEventListener('click', () => project.checklists.show(`#sprintsDD #${sprint.id}`));
             clSelector.querySelector(".name").innerText = sprintName;
             document.querySelector("#dordodScreen #sections #sprints")
                 .appendChild(clSelector);
@@ -3547,6 +3547,7 @@
         form.initData("#requirementsForm", params);
         project.ui.sizes().forEach(s => delete data[s]);
         project.ui.priorities().forEach(s => delete data[s]);
+        data.name = backlogItem.data().name;
         data[backlogItem.size()] = true;
         data[backlogItem.priority()] = true;
         data.reference = id;
