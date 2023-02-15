@@ -182,14 +182,14 @@
                                         <img class="undraggable" src="img/capacity.svg" style="height: 75px;" title="Default capacity for development"/>
                                     </td>
                                     <td class="capacitySetting" title="Team member in lead role">
-                                        <img class="undraggable" src="img/lead.svg"/>
+                                        <img class="undraggable rowLabel" src="img/lead.svg" style="background-color: unset;"/>
                                         <input id="lead" class="default" value="40"
                                             style="text-align: right; width: 4ch;"
                                             data-path="defaults.capacity.lead"
                                             title="Default capacity for a lead">%
                                     </td>
                                     <td class="capacitySetting" title="Team member in developer role">
-                                        <img class="undraggable" src="img/developer.svg"/>
+                                        <img class="undraggable rowLabel" src="img/developer.svg" style="background-color: unset;"/>
                                         <input id="developer" class="default" value="80"
                                             style="text-align: right; width: 4ch;"
                                             data-path="defaults.capacity.developer"
@@ -200,32 +200,28 @@
                         </td>
                         <td class="capacitySetting" style="border-bottom: 3px solid #666;">
                             <img src="img/estimate.svg" class="rowLabel undraggable" style="max-height: 78px;" title="Default estimate"/>
-                            <input id="estimate" class="default" value="3"
-                                style="text-align: right; width: 3ch;"
-                                data-path="defaults.estimate"
-                                title="Default estimate (currently not used)">
+                            <div id="sizeSettings" class="item" onclick="project.ui.defaultSizes()" style="display: inline;">
+                                <img src="img/spanner.svg" style="height: 45px; width: 75px;"
+                                    title="Defaut time estimate in days for chosen size">
+                                <div id="data" style="display: none;"></div>
+                            </div>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="capacity">
                         <td class="capacitySetting" style="border-right: 3px solid #666;">
                             <img class="rowLabel undraggable"
-                                src="img/holiday.svg" style="width: 100px; height: 75px; margin-left: 3px;"
-                                title="Time off per sprint">
+                                src="img/holiday.svg" title="Time off per sprint">
                             <input id="vacation" class="default" value="1"
                                 style="text-align: right; width: 5ch;"
                                 data-path="defaults.capacity.vacation"
-                                title="Unavailable days per sprint"> / <img src="img/devsprint.svg" style="height: 25px;">
+                                title="Unavailable days per sprint">&nbsp;/&nbsp;<img src="img/devsprint.svg" style="width: 50px;">
                         </td>
                         <td class="capacitySetting" style="border-right: 3px solid #666;">
-                            <img class="rowLabel undraggable" src="img/priority.svg"
-                                style="width: 100px; height: 75px; margin-left: 3px;"
-                                title="Default story priority">
+                            <img class="rowLabel undraggable" src="img/priority.svg" title="Default story priority">
                             <select name="priority" id="priority" class="default" onchange="defaults.setPriority()"></select>
                         </td>
                         <td class="capacitySetting">
-                            <img class="rowLabel undraggable" src="img/measure.svg"
-                                style="width: 100px; height: 75px;"
-                                title="Default story size in days">
+                            <img class="rowLabel undraggable" src="img/measure.svg" title="Default story size in days">
                             <select name="size" id="size" class="default" onchange="defaults.setSize()"></select>
                         </td>
                     </tr>
@@ -301,6 +297,19 @@
                 <button id="yes">Save</button>
                 <button id="no">Discard</button>
             </div>
+        </div>
+    </div>
+
+    <div id="sizeSettingsForm" class="modal" style="display: none;">
+        <div class="modal-container">
+            <center>
+                <div class="container">
+                    <div onclick="document.getElementById('sizeSettingsForm').style.display='none'" class="minbutton">×</div>
+                    <table><thead><tr><th>Unit</th><th>Days</th></tr></thead><tbody id="sizes"></tbody></table>
+                    <button id="yes">Save</button>
+                    <button id="no">Discard</button>
+                </div>
+            </center>
         </div>
     </div>
 
@@ -484,16 +493,18 @@
         <td id="start" onclick="project.checklists.show('#startDD')">
             <div class="clSelector">
                 <div class="imgHolder">
-                    <img class="menuButton undraggable" src="img/start.svg" title="Project entry checklist"/>
+                    <img class="menuButton undraggable" src="img/start.svg" title="Project start checklist"/>
                 </div>
+                <div class="name">Start</div>
             </div>
         </td>
         <td id="sprints"></td>
         <td id="stop" onclick="project.checklists.show('#stopDD')">
             <div class="clSelector">
                 <div class="imgHolder">
-                    <img class="menuButton undraggable" src="img/stop.svg" title="Project exit checklist"/>
+                    <img class="menuButton undraggable" src="img/stop.svg" title="Project finish checklist"/>
                 </div>
+                <div class="name">Finish</div>
             </div>
         </td>
     </table>
@@ -513,7 +524,9 @@
     <template id="dordodWarning">
         <div class='warning'>
             <img src='img/warning.svg' style="vertical-align: middle;">
-            <div id="message"></div><img src='img/spanner.svg' style="float: right;">
+            <div id="message"></div>
+            <img class="fix" src='img/spanner.svg' style="float: right;"
+                onclick="project.checklists.fix(this)">
         </div>
     </template>
 
@@ -550,7 +563,7 @@
 <div id="confirmDelete" class="modal" style="display: none;">
     <div class="modal-container">
         <div class="container">
-            <div id="message">Realy delete this?</div>
+            <div id="message">Really delete this?</div>
             <button id="yes">Yes</button>
             <button id="no">No</button>
         </div>
@@ -594,6 +607,8 @@
         </div>
     </div>
 </div>
+
+<div id="snackbar">Text to be replaces by message.</div>
 
 <template id="msTemplate">
     <tr class="msrequirements">
@@ -702,7 +717,8 @@
             }
         },
         get estimate() {
-            return parseInt(document.querySelector(".capacitySetting #estimate").value);
+            var _size = this.size;
+            return +document.querySelector("input#" + _size).value;
         },
         _priority: "shouldhave",
         get priority() {
@@ -1404,8 +1420,16 @@
                         return sizes[sizes.length - 1];
                     },
                     estimate: function() {
-                        var effort = +document.querySelector("#estimateTemplate").content
-                            .querySelector("input#" + this.size()).value;
+                        var effort = 0;
+                        var sizeSettings = document.querySelector("#sizeSettingsForm #sizes");
+                        if (sizeSettings.innerHTML.length == 0)  { // If sizes form not opened, use default sizes
+                            effort = +document.querySelector("#estimateTemplate").content
+                                .querySelector("input#" + this.size()).value;
+                        }
+                        else {
+                            var data = getJSONData(document.querySelector("#sizeSettings"));
+                            effort = +data[this.size()];
+                        }
                         if (!effort) effort = defaults.estimate;
                         return effort;
                     },
@@ -1523,9 +1547,9 @@
         checklists: {
             get entry() { return [
                 { prompt: "Project name",  value: "this.echeck.projectName()", style: "" },
-                { prompt: "Scope",  value: "this.echeck.scope()", style: "" },
                 { prompt: "Schedule",  value: "this.echeck.schedule()", style: "" },
                 { prompt: "Sprint plan",  value: "this.echeck.sprintPlan()", style: "" },
+                { prompt: "Scope",  value: "this.echeck.scope()", style: "" },
                 { prompt: "Blackout weeks",  value: "this.echeck.blackouts()", style: "" },
                 { prompt: "Team",  value: "this.echeck.staff('lead')", style: "" },
                 { prompt: "Capacity",  value: "this.echeck.capacity()", style: "" }
@@ -1552,6 +1576,54 @@
                     { prompt: "Completion",  value: "this.scheck.completion(sprint)", style: "" }                    
                 ]}
             }},
+            fix: function(spanner) {
+                var message = spanner.closest(".warning").querySelector("#message").innerText;
+                const fixes = [
+                    { key: "Project name not set", screen: "button#settings", field: "input#projectName",
+                        message: "Enter a name for the project" },
+                    { key: "No requirements in backlog", screen: "button#backlog", field: "#requirements",
+                        message: "Drag requirements to the backlog" },
+                    { key: "No tasks created", screen: "button#schedule", field: "img.menuicon",
+                        message: "Add tasks from the backlog, or new tasks to the project" },
+                    { key: "No tasks in sprint", screen: "button#schedule", field: "img.menuicon",
+                        message: "Add tasks to all sprints" },
+                    { key: "backlog items schedule", screen: "button#schedule", field: ".reqt.backlogitem",
+                        message: "Add tasks to the backlog" },
+                    { key: "No sprints added", screen: "button#settings", field: "img.menuicon",
+                        message: "Add sprints to the project schedule" },
+                    { key: "No development sprints added", screen: "button#settings", field: "img.menuicon",
+                        message: "Add sprints to the project schedule" },
+                    { key: "No hardening sprints added", screen: "button#settings", field: "img.menuicon",
+                        message: "Add hardening sprints for activities like regression testing, non-functional reviews, etc." },
+                    { key: "No leads assigned", screen: "button#settings", field: "img.menuicon",
+                        message: "Drag a technical lead to the project staff box" },
+                    { key: "No developers assigned", screen: "button#settings", field: "img.menuicon",
+                        message: "Drag developers to the project staff box" },
+                    { key: "No testers assigned", screen: "button#settings", field: "img.menuicon",
+                        message: "Drag a technical lead to the project staff box" },
+                    { key: "backlog requirements not competed", screen: "button#schedule", field: "img.menuicon",
+                        message: "All tasks not yet moved to complete column" },
+                    { key: "not assigned to a developer", screen: "button#schedule", field: "img",
+                        message: "Assign task to a developer" }
+                ];
+                var action = fixes.filter(f => message.match(f.key));
+                if (action.length == 0) {
+                    console.log("No corrective action for '" + message + "'");
+                    return;
+                }
+                var holder = spanner.closest(".holder");
+                if (holder && holder.id.match("sprints_")) {
+                    var tab = document.querySelector(action[0].screen);
+                    tab.click();
+                    action[0].screen = tab.querySelector("#mslist #" + holder.id);
+                }
+                document.querySelector(action[0].screen).click();
+                document.querySelector(action[0].field).focus();
+                var x = document.querySelector("#snackbar");
+                x.innerText = action[0].message;
+                x.className = "show";
+                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+            },
             make: function(title, list, sprint) {
                 var checklist = document.querySelector("template#dordod").content.cloneNode(true);
                 checklist.querySelector("#title").innerHTML = title;
@@ -1649,11 +1721,11 @@
                 return warning.querySelector("div").outerHTML;
             },
             message: function(s) { return "<div class='message'>" + s + "</div>"},
-            echeck: { // Project Entry Checklist
+            echeck: { // Project start checklist
                 projectName: function() {
                     var warning = project.checklists.warning;
                     var name = project.name;
-                    if (!name || name.length == 0) name = warning("Not set");
+                    if (!name || name.length == 0) name = warning("Project name not set");
                     return name;
                 },
                 scope: function() {
@@ -1810,7 +1882,7 @@
                     var backlog = tasks.filter(t => getJSONData(t).reference);
                     var uniqueBacklog = backlog.map(b => getJSONData(b).reference)
                         .filter((value, index, self) => self.indexOf(value) === index);
-                    if (tasks.length == 0) messages.push(warning("No tasks"));
+                    if (tasks.length == 0) messages.push(warning("No tasks in sprint"));
                     else {
                         messages.push(message(`${tasks.length} tasks`));
                         var backlog = tasks.filter(t => getJSONData(t).reference);
@@ -1861,7 +1933,7 @@
                     var backlog = tasks.filter(t => getJSONData(t).reference);
                     var uniqueBacklog = backlog.map(b => getJSONData(b).reference)
                         .filter((value, index, self) => self.indexOf(value) === index);
-                    if (tasks.length == 0) messages.push(warning("No tasks"));
+                    if (tasks.length == 0) messages.push(warning("No tasks in sprint"));
                     else {
                         messages.push(message(`${tasks.length} tasks`));
                         messages.push(message(`${backlog.length} tasks related to ${uniqueBacklog.length} backlog items`));
@@ -1878,7 +1950,7 @@
                     var backlog = tasks.filter(t => getJSONData(t).reference);
                     var uniqueBacklog = backlog.map(b => getJSONData(b).reference)
                         .filter((value, index, self) => self.indexOf(value) === index);
-                    if (tasks.length == 0) messages.push(warning("No tasks"));
+                    if (tasks.length == 0) messages.push(warning("No tasks in sprint"));
                     else {
                         messages.push("<table class='exit sprint'><th>Status</th><th>Backlog</th><th>Tasks</th><th>Total</th>");
                         statuses.forEach(s => {
@@ -2030,6 +2102,7 @@
                 document.querySelector("#backlog #list").innerHTML = "";
                 document.querySelectorAll("#dordodScreen input").forEach(i => i.type == "checkbox" ? i.checked = false : i.value = "");
             },
+            defaultSizes: function() { form.edit({ target: document.querySelector("#sizeSettings")})},
             sizes: function() {
                 return [...document.querySelector("#estimateTemplate")
                     .content.querySelectorAll("input")].map(s => s.id);
@@ -3257,7 +3330,7 @@
             callFunction("initForm_" + itemClass, [this.ui, id]);
             var data = getJSONData(item);
             Object.keys(data).filter(d => d != "").forEach(feildname => {
-                var input = this.ui.querySelector("#" + feildname);
+                var input = this.ui.querySelector("input#" + feildname);
                 if (!input) {
                     console.log("Error getting value of", feildname);
                     return;
@@ -3313,7 +3386,7 @@
             });
             form.querySelectorAll("textarea").forEach(t => returnData[t.id] = t.value);
             if (data = item.querySelector("#data")) data.innerText = JSON.stringify(returnData);
-            if (returnData.name.length && item.querySelector(".itemName"))
+            if (returnData.name && returnData.name.length && item.querySelector(".itemName"))
                 item.querySelector(".itemName").innerText = returnData.name;
             form.style.display = 'none';
         },
@@ -3452,7 +3525,7 @@
 
         var checklist = project.checklists.entry;
         dordodScreen.querySelector("#startDD")
-            .appendChild(project.checklists.make("Project Entry", checklist));
+            .appendChild(project.checklists.make("Project Start", checklist));
         dordodScreen.querySelector("#startDD .holder").id = "start";
         if (today < project.dates.start()) project.checklists.show("#startDD");
         
@@ -3787,6 +3860,30 @@
     function onmovetoend_testing(params) { project.ui.sprint.syncTabs(); }
     function initForm_requirements(params) {
         params[0].querySelector(".container").style.width = "500px";
+    }
+    function initForm_sizeSettings(params) {
+        const template = document.querySelector("#estimateTemplate").content;
+        var labels = [...template.querySelectorAll("label")];
+        var sizes = [...template.querySelectorAll("input")];
+        var sizeList = params[0].querySelector("#sizes");
+        if (sizeList.innerHTML.length == 0) {
+            labels.forEach(l => {
+                var row = document.createElement("tr");
+                var column = document.createElement("td");
+                column.appendChild(l.cloneNode(true));
+                row.appendChild(column);
+                sizeList.appendChild(row);
+            });
+            sizes.forEach(size => {
+                var row = sizeList.querySelector(`[for='${size.id}'`).closest("tr");
+                var column = document.createElement("td");
+                var input = document.createElement("input");
+                input.id = size.id;
+                input.value = size.value;
+                column.appendChild(input);
+                row.appendChild(column);
+            });
+        }
     }
     function initForm_sprints(params) {
         var capacityTable = params[0].querySelector("#capacitytable tbody");

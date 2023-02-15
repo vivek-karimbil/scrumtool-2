@@ -103,9 +103,10 @@ body {
     font-weight: bold;
 }
 .rowLabel {
-    width: 65px;
-    display: inline-block;
     background-color: gainsboro;
+    display: inline-block;
+    width: 75px;
+    margin-left: 2px;
 }
 .container {
     -webkit-text-size-adjust: 100%;
@@ -483,11 +484,44 @@ p.itemName {
     border: 2px solid #666;
     border-radius: 5px;
 }
+#sizeSettingsForm .container {
+    width: 200px;
+}
+#sizeSettingsForm input {
+    width: 3ch;
+}
+#sizeSettingsForm table {
+    margin-top: 2ch;
+    margin-bottom: 2ch;
+}
+#sizeSettingsForm th {
+    text-align: left;
+}
 .slot {
     border: 3px solid #666;
     height: fit-content;
     padding: 1px;
 }
+#snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+}
+#snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}  
 #sprintDiv {
     display: inline;
     float: left;
@@ -620,6 +654,22 @@ table#capacitytable .data {
     width: 100%;
     display: table-caption;
     min-width: 210px;
+}
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 30px; opacity: 1;}
+}
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;} 
+    to {bottom: 0; opacity: 0;}
+}
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
 }
 .bar1 { fill: steelblue; }
 .bar2 { fill: deepskyblue; }
