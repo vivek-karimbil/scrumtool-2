@@ -2321,6 +2321,7 @@
                     reader.onload = function() {
                         project.ui.clear();
                         var data = JSON.parse(reader.result);
+                        var defaults = document.querySelector("#defaults");
                         for (var d in data.projectInfo) {
                             if (d == "burndownDays" || d == "weeklyHolidays") {
                                 var daytype = d == "burndownDays" ? "workday" : "holiday";
@@ -2346,9 +2347,6 @@
                                     else input.value = data.projectInfo[d];
                                 }
                             }
-                        }
-                        for (var d in data.defaults) {
-                            document.querySelector("#defaults input#" + d).value = data.projectInfo[d];
                         }
                         for (var i in data.team) {
                             var id = data.team[i].id;
@@ -2402,6 +2400,16 @@
                             var oldReq = document.querySelector("#backlog #list #" + origId);
                             oldReq.querySelector("div.summary").innerText = rqtData.name;
                             oldReq.id = id;
+                        }
+                        for (var i in data.defaults) {
+                            if (i != "sizes") {
+                                document.querySelector("#defaults #" + i).value = data.defaults[i];
+                            }
+                            else {
+                                Object.keys(data.defaults[i]).forEach(k =>
+                                    document.querySelector("#sizeSettingsForm input#" + k)
+                                    .value = data.defaults[i][k]);
+                            }
                         }
                         project.checklists.fromJSON(data.checklists);
                         project.file.loadTrackingData(data.burndown);
@@ -2490,10 +2498,10 @@
                         json.defaults[v.id] = v.value;
                 });
                 document.querySelectorAll("#defaults select").forEach (v => {
-                    json.defaults[v.id] = v.querySelector("option:checked").id;
+                    json.defaults[v.id] = v.querySelector("option:checked").value;
                 });
-                document.querySelectorAll("#sizeSettingsForm input").forEach(i => {
-                    json.defaults.sizes[i.id] = i.value;
+                document.querySelectorAll("#sizeSettings").forEach(i => {
+                    json.defaults.sizes = getJSONData(i);
                 });
                 document.querySelectorAll("#team .teamMember").forEach(t => {
                     json.team.push({ id: t.id, data: getJSONData(t) });
