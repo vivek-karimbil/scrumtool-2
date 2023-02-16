@@ -171,15 +171,15 @@
                         title="Edit dates"/>
                 </div>
             </div>    
-            <div id="values">
+            <div id="defaults">
                 <table style="width: 100%; border-collapse: collapse; border: 2px solid #666;">
                     <tr class="parameters">
                         <td class="capacitySetting" colspan="2"
                             style="border-bottom: 3px solid #666; border-right: 3px solid #666;">
                             <table>
                                 <tr>
-                                    <td class="rowLabel">
-                                        <img class="undraggable" src="img/capacity.svg" style="height: 75px;" title="Default capacity for development"/>
+                                    <td>
+                                        <img class="rowLabel undraggable" src="img/capacity.svg" title="Default capacity for development"/>
                                     </td>
                                     <td class="capacitySetting" title="Team member in lead role">
                                         <img class="undraggable rowLabel" src="img/lead.svg" style="background-color: unset;"/>
@@ -199,7 +199,7 @@
                             </table>
                         </td>
                         <td class="capacitySetting" style="border-bottom: 3px solid #666;">
-                            <img src="img/estimate.svg" class="rowLabel undraggable" style="max-height: 78px;" title="Default estimate"/>
+                            <img src="img/estimate.svg" class="rowLabel undraggable" style="margin: 2px;" title="Default estimate"/>
                             <div id="sizeSettings" class="item" onclick="project.ui.defaultSizes()" style="display: inline;">
                                 <img src="img/spanner.svg" style="height: 45px; width: 75px;"
                                     title="Defaut time estimate in days for chosen size">
@@ -209,7 +209,7 @@
                     </tr>
                     <tr class="capacity">
                         <td class="capacitySetting" style="border-right: 3px solid #666;">
-                            <img class="rowLabel undraggable"
+                            <img class="rowLabel undraggable" style="margin: 2px;"
                                 src="img/holiday.svg" title="Time off per sprint">
                             <input id="vacation" class="default" value="1"
                                 style="text-align: right; width: 5ch;"
@@ -217,11 +217,13 @@
                                 title="Unavailable days per sprint">&nbsp;/&nbsp;<img src="img/devsprint.svg" style="width: 50px;">
                         </td>
                         <td class="capacitySetting" style="border-right: 3px solid #666;">
-                            <img class="rowLabel undraggable" src="img/priority.svg" title="Default story priority">
+                            <img class="rowLabel undraggable" style="margin: 2px;"
+                                src="img/priority.svg" title="Default story priority">
                             <select name="priority" id="priority" class="default" onchange="defaults.setPriority()"></select>
                         </td>
                         <td class="capacitySetting">
-                            <img class="rowLabel undraggable" src="img/measure.svg" title="Default story size in days">
+                            <img class="rowLabel undraggable" style="margin: 2px;"
+                                src="img/measure.svg" title="Default story size in days">
                             <select name="size" id="size" class="default" onchange="defaults.setSize()"></select>
                         </td>
                     </tr>
@@ -1277,8 +1279,9 @@
                                 : parseInt(defaults.capacity.vacation);
                             var devCapacity = 0;
                             for(var dt = new Date(date); dt < endDate; dt.setDate(dt.getDate() + 1)) {
-                                if (!project.dates.isHoliday(dt)) devCapacity += burnRate;
+                                if (!project.dates.isHoliday(dt)) devCapacity += 1;
                             }
+                            devCapacity *= burnRate;
                             devCapacity -= vacation;
                             if (devCapacity < 0) devCapacity = 0;
                             capacity += devCapacity;
@@ -1420,16 +1423,8 @@
                         return sizes[sizes.length - 1];
                     },
                     estimate: function() {
-                        var effort = 0;
-                        var sizeSettings = document.querySelector("#sizeSettingsForm #sizes");
-                        if (sizeSettings.innerHTML.length == 0)  { // If sizes form not opened, use default sizes
-                            effort = +document.querySelector("#estimateTemplate").content
-                                .querySelector("input#" + this.size()).value;
-                        }
-                        else {
-                            var data = getJSONData(document.querySelector("#sizeSettings"));
-                            effort = +data[this.size()];
-                        }
+                        var sizes = [...document.querySelectorAll("#sizeSettingsForm input")];
+                        var effort = +sizes.filter(s => s.id == this.size())[0].value;
                         if (!effort) effort = defaults.estimate;
                         return effort;
                     },
@@ -2475,7 +2470,7 @@
             toJSON: function() {
                 var json = {
                     projectInfo: {},
-                    defaults: {},
+                    defaults: { sizes: {} },
                     team: [],
                     sprints: [],
                     holidayWeeks: [],
@@ -2490,12 +2485,15 @@
                 json.projectInfo.weeklyHolidays = project.dates.weeklyHolidays();
                 document.querySelectorAll("#defaults input").forEach (v => {
                     if (v.type == 'checkbox')
-                        json.projectInfo[v.id] = v.checked;
+                        json.defaults[v.id] = v.checked;
                     if (v.type == 'text')
-                        json.projectInfo[v.id] = v.value;
+                        json.defaults[v.id] = v.value;
                 });
                 document.querySelectorAll("#defaults select").forEach (v => {
-                    json.projectInfo[v.id] = v.value;
+                    json.defaults[v.id] = v.querySelector("option:checked").id;
+                });
+                document.querySelectorAll("#sizeSettingsForm input").forEach(i => {
+                    json.defaults.sizes[i.id] = i.value;
                 });
                 document.querySelectorAll("#team .teamMember").forEach(t => {
                     json.team.push({ id: t.id, data: getJSONData(t) });
@@ -3332,7 +3330,7 @@
             Object.keys(data).filter(d => d != "").forEach(feildname => {
                 var input = this.ui.querySelector("input#" + feildname);
                 if (!input) {
-                    console.log("Error getting value of", feildname);
+                    console.log("Warning: node input#" + feildname, "not found");
                     return;
                 }
                 if (["text", "textarea", "date", "week"].filter(t => t == input.type).length)
@@ -3431,6 +3429,21 @@
         document.querySelectorAll("input.default").forEach(d => {
             d.value = eval(d.getAttribute("data-path"));
         });
+        document.querySelector("#estimateTemplate").content.querySelectorAll("label").forEach(label => {
+            var size = label.parentNode.querySelector("input#" + label.id);
+            var row = document.createElement("tr");
+            var column = document.createElement("td");
+            column.appendChild(label.cloneNode(true));
+            row.appendChild(column);
+            column = document.createElement("td");
+            var input = document.createElement("input");
+            input.id = size.id;
+            input.value = size.value;
+            column.appendChild(input);
+            row.appendChild(column);
+            document.querySelector("#sizeSettingsForm #sizes").appendChild(row);
+        });
+        document.querySelector("#sizeSettingsForm #yes").click();
         document.querySelectorAll("div#estimate").forEach(d => {
             var estimate = document.getElementById("estimateTemplate");
             d.appendChild(estimate.content.cloneNode(true));
@@ -3500,7 +3513,6 @@
             if (argType === "function") window[functionName](params);
         }
         else {
-            console.log("Calling function named [" + functionName + "]");
             params = window;
             var args = Array.prototype.slice.call(arguments, 2);
             var namespaces = functionName.split(".");
@@ -3759,6 +3771,7 @@
         var requirements = document.querySelector("#scheduleScreen #backlog #list");
         var description = params.querySelector(".itemName").innerText;
         var reqt = document.createElement("div");
+        var dataDiv = document.createElement("div");
         var level = [...dragdrop.dragged.parentElement.classList].filter(c => c.match(/level/))[0];
         var hlcolor = "lightgray";
         reqt.id = params.id;
@@ -3811,6 +3824,10 @@
         data.noteColor = params.style.backgroundColor;
         data.textColor = "black";
         params.querySelector("#data").innerText = JSON.stringify(data);
+        dataDiv.id = "data";
+        dataDiv.style.display = "none";
+        dataDiv.innerText = JSON.stringify(data);
+        reqt.appendChild(dataDiv);
         requirements.appendChild(reqt);
     }
     function onedit_requirements(params) {
@@ -3860,30 +3877,6 @@
     function onmovetoend_testing(params) { project.ui.sprint.syncTabs(); }
     function initForm_requirements(params) {
         params[0].querySelector(".container").style.width = "500px";
-    }
-    function initForm_sizeSettings(params) {
-        const template = document.querySelector("#estimateTemplate").content;
-        var labels = [...template.querySelectorAll("label")];
-        var sizes = [...template.querySelectorAll("input")];
-        var sizeList = params[0].querySelector("#sizes");
-        if (sizeList.innerHTML.length == 0) {
-            labels.forEach(l => {
-                var row = document.createElement("tr");
-                var column = document.createElement("td");
-                column.appendChild(l.cloneNode(true));
-                row.appendChild(column);
-                sizeList.appendChild(row);
-            });
-            sizes.forEach(size => {
-                var row = sizeList.querySelector(`[for='${size.id}'`).closest("tr");
-                var column = document.createElement("td");
-                var input = document.createElement("input");
-                input.id = size.id;
-                input.value = size.value;
-                column.appendChild(input);
-                row.appendChild(column);
-            });
-        }
     }
     function initForm_sprints(params) {
         var capacityTable = params[0].querySelector("#capacitytable tbody");

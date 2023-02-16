@@ -106,7 +106,8 @@ body {
     background-color: gainsboro;
     display: inline-block;
     width: 75px;
-    margin-left: 2px;
+    height: 75px;
+    margin-left: 0px;
 }
 .container {
     -webkit-text-size-adjust: 100%;
@@ -648,8 +649,7 @@ table#capacitytable .data {
 .weekdays {
     border: 3px solid #666;
 }
-#weeksetup 
-#values {
+#weeksetup #defaults {
     border: 3px solid #666;
     width: 100%;
     display: table-caption;
