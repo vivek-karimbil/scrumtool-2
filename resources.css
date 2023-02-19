@@ -84,10 +84,14 @@ body {
 .capacitySetting {
     width: 150px;
     vertical-align: top;
-    /* align-items: center; */
 }
 .capacitySetting img {
     max-height: 75px;
+    vertical-align: middle;
+}
+#capacitytable .rowLabel {
+    height: 25px;
+    padding-left: 5px;
     vertical-align: middle;
 }
 .checklist {
@@ -194,7 +198,7 @@ div#graph {
     margin-top: 3ch;
     font-size: large;
 }
-#graphsScreen div {
+#graphsScreen > div {
     margin-bottom: 1ch;
     padding-top: 10px;
 }
@@ -696,8 +700,6 @@ table#capacitytable .data {
 div.tooltip {
   position: absolute;
   text-align: left;
-  width: 90px;
-  height: 30px;
   padding: 2px;
   font: 12px sans-serif;
   background: lightsteelblue;

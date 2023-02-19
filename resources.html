@@ -274,8 +274,6 @@
                 <td class="data"><div class="itemName"></div></td>
                 <td class="data"><div class="itemName"></div></td>
                 <td class="data"><div class="itemName"></div></td>
-                <td class="data"><div class="itemName"></div></td>
-                <td class="data"></td>
             </tr>
             <tr id="capacity"><td class="rowlabel">Capacity</td></tr>
             <tr id="vacation"><td class="rowlabel">Leave</td></tr>
@@ -1281,8 +1279,8 @@
                             for(var dt = new Date(date); dt < endDate; dt.setDate(dt.getDate() + 1)) {
                                 if (!project.dates.isHoliday(dt)) devCapacity += 1;
                             }
-                            devCapacity *= burnRate;
                             devCapacity -= vacation;
+                            devCapacity *= burnRate;
                             if (devCapacity < 0) devCapacity = 0;
                             capacity += devCapacity;
                         });
@@ -2395,10 +2393,14 @@
                             var rqt = dragdrop.add("workItem", document.querySelector("#backlogDiv #requirements"), event);
                             var origId = rqt.id;
                             rqt.id = id;
+                            rqt.style.backgroundColor = rqtData.noteColor;
+                            rqt.querySelector(".itemName").style.color = rqtData.textColor;
                             rqt.querySelector(".itemName").innerText = rqtData.name;
                             rqt.querySelector("#data").innerText = JSON.stringify(rqtData);
                             var oldReq = document.querySelector("#backlog #list #" + origId);
                             oldReq.querySelector("div.summary").innerText = rqtData.name;
+                            oldReq.querySelector("div.summary").style.color = rqtData.textColor;
+                            oldReq.querySelector("div.summary").closest(".reqt").style.backgroundColor = rqtData.noteColor;
                             oldReq.id = id;
                         }
                         for (var i in data.defaults) {
@@ -2724,14 +2726,14 @@
                     });
                 bar.append("text")
                     .attr("dx", "1.3em")
-                    .attr("dy", "0.5em")
+                    .attr("dy", "-0.3em")
                     .attr("x", (d, i) => xScale(d.week) + xScale.bandwidth() / 2)
                     .attr("y", d => yScale(d.target))
                     .attr("text-anchor", "middle")
                     .attr("font-family", "sans-serif")
                     .attr("font-size", "11px")
                     .attr("fill", "black")
-                    .text(d => d.target > 0 ? Math.floor(d.target) : '');
+                    .text(d => d.target > 0 ? d.target.toFixed(2) : '');
 
                 var redline = d3.line()
                     .x((d, i) => xScale(d.week) + xScale.bandwidth() / 2)
@@ -2755,14 +2757,14 @@
                     });
                 bar.append("text")
                     .attr("dx", "1.3em")
-                    .attr("dy", "0.5em")
+                    .attr("dy", "-0.3em")
                     .attr("x", (d, i) => xScale(d.week) + xScale.bandwidth() / 2)
                     .attr("y", d => yScale(d.target + stretch))
                     .attr("text-anchor", "middle")
                     .attr("font-family", "sans-serif")
                     .attr("font-size", "11px")
                     .attr("fill", "black")
-                    .text(d => Math.floor(d.target + stretch));
+                    .text(d => (d.target + stretch).toFixed(2));
 
         //--------------------------------------------------------------------------------------------
                 var sprint = project.sprints.get(ms);
@@ -2783,7 +2785,7 @@
                     return {
                         "id": c.id,
                         "Developer": c.developer,
-                        "Planned availability": workingDays * parseInt(c.availability) / 100 - c.vacation,
+                        "Planned availability": (workingDays * parseInt(c.availability) / 100 - c.vacation).toFixed(2),
                         "Assigned work": (project.team.member(c.id).getTasksForMS(sprint.id)
                             .map(t => project.tasks.get(t.id).msBurndown(sprint)[0].effort)
                             .reduce((pr, cv) => { return pr + cv }, 0)).toFixed(2),
@@ -2829,19 +2831,19 @@
 
                 y = d3.scaleLinear()
                     .rangeRound([height + margin.bottom - 10, margin.top])
-                    .domain([0, d3.max(data, d => d3.max(keys, key => parseInt(d[key]))) + 1])
+                    .domain([0, d3.max(data, d => d3.max(keys, key => parseInt(d[key]))) + 2])
                     .nice();
 
                 legend = svg => {
                     const g = svg
-                        .attr("transform", `translate(${width},0)`)
+                        .attr("transform", `translate(250,40)`)
                         .attr("text-anchor", "end")
                         .attr("font-family", "sans-serif")
                         .attr("font-size", 10)
                         .selectAll("g")
                         .data(color.domain().slice().reverse())
                         .join("g")
-                        .attr("transform", (d, i) => `translate(0,${i * 20})`);
+                        .attr("transform", (d, i) => `translate(${i * 120}, 0)`);
 
                     g.append("rect")
                         .attr("x", -19)
@@ -3076,7 +3078,7 @@
                 .attr("r", 3);
             bar.append("text")
                 .attr("dx", "1.3em")
-                .attr("dy", "0.5em")
+                .attr("dy", "-0.4em")
                 .attr("x", function(d, i) { return xScale(d.date) + xScale.bandwidth() / 2; })
                 .attr("y", function(d) { return yScale(d.target); })
                 .attr("text-anchor", "middle")
@@ -3235,7 +3237,6 @@
                 // Tooltip
                 tooltip = paper.append("div")
                     .attr("class", "tooltip")
-                    .style("width", 250)
                     .style("opacity", 0);
                 // Chart title
                 svg.append("text")
@@ -3258,7 +3259,7 @@
                     .call(d3.axisLeft(yScale));
                 // Legend
                 var legend = g.append("g")
-                    .attr("transform", `translate(${width},0)`)
+                    .attr("transform", `translate(${width - 10},0)`)
                     .attr("text-anchor", "end")
                     .attr("font-family", "sans-serif")
                     .attr("font-size", 10)
@@ -3279,7 +3280,11 @@
                     .attr("x", -24)
                     .attr("y", 9.5)
                     .attr("dy", "0.35em")
-                    .text(d => labelFn(d).data().name ? labelFn(d).data().name : "unassigned");
+                    .text(d => labelFn(d).data().name ?
+                        labelFn(d).data().name.length > 20 ?
+                            labelFn(d).data().name.slice(0, 20) + "..."
+                            : labelFn(d).data().name
+                        : "unassigned");
                 
                 var stackedData = d3.stack()
                     .keys(subgroups)
@@ -3636,6 +3641,9 @@
         params.style.color = dragdrop.dragged.dataset.oldColor;
         var oldBackgroundColor = dragdrop.dragged.dataset.oldBackgroundColor;
         if (!oldBackgroundColor) oldBackgroundColor = dragdrop.dragged.style.backgroundColor;
+        var oldColor = dragdrop.dragged.dataset.oldColor;
+        if (!oldColor) oldColor = dragdrop.dragged.style.color;
+        params.style.color = oldColor;
         params.style.backgroundColor = oldBackgroundColor;
         form.initData("#requirementsForm", params);
         project.ui.sizes().forEach(s => delete data[s]);
@@ -3809,7 +3817,8 @@
                 .forEach(r => {
                     if (r.style.backgroundColor != hlcolor) {
                         r.dataset.oldBackgroundColor = r.style.backgroundColor;
-                        r.style.color = r.dataset.oldColor;
+                        r.dataset.oldColor = r.querySelector(".summary").style.color;
+                        r.style.color = "black";
                         r.style.backgroundColor = hlcolor;
                     }
                 });
