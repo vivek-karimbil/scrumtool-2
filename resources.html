@@ -488,29 +488,28 @@
 </div>
 
 <div id="dordodScreen" class="toolScreen" style="display: none;">
-    <h1 style="display: none;">Under Construction</h1>
     <table id="sections">
         <td id="start" onclick="project.checklists.show('#startDD')">
-            <div class="clSelector">
+            <div id="start" class="clSelector">
                 <div class="imgHolder">
                     <img class="menuButton undraggable" src="img/start.svg" title="Project start checklist"/>
                 </div>
                 <div class="name">Start</div>
+                <div id="data" style="display: none;"></div>
             </div>
         </td>
         <td id="sprints"></td>
         <td id="stop" onclick="project.checklists.show('#stopDD')">
-            <div class="clSelector">
+            <div id="stop" class="clSelector">
                 <div class="imgHolder">
                     <img class="menuButton undraggable" src="img/stop.svg" title="Project finish checklist"/>
                 </div>
                 <div class="name">Finish</div>
+                <div id="data" style="display: none;"></div>
             </div>
         </td>
     </table>
-    <div id="startDD" class="dordodlist project"></div>
-    <div id="sprintsDD" class="dordodlist sprints"></div>
-    <div id="stopDD" class="dordodlist project"></div>
+    <div id="checklist" class="dordodlist project"></div>
 
     <template id="dordod">
         <div class="holder">
@@ -534,6 +533,7 @@
         <div class="clSelector">
             <div class="imgHolder"><img class="undraggable" src="img/devsprint.svg"/></div>
             <div class="name"></div>
+            <div id="data" style="display: none;"></div>
         </div>
     </template>
 
@@ -752,7 +752,7 @@
             ],
             "newSprint": [
                 { "target": "schedule", "handler": "dragdrop.add('sprint', ev.target, ev)" },
-                { "target": "sprint", "handler": "dragdrop.insertArtifact('#sprints', dragdrop.dragged, dropzone, '.sprint', 'sprint')" }
+                { "target": "sprint", "handler": "dragdrop.insertArtifact('#sprints', dragdrop.dragged, dropzone, '.newSprint', 'sprint')" }
             ],
             "blackout": [
                 { "target": "holidayWeeks", "handler": "dragdrop.add('holidayWeek', ev.target, ev)" },
@@ -1631,9 +1631,18 @@
                     cell.innerText = l.prompt;
                     row.appendChild(cell);
                     cell = document.createElement("td");
-                    if (l.id) {
+                    if (l.id) { // Checklist item with input data
                         cell.id = l.id;
-                        cell.classList.add("userinput")
+                        cell.classList.add("userinput");
+                        cell.addEventListener("change", (event) => {
+                            var item = event.target.closest(".userinput");
+                            var _list = item.closest(".holder");
+                            var selector = document.querySelector("#dordodScreen #sections #" + _list.id);
+                            var data = getJSONData(selector);
+                            if (!data[item.id]) data[item.id] = {};
+                            data[item.id][event.target.id] = event.target.value;
+                            selector.querySelector("#data").innerText = JSON.stringify(data);
+                        });
                     }
                     cell.appendChild(this.evaluate(l));
                     row.appendChild(cell);
@@ -1653,46 +1662,53 @@
                 return div;
             },
             show: function(selector) {
-                document.querySelectorAll("#startDD, #stopDD, #sprintsDD > .holder")
-                    .forEach(c => c.style.display = "none");
-                var checklist = document.querySelector("#dordodScreen " + selector);
-                checklist.style.display = "";
+                var list = document.querySelector("#dordodScreen #checklist");
+                list.innerText = "";
+                switch(selector) {
+                    case "#startDD":
+                        var checklist = project.checklists.entry;
+                        list.appendChild(project.checklists.make("Project Start", checklist));
+                        list.querySelector(".holder").id = "start";
+                        break;
+                    case "#stopDD":
+                        var checklist = project.checklists.exit;
+                        list.appendChild(project.checklists.make("Project Exit", checklist));
+                        list.querySelector(".holder").id = "stop";
+                        break;
+                    default:
+                        document.querySelector("#dordodScreen " + selector).click();
+                }
+                this.restore();
             },
-            fromJSON: function(checklists) {
-                checklists.forEach(checklist => {
-                    var table = document.querySelector(`.dordodlist #${checklist.id}`);
-                    table.querySelectorAll("input").forEach(input => {
-                        if (input.type == "checkbox") input.checked = false;
-                        else input.value = '';
-                    });
-                    checklist.items.forEach(l => {
-                        Object.keys(l).filter(k => k != 'id').forEach(k => {
-                            var input = table.querySelector(`#${l.id} #${k}`);
-                            if (input.type == "checkbox") input.checked = l[k];
-                            else {
-                                input.value = l[k];
-                                var evt = document.createEvent("HTMLEvents");
-                                evt.initEvent("change", false, true);
-                                input.dispatchEvent(evt);
-                            }
-                        });
+            restore: function() { // Restore previously stored data
+                var checklist = document.querySelector("#dordodScreen #checklist .holder");
+                var data = getJSONData(document.querySelector("#dordodScreen #sections #" + checklist.id));
+                Object.keys(data).filter(k => k != "id").forEach(k => {
+                    Object.keys(data[k]).forEach(l => {
+                        var input = checklist.querySelector(`#${k} #${l}`);
+                        if (input.type == "checkbox") {
+                            input.checked = data[k][l] == "on";
+                            return;
+                        }
+                        input.value = data[k][l];
                     });
                 });
             },
-            toJSON: function() {
+            fromJSON: function(checklists) { // Create checklists from saved JSON data
+                dordodInit();
+                checklists.forEach(list => {
+                    var id = list.id;
+                    var data = document.querySelector("#dordodScreen #sections #" + id + " #data");
+                    data.innerText = JSON.stringify(list);
+                });
+            },
+            toJSON: function() { // Save checklist data to JSON
                 var checklists = [];
-                document.querySelectorAll(".dordodlist > .holder").forEach(c => {
-                    var checklist = { id: c.id, items: [] };
-                    c.querySelectorAll(".userinput").forEach(i => {
-                        var item = { id: i.id };
-                        i.querySelectorAll("input").forEach(n => {    
-                            var value = n.type == "checkbox" ? n.checked : n.value;                        
-                            item[n.id] = value;
-                        });
-                        checklist.items.push(item);
-                    });
-                    if (checklist.items.length > 0)
-                        checklists.push(checklist);
+                document.querySelectorAll("#dordodScreen #sections #data").forEach(d => {
+                    var _list = d.closest(".clSelector");
+                    var data = getJSONData(_list);
+                    data.id = _list.id;
+                    checklists.push(data);
                 });
                 return checklists;
             },
@@ -1798,7 +1814,7 @@
                     return capacity ? message(`${capacity.toFixed(2)} days`) : warning("No development capacity");
                 }
             },
-            xcheck: { // Project Exit Checklist
+            xcheck: { // Project exit checklist
                 backlog: function() {
                     var messages = [];
                     var message = project.checklists.message;
@@ -3543,53 +3559,42 @@
     }
     function dordodInit() {
         var today = new Date();
-        var savedLists = project.checklists.toJSON();
         var dordodScreen = document.querySelector("#dordodScreen");
-        dordodScreen.querySelectorAll(".dordodlist")
-            .forEach(d => d.innerText = "");
+        var list = dordodScreen.querySelector("#checklist");
 
-        var checklist = project.checklists.entry;
-        dordodScreen.querySelector("#startDD")
-            .appendChild(project.checklists.make("Project Start", checklist));
-        dordodScreen.querySelector("#startDD .holder").id = "start";
-        if (today < project.dates.start()) project.checklists.show("#startDD");
-        
-        document.querySelector("#dordodScreen #sections #sprints").innerText = "";
+        dordodScreen.querySelector("#sprints").innerText = "";
         project.sprints.getDev().forEach(s => {
             var sprint = project.sprints.get(s);
             var sprintName = sprint.data().name;
-            checklist = [];
-
             var clSelector = document.querySelector("template#sprintCell").content.cloneNode(true);
+            clSelector.querySelector(".clSelector").id = sprint.id;
             clSelector.querySelector("img").title = "Checklist for " + sprintName;
-            clSelector.querySelector("img")
-                .addEventListener('click', () => project.checklists.show(`#sprintsDD #${sprint.id}`));
             clSelector.querySelector(".name").innerText = sprintName;
-            document.querySelector("#dordodScreen #sections #sprints")
-                .appendChild(clSelector);
-
-            var sprintFrame = project.checklists.make("Sprint: " + sprintName, checklist, sprint);
-            var holder = sprintFrame.querySelector(".holder");
-            holder.id = sprint.id;
-            holder.style.display = "none";
-
-            checklist = project.checklists.sprint.entry;
-            sprintFrame.querySelector(".items")
-                .appendChild(project.checklists.make("Sprint Entry", checklist, sprint));
-            checklist = project.checklists.sprint.exit;
-            sprintFrame.querySelector(".items")
-                .appendChild(project.checklists.make("Sprint Exit", checklist, sprint));
-            dordodScreen.querySelector("#sprintsDD").appendChild(sprintFrame);
-            if (today >= sprint.startDate() && today <= sprint.endDate())
-                project.checklists.show(`#${sprint.id}`);
+            dordodScreen.querySelector("#sprints").appendChild(clSelector);
+            dordodScreen.querySelector("#" + sprint.id).addEventListener('click', () => {
+                var checklist = [];
+                var sprintFrame = project.checklists.make("Sprint: " + sprintName, checklist, sprint);
+                var holder = sprintFrame.querySelector(".holder");
+                holder.id = sprint.id;
+                checklist = project.checklists.sprint.entry;
+                sprintFrame.querySelector(".items")
+                    .appendChild(project.checklists.make("Sprint Entry", checklist, sprint));
+                checklist = project.checklists.sprint.exit;
+                sprintFrame.querySelector(".items")
+                    .appendChild(project.checklists.make("Sprint Exit", checklist, sprint));
+                dordodScreen.querySelector("#checklist").innerText = "";
+                dordodScreen.querySelector("#checklist").appendChild(sprintFrame);
+            })
         });
 
-        checklist = project.checklists.exit;
-        dordodScreen.querySelector("#stopDD")
-            .appendChild(project.checklists.make("Project Exit", checklist));
-        dordodScreen.querySelector("#stopDD .holder").id = "stop";
-        if (project.dates.end() && today > project.dates.end()) project.checklists.show("#stopDD");
-        project.checklists.fromJSON(savedLists);
+        var currentChecklist = "#startDD";
+        const projectEnd = project.dates.end();
+        if (projectEnd && projectEnd < today) currentChecklist = "#stopDD";
+        else {
+            const sprint = project.sprints.getCurrent();
+            if (sprint) currentChecklist = (`#sprints #${sprint.id}`);
+        }
+        project.checklists.show(currentChecklist);
     }
     function scheduleInit() {
         var today = new Date();
@@ -3625,7 +3630,7 @@
             data = JSON.parse(node.querySelector("#data").innerText);
         }
         catch (c) {
-            console.log("Could not parse JSON inside #data of", node);
+            console.log("Warning: could not parse JSON inside #data of", node);
         }
         return data;
     }

@@ -460,6 +460,7 @@ p.itemName {
     max-width: 67px;
 }
 #sections .clSelector {
+    border: 1px solid #ffffff;
     display: table-cell;
     min-width: 100px;
     max-width: 100px;
@@ -708,12 +709,5 @@ div.tooltip {
   pointer-events: none;
 }
 .devburndown { width: 150px; }
-
-
-pastms {
-    background-color: blue;
-}
-
-#holiday .menuicon {
-    width: 80%;
-}
+pastms { background-color: blue; }
+#holiday .menuicon { width: 80%; }
