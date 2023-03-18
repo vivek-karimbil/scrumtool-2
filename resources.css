@@ -138,6 +138,9 @@ body {
     font-weight: bold;
     padding: 5px;
 }
+div#data {
+    display: none;
+}
 .divheader {
     background-color: burlywood;
     display: inline-block;
@@ -148,9 +151,6 @@ body {
 }
 #dordodScreen #list > tr:nth-child(even) {
     background: #eee;
-}
-#dordodScreen td.label {
-    min-width: 300px;
 }
 #dordodScreen .warning {
     background-color: yellow;
@@ -165,6 +165,96 @@ body {
 }
 #dordodScreen #list .checks {
     display: grid;
+}
+#dordodScreen #plotArea {
+    min-width: 700px;
+    width: 100%;
+}
+#dordodScreen #plotArea #graph {
+    width: 100%;
+    height: 100%;
+}
+#dordodScreen #plotArea #xAxis {
+    width: 100%;
+    height: 100%;
+    transform: translate(0, 80px);
+}
+#dordodScreen #plotArea #xAxis text {
+    text-anchor: end;
+    transform: rotate(-90deg) translate(-11px, -14px);
+}
+#dordodScreen #plotArea #yAxis {
+    transform: translate(25px, 0px);
+}
+#dordodScreen #plotArea #yAxis image {
+    height: 21px;
+    width: 35px;
+}
+#dordodScreen #plotArea #plot {
+    transform: translate(75px, 10px);
+}
+#dordodScreen #plotArea [data-type="Development"] rect {
+    fill: rgb(169, 135, 232);
+    stroke: rgb(0, 0, 0);
+    display: inline-block;
+}
+#dordodScreen #plotArea [data-type="Testing"] rect {
+    fill: rgb(188, 143, 143);
+    stroke: rgb(0, 0, 0);
+    display: inline-block;
+}
+#dordodScreen #checklist tr:nth-child(3) td:nth-child(2) .checks {
+    display: inline-block;
+}
+#dordodScreen #checklist tr:nth-child(3) td:nth-child(2) .message {
+    display: inline-block;
+    width: 19ch;
+}
+#dordodScreen #scopeGraphs .plot {
+    transform: translate(0, 30px);
+}
+#dordodScreen #scopeGraphs div:nth-child(1) rect:nth-child(3) {
+    fill: rgb(169, 135, 232);
+    stroke: rgb(0, 0, 0);
+}
+#dordodScreen #scopeGraphs div:nth-child(1) rect:nth-child(4) {
+    fill: rgb(196, 196, 196);
+    stroke: rgb(0, 0, 0);
+}
+#dordodScreen #scopeGraphs div:nth-child(1) rect:nth-child(5) {
+    fill: yellow;
+    stroke: rgb(0, 0, 0);
+}
+#dordodScreen .xaxis .tick text {
+    text-anchor: end;
+    transform: rotate(-90deg) translate(-11px, -14px);
+}
+#dordodScreen #scopeGraphs div:nth-child(2) rect {
+    fill: rgb(169, 135, 232);
+    stroke: rgb(0, 0, 0);
+}
+#dordodScreen #scopeGraphs div:nth-child(3) rect {
+    fill: rgb(196, 196, 196);
+    stroke: rgb(0, 0, 0);
+}
+#dordodScreen .staff.stats {
+    height: 40px;
+    vertical-align: middle;
+    width: 50px;
+}
+#dordodScreen #taskDist .plot {
+    transform: translate(0, 30px);
+}
+#dordodScreen #capacityGraphs .plot {
+    transform: translate(0, 30px);
+}
+#dordodScreen #capacityGraphs div:nth-child(1) rect {
+    fill: rgb(169, 135, 232);
+    stroke: rgb(0, 0, 0);
+}
+#dordodScreen #capacityGraphs div:nth-child(2) rect {
+    fill: rgb(196, 196, 196);
+    stroke: rgb(0, 0, 0);
 }
 div#graph {
     min-height: 600px;
@@ -701,7 +791,7 @@ table#capacitytable .data {
 div.tooltip {
   position: absolute;
   text-align: left;
-  padding: 2px;
+  padding: 5px;
   font: 12px sans-serif;
   background: lightsteelblue;
   border: 0px;
