@@ -755,6 +755,10 @@
             var sz = document.querySelector("#defaultsDiv select#size option:checked");
             return sz ? sz.id : "pebble";
         },
+        get sizes() {
+            return [...document.querySelector("#estimateTemplate").content.querySelectorAll("input")]
+                .map(input => { return { id: input.id, value: +input.value }; });
+        },
         setSize: function() {
             this._size = document.querySelector("#defaultsDiv select#size option:checked").id;
         },
@@ -1578,8 +1582,10 @@
                 { prompt: "Capacity",  value: "this.echeck.capacity()", style: "" }
             ]},
             get exit() { return [
-                { prompt: "Requirement completion",  value: "this.xcheck.backlog()", style: "" },
+                { prompt: "Backlog completion",  value: "this.xcheck.backlog()", style: "" },
                 { prompt: "Task completion",  value: "this.xcheck.tasks()", style: "" },
+                { prompt: "Team Deliver",  value: "this.xcheck.team()", style: "" },
+                { prompt: "Velocity",  value: "this.xcheck.velocity()", style: "" },
                 { prompt: "Regression testing",  value: "", style: "", id: "regression" },
                 { prompt: "Performance testing",  value: "", style: "", id: "performance" },
                 { prompt: "Stress testing",  value: "", style: "", id: "stress" },
@@ -1607,16 +1613,20 @@
                         var checklist = project.checklists.entry;
                         list.appendChild(project.checklists.make("Project Start", checklist));
                         list.querySelector(".holder").id = "start";
+                        this.restore();
+                        project.checklists.echeck.refreshGraphs();
                         break;
                     case "#stopDD":
                         var checklist = project.checklists.exit;
                         list.appendChild(project.checklists.make("Project Exit", checklist));
                         list.querySelector(".holder").id = "stop";
+                        this.restore();
+                        project.checklists.xcheck.refreshGraphs();
                         break;
                     default:
                         document.querySelector("#dordodScreen " + selector).click();
+                        this.restore();
                 }
-                this.restore();
             },
             make: function(title, list, sprint) {
                 var checklist = document.querySelector("template#dordod").content.cloneNode(true);
@@ -1717,7 +1727,6 @@
                 setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
             },
             restore: function() { // Restore previously stored data
-                var tip = document.querySelector("#dordodScreen #tooltip");
                 var data = getJSONData(document.querySelector("#dordodScreen #sections #" + checklist.id));
                 Object.keys(data).filter(k => k != "id").forEach(k => {
                     Object.keys(data[k]).forEach(l => {
@@ -1729,70 +1738,6 @@
                         input.value = data[k][l];
                     });
                 });
-                // Re-drawing graphs
-                function addMoveListeners(target, tipString) {
-                    target.addEventListener("mouseover", event => {
-                        tip.style.opacity = 0.9;
-                            tip.innerHTML = tipString;
-                        tip.style.left = (event.pageX + 10) + "px";
-                        tip.style.top =  (event.pageY - 20) + "px";
-                    });
-                    target.addEventListener("mouseout", event => {
-                        tip.style.opacity = 0;
-                    });
-                    target.addEventListener("mousemove", (event) => {
-                        tip.style.left = (event.pageX + 10) + "px";
-                        tip.style.top = (event.pageY - 20) + "px";
-                    });
-                }
-                [...document.querySelectorAll("g#plot > g")] // For all sprints in schedule graph
-                    .forEach(t => {
-                        t.querySelectorAll("rect").forEach(r => {
-                            var data, interval;
-                            const id = r.dataset.id;
-                            if (id.startsWith("sprint")) {
-                                const sprint = project.sprints.get({id: id});
-                                data = sprint.data();
-                                interval = sprint.startDate().toDateString() + " - " +
-                                    sprint.endDate().toDateString()
-                            }
-                            if (id.startsWith("holiday")) {
-                                data = project.dates.blackouts().filter(b => b.id == id)[0];
-                                var endDate = new Date(data.holidayStart);
-                                endDate.setDate(endDate.getDate() + 6);
-                                interval = data.holidayStart.toDateString() + " - " + endDate.toDateString();
-                            }
-                            var message = "<table><tr><td>Name:</td><td>" + data.name +
-                                "</td></tr><tr><td>Schedule:</td><td>" + interval + "</td></tr></table>";
-                            addMoveListeners(r, message);
-                        });
-                    });
-                [...document.querySelectorAll("#scopeGraphs .plot > rect, #capacityGraphs .plot > rect")] // for all bars in scope graphs
-                    .forEach(r => {
-                        const type = r.dataset.type;
-                        const count = r.dataset.count;
-                        message = `${type}: ${count}`;
-                        addMoveListeners(r, message);
-                    });
-                function setToolTips(data, rects) { // Setting tooltips for stacked bar charts
-                    subgroups = Object.keys(data[0]).slice(1);
-                    stackedData = d3.stack().keys(subgroups)(data);
-                    rects.forEach(rect => {
-                        var row = rect.parentNode;
-                        var x = [...row.querySelectorAll("rect")].indexOf(rect);
-                        var y = [...row.parentNode.querySelectorAll("g")].indexOf(row);
-                        var key = stackedData[y].key;
-                        var value = stackedData[y][x][1] - stackedData[y][x][0];
-                        message = `${key}: ${value}`;
-                        addMoveListeners(rect, message);
-                    })
-                }
-                if (project.tasks.getAll().length) {
-                    var rects = [...[...document.querySelectorAll("#taskDist .plot")][0].querySelectorAll("rect")];
-                    setToolTips(graph.project.taskPriorityData(), rects);
-                    rects = [...[...document.querySelectorAll("#taskDist .plot")][1].querySelectorAll("rect")];
-                    setToolTips(graph.project.taskSizeData(), rects);
-                }
             },
             fromJSON: function(checklists) { // Create checklists from saved JSON data
                 dordodInit();
@@ -1941,7 +1886,6 @@
                     var warning = project.checklists.warning;
                     if (project.sprints.getDev().length == 0) return warning("Cannot evaluate, no sprints added");
                     if (capacity == 0) return warning("No development capacity");
-
                     var  messages = [message(`${capacity.toFixed(2)} days`)];
                     var data = [];
                     const sprints = project.sprints.getDev();
@@ -1961,11 +1905,61 @@
                     var graph2 = graph.project.bargraph({ title: "Vacation Days" }, data);
                     var graphDiv = "<div id='capacityGraphs'>" + graph1 + graph2 + "</div>";
                     messages.push(graphDiv);
-
                     return messages.join("");
+                },
+                refreshGraphs: function() {
+                    // Re-drawing graphs
+                    [...document.querySelectorAll("g#plot > g")] // For all sprints in schedule graph
+                        .forEach(t => {
+                            t.querySelectorAll("rect").forEach(r => {
+                                var data, interval;
+                                const id = r.dataset.id;
+                                if (id.startsWith("sprint")) {
+                                    const sprint = project.sprints.get({id: id});
+                                    data = sprint.data();
+                                    interval = sprint.startDate().toDateString() + " - " +
+                                        sprint.endDate().toDateString()
+                                }
+                                if (id.startsWith("holiday")) {
+                                    data = project.dates.blackouts().filter(b => b.id == id)[0];
+                                    var endDate = new Date(data.holidayStart);
+                                    endDate.setDate(endDate.getDate() + 6);
+                                    interval = data.holidayStart.toDateString() + " - " + endDate.toDateString();
+                                }
+                                var message = "<table><tr><td>Name:</td><td>" + data.name +
+                                    "</td></tr><tr><td>Schedule:</td><td>" + interval + "</td></tr></table>";
+                                project.ui.addMoveListeners(r, message);
+                            });
+                        });
+                    [...document.querySelectorAll("#scopeGraphs .plot > rect, #capacityGraphs .plot > rect")] // for all bars in scope graphs
+                        .forEach(r => {
+                            const type = r.dataset.type;
+                            const count = r.dataset.count;
+                            message = `${type}: ${count}`;
+                            project.ui.addMoveListeners(r, message);
+                        });
+                    if (project.tasks.getAll().length) {
+                        var rects = [...[...document.querySelectorAll("#taskDist .plot")][0].querySelectorAll("rect")];
+                        graph.project.stackedTooltips(graph.project.taskPriorityData(), rects);
+                        rects = [...[...document.querySelectorAll("#taskDist .plot")][1].querySelectorAll("rect")];
+                        graph.project.stackedTooltips(graph.project.taskSizeData(), rects);
+                    }
                 }
             },
             xcheck: { // Project exit checklist
+                completedTasks: function() {
+                    return project.tasks.getAll().map(t => {
+                        var data = getJSONData(t);
+                        return {
+                            id: t.id,
+                            status: project.tasks.get(t.id).status(),
+                            size: project.tasks.get(t.id).size(),
+                            priority: project.tasks.get(t.id).priority(),
+                            developer: data.developer,
+                            tester: data.tester
+                        };
+                    }).filter(t => t.status == "done");
+                },
                 backlog: function() {
                     var messages = [];
                     var message = project.checklists.message;
@@ -1979,22 +1973,22 @@
                             status: project.tasks.get(t.id).status()
                         };
                     }).filter(t => t.reference);
-                    if (backlog.length == 0) messages.push(warning("No requirememts in backlog"));
+                    var done = tasks.filter(t => t.status == "done");
+                    if (backlog.length == 0) messages.push(warning("No requirements in backlog"));
                     var scheduled = backlog.filter(b => tasks.filter(t => t.reference == b.id).length > 0);
                     if (backlog.length) {
                         if (backlog.length == scheduled.length)
                             messages.push(message(`All ${backlog.length} backlog items in schedule`));
                         else
                             messages.push(warning(`${scheduled.length} of ${backlog.length} backlog items scheduled`));
-                        var done = tasks.filter(t => t.status == "done");
                         if (done.length) {
                             if (done.length == tasks.length)
                                 messages.push(message(`All ${done.length} related tasks completed`));
                             else {
                                 var notDone = backlog.filter(b => project.backlog.get(b.id)
                                     .tasks.filter(t => project.tasks.get(t.id).status() != "done").length > 0);
-                                var done = scheduled.length - notDone.length;
-                                messages.push(message(`${done} backlog items of ${scheduled.length} of scheduled completed`));
+                                var complete = scheduled.length - notDone.length;
+                                messages.push(message(`${complete} backlog items of ${scheduled.length} of scheduled completed`));
                                 messages.push(warning(`${notDone.length} backlog items of ${scheduled.length} of scheduled not completed`));
                             }
                         }
@@ -2003,6 +1997,31 @@
                                 messages.push(warning(`${scheduled.length} backlog requirements not competed`));
                         }
                     }
+                    var graphData = [
+                        { type: "Backlog", count: backlog.length },
+                        { type: "Scheduled", count: scheduled.length },
+                        { type: "Related Tasks", count: tasks.length },
+                    ];
+                    const graph1 = backlog.length > 0 || scheduled.length > 0 || tasks.length > 0 ?
+                        graph.project.bargraph({ title: "Backlog", width: 100 }, graphData) : "";
+                    graphData = [];
+                    project.ui.priorities().forEach(p => graphData.push({ type: p, count: 0 }));
+                    done.forEach(b => {
+                        const priority = project.backlog.get(b.reference).priority();
+                        graphData.filter(d => d.type == priority)[0].count++;
+                    });
+                    const graph2 = done.length ?
+                        graph.project.bargraph({ title: "Completion / Priority", width: 175 }, graphData) : "";
+                    graphData = [];
+                    project.ui.sizes().forEach(s => graphData.push({ type: s, count: 0 }));
+                    done.forEach(b => {
+                        const size = project.backlog.get(b.reference).size();
+                        graphData.filter(d => d.type == size)[0].count++;
+                    });
+                    const graph3 = done.length ?
+                        graph.project.bargraph({ title: "Completion / Size" }, graphData) : "";
+                    var graphDiv = "<div id='scopeGraphs'>" + graph1 + graph2 + graph3 + "</div>";
+                    messages.unshift(graphDiv);
                     return messages.join("");
                 },
                 tasks: function() {
@@ -2013,17 +2032,59 @@
                     if (taskIDs.length == 0) messages.push(warning("No tasks created"));
                     else {
                         messages.push(message(`${taskIDs.length} tasks in project`));
-                        messages.push("<table class='exit project'><th>Status</th><th>Backlog</th><th>Tasks</th><th>Total</th>");
-                        statuses.forEach(s => {
-                            var all = taskIDs.filter(t => project.tasks.get(t).status() == s.value);
-                            var count = all.length;
-                            var bcount = all.filter(t => project.tasks.get(t).data().reference).length;
-                            var tcount = count - bcount;
-                            messages.push(`<tr><td>${s.label}</td><td>${bcount}</td><td>${tcount}</td><td>${count}</td></tr>`);
-                        });
-                        messages.push("</table>");
+                        var tasks = project.tasks.getAll().map(t => { // tasks related to backlog
+                            var data = getJSONData(t);
+                            return {
+                                id: t.id,
+                                reference: data.reference,
+                                status: project.tasks.get(t.id).status(),
+                                size: project.tasks.get(t.id).size(),
+                                priority: project.tasks.get(t.id).priority()
+                            };
+                        }).filter(t => t.status == "done");
+                        var data = [];
+                        project.ui.sizes().forEach(s => data.push({ type: s, count: 0 }));
+                        tasks.forEach(t => data.filter(d => d.type == t.size)[0].count++);
+                        const graph1 = tasks.length ?
+                            graph.project.bargraph({ title: "Done Tasks / Size" }, data) : "";
+                        data = [];
+                        project.ui.priorities().forEach(s => data.push({ type: s, count: 0 }));
+                        tasks.forEach(t => data.filter(d => d.type == t.priority)[0].count++);
+                        const graph2 = tasks.length ?
+                            graph.project.bargraph({ title: "Done Tasks / Priority" }, data) : "";
+                        messages.push("<div id='scopeGraphs'>" + graph2 + graph1 + "</div>");
                     }
                     return messages.join("");
+                },
+                team: function() {
+                    const tasks = this.completedTasks();
+                    if (tasks.length == 0) return project.checklists.warning("No tasks created");
+                    const graph1 = graph.project.stackbar({ title: "Developer / Priority" }, graph.project.developerPriority(tasks));
+                    const graph2 = graph.project.stackbar({ title: "Developer / Size" }, graph.project.developerSize(tasks));
+                    const graph3 = graph.project.stackbar({ title: "Testing / Priority" }, graph.project.testerPriority(tasks));
+                    const graph4 = graph.project.stackbar({ title: "Testing / Size" }, graph.project.testerSize(tasks));
+                    return `<div id="taskDist">${graph1}${graph2}${graph3}${graph4}</div>`;
+                },
+                velocity: function() {},
+                refreshGraphs: function() {
+                    [...document.querySelectorAll("#scopeGraphs .plot > rect, #capacityGraphs .plot > rect")] // for all bars in scope graphs
+                        .forEach(r => {
+                            const type = r.dataset.type;
+                            const count = r.dataset.count;
+                            message = `${type}: ${count}`;
+                            project.ui.addMoveListeners(r, message);
+                        });
+                    const tasks = this.completedTasks();
+                    if (tasks.length) {
+                        var rects = [...[...document.querySelectorAll("#taskDist .plot")][0].querySelectorAll("rect")];
+                        graph.project.stackedTooltips(graph.project.developerPriority(tasks), rects);
+                        rects = [...[...document.querySelectorAll("#taskDist .plot")][1].querySelectorAll("rect")];
+                        graph.project.stackedTooltips(graph.project.developerSize(tasks), rects);
+                        rects = [...[...document.querySelectorAll("#taskDist .plot")][2].querySelectorAll("rect")];
+                        graph.project.stackedTooltips(graph.project.testerPriority(tasks), rects);
+                        rects = [...[...document.querySelectorAll("#taskDist .plot")][3].querySelectorAll("rect")];
+                        graph.project.stackedTooltips(graph.project.testerSize(tasks), rects);
+                    }
                 }
             },
             scheck: {
@@ -2032,27 +2093,6 @@
                     const startDate = sprint.startDate().toLocaleDateString();
                     const endDate = sprint.endDate().toLocaleDateString();
                     return project.checklists.message(`${startDate} - ${endDate}`);
-                },
-                payload: function(sprintID) {
-                    var messages = [];
-                    var message = project.checklists.message;
-                    var warning = project.checklists.warning;
-                    var sprint = project.sprints.get({ id: sprintID });
-                    var tasks = sprint.tasks();
-                    var backlog = tasks.filter(t => getJSONData(t).reference);
-                    var uniqueBacklog = backlog.map(b => getJSONData(b).reference)
-                        .filter((value, index, self) => self.indexOf(value) === index);
-                    if (tasks.length == 0) messages.push(warning("No tasks in sprint"));
-                    else {
-                        messages.push(message(`${tasks.length} tasks`));
-                        var backlog = tasks.filter(t => getJSONData(t).reference);
-                        if (backlog.length == 0) messages.push(warning("No backlog related tasks in sprint"));
-                        else {
-                            messages.push(message(`${backlog.length} tasks related to ${uniqueBacklog.length} backlog item`));
-                            messages.push(message(`${tasks.length - backlog.length} non backlog related tasks in sprint`));
-                        }
-                    }
-                    return messages.join("");
                 },
                 estimate: function(sprintID) {
                     const sprint = project.sprints.get({ id: sprintID });
@@ -2081,7 +2121,15 @@
                     var noDevs = sprint.unassignedDeveloper();
                     if (noDevs.length > 0) messages.push(warning(`${noDevs.length} tasks not assigned to a developer`));
                     var noTester = sprint.unassignedTester();
-                    if (noTester.length) messages.push(warning(`${noTester.length} tasks not assigned to a tester`))
+                    if (noTester.length) messages.push(warning(`${noTester.length} tasks not assigned to a tester`));
+                    const tasks = graph.project.sprintData(sprint);
+                    if (tasks.length) {
+                        const graph1 = graph.project.stackbar({ title: "Size Distribution" },
+                            graph.project.sizeDistribution(sprint, tasks));
+                        const graph2 = graph.project.stackbar({ title: "Priority Distribution" },
+                            graph.project.priorityDistribution(sprint,  tasks));
+                        messages.push("<div id='taskLoad'>" + graph1 + graph2 + "</div>");
+                    }
                     return messages.join("");
                 },
                 payload: function(sprintID) {
@@ -2123,6 +2171,14 @@
                         messages.push("</table>");
                     }
                     return messages.join("");
+                },
+                refreshGraphs: function(sprint) {
+                    const tasks = graph.project.sprintData(sprint);
+                    if (tasks.length == 0) return;
+                    var rects = [...[...document.querySelectorAll("#taskLoad .plot")][0].querySelectorAll("rect")];
+                    graph.project.stackedTooltips(graph.project.sizeDistribution(sprint, tasks), rects);
+                    rects = [...[...document.querySelectorAll("#taskLoad .plot")][1].querySelectorAll("rect")];
+                    graph.project.stackedTooltips(graph.project.priorityDistribution(sprint, tasks), rects);
                 }
             }
         },
@@ -2200,6 +2256,21 @@
             }
         },
         ui: {
+            addMoveListeners: function(target, tipString) {
+                target.addEventListener("mouseover", event => {
+                    project.ui.tip.style.opacity = 0.9;
+                    project.ui.tip.innerHTML = tipString;
+                    project.ui.tip.style.left = (event.pageX + 10) + "px";
+                    project.ui.tip.style.top =  (event.pageY - 20) + "px";
+                });
+                target.addEventListener("mouseout", event => {
+                    project.ui.tip.style.opacity = 0;
+                });
+                target.addEventListener("mousemove", (event) => {
+                    project.ui.tip.style.left = (event.pageX + 10) + "px";
+                    project.ui.tip.style.top = (event.pageY - 20) + "px";
+                });
+            },
             backlog: {
                 list: {
                     show: function () {
@@ -2514,7 +2585,8 @@
                 document.querySelector("#sprintEditor tbody#tester").style.display = "";
                 document.querySelector("#sprintEditor #msbacklog").style.display = "none";
                 document.querySelector("#sprintEditor #qabacklog").style.display = "";
-            }
+            },
+            get tip() { return document.querySelector("#tooltip") }
         },
         file: {
             open: function() {
@@ -2746,6 +2818,46 @@
     };
     var graph = {
         project: {
+            developerPriority: function(tasks) {
+                const priorities = project.ui.priorities();
+                return project.team.developers.map(d => {
+                    var record = { developer: project.team.member(d).data().name };
+                    priorities.forEach(p =>
+                        record[p] = tasks.filter(t =>
+                            t.priority == p && t.developer == d).length);
+                    return record;
+                });
+            },
+            developerSize: function(tasks) {
+                const sizes = project.ui.sizes();
+                return project.team.developers.map(d => {
+                    var record = { developer: project.team.member(d).data().name };
+                    sizes.forEach(p =>
+                        record[p] = tasks.filter(t =>
+                            t.size == p && t.developer == d).length);
+                    return record;
+                });
+            },
+            testerPriority: function(tasks) {
+                const priorities = project.ui.priorities();
+                return project.team.QAs.map(d => {
+                    var record = { tester: project.team.member(d).data().name };
+                    priorities.forEach(p =>
+                        record[p] = tasks.filter(t =>
+                            t.priority == p && t.tester == d).length);
+                    return record;
+                });
+            },
+            testerSize: function(tasks) {
+                const sizes = project.ui.sizes();
+                return project.team.QAs.map(d => {
+                    var record = { tester: project.team.member(d).data().name };
+                    sizes.forEach(p =>
+                        record[p] = tasks.filter(t =>
+                            t.size == p && t.tester == d).length);
+                    return record;
+                });
+            },
             taskPriorityData: function() {
                 const priorities = project.ui.priorities();
                 return [...project.sprints.getDev()].map(s => {
@@ -2764,6 +2876,57 @@
                     var record = { sprint: sprint.data().name };
                     sizes.forEach(p => record[p] = tasks.filter(t => t.size() == p).length);
                     return record;
+                });
+            },
+            priorityDistribution: function(sprint, tasks) {
+                const priorities = project.ui.priorities();
+                const developers = project.team.developers;
+                developers.push(undefined);
+                return developers.map(d => {
+                    var record = { name: project.team.member(d).data().name };
+                    priorities.forEach(p =>
+                        record[p] = tasks.filter(t =>
+                            t.priority == p && t.developer == d).length);
+                    return record;
+                }).map(d => { if (!d.name) d.name = "unassigned"; return d; });
+            },
+            sprintData: function(sprint) {
+                return sprint.tasks().map(t => {
+                    return {
+                        id: t.id,
+                        priority: project.tasks.get(t.id).priority(),
+                        size: project.tasks.get(t.id).size(),
+                        storyPoints: +defaults.sizes.filter(s => s.id == project.tasks.get(t.id).size())[0].value,
+                        developer: project.tasks.get(t.id).data().developer,
+                        tester: project.tasks.get(t.id).data().tester
+                    };
+                });
+            },
+            sizeDistribution: function(sprint, tasks) {
+                const sizes = project.ui.sizes();
+                const developers = project.team.developers;
+                developers.push(undefined);
+                return developers.map(d => { // For each developer
+                    var assigned = tasks.filter(t => t.developer == d);
+                    var record = { name: project.team.member(d).data().name };
+                    sizes.forEach(s => {
+                        record[s] = assigned.filter(t => t.size == s).length *
+                            defaults.sizes.filter(sz => sz.id == s)[0].value;
+                    });
+                    return record;
+                }).map(d => { if (!d.name) d.name = "unassigned"; return d; });
+            },
+            stackedTooltips: function(data, rects) { // Setting tooltips for stacked bar charts
+                subgroups = Object.keys(data[0]).slice(1);
+                stackedData = d3.stack().keys(subgroups)(data);
+                rects.forEach(rect => {
+                    var row = rect.parentNode;
+                    var x = [...row.querySelectorAll("rect")].indexOf(rect);
+                    var y = [...row.parentNode.querySelectorAll("g")].indexOf(row);
+                    var key = stackedData[y].key;
+                    var value = stackedData[y][x][1] - stackedData[y][x][0];
+                    message = `${key}: ${value}`;
+                    project.ui.addMoveListeners(rect, message);
                 });
             },
             schedule: function() {
@@ -2975,7 +3138,7 @@
             document.querySelector("#graphs").setAttribute("data-Init", "graph.refresh");
         },
         refresh: () => document.querySelector("#graphsScreen .graphType-selected").click(),
-        setGraph: function(selected) {
+        selectGraph: function(selected) {
             var previous = document.querySelector("#graphsScreen .graphType-selected");
             previous.classList.remove("graphType-selected");
             document.querySelector("#graphsScreen " + selected).classList.add("graphType-selected");
@@ -3002,7 +3165,7 @@
             return ms;
         },
         sprintInitgraph: function() {
-            graph.setGraph("#sprint");
+            graph.selectGraph("#sprint");
             var ms = graph.selectedMS();
             if (!ms) return;
             var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -3150,7 +3313,7 @@
                     .on("mouseover", function(event, d) {
                         div.transition().duration(200).style("opacity", .9);
                         div.html("Week: " + d.week + "<br/>Capacity: " + Math.floor(d.target))
-                            .style("left", (event.pageX) + "px")
+                            .style("left", (event.pageX + 10) + "px")
                             .style("top", (event.pageY - 10) + "px");
                     })
                     .on("mouseout", function(d) {
@@ -3333,6 +3496,10 @@
                             .style("left", (event.pageX) + "px")
                             .style("top", (event.pageY - 32) + "px");
                     })
+                    .on("mousemove", function(event, d) {
+                        div.style("left", (event.pageX) + "px");
+                        div.style("top", (event.pageY - 32) + "px");
+                    })
                     .on("mouseout", function(d) {
                         div.transition().duration(500).style("opacity", 0);
                     })
@@ -3376,7 +3543,7 @@
         },
         projectInitgraph: function() {
             document.querySelector("#msChoice").style.display = "none";
-            graph.setGraph("#project");
+            graph.selectGraph("#project");
             var ms = project.sprints.getAll()[0];
             if (!ms) return;
 
@@ -3477,6 +3644,10 @@
                         .style("left", (event.pageX) + "px")
                         .style("top", (event.pageY - 50) + "px");
                 })
+                .on("mousemove", function(d) {
+                    div.style("left", (event.pageX) + "px");
+                    div.style("top", (event.pageY - 50) + "px");
+                })
                 .on("mouseout", function(d) {
                     div.transition().duration(500).style("opacity", 0);
                 })
@@ -3520,7 +3691,7 @@
                 .text(function(d) { return d.target > 0 ? Math.floor(d.target) : ''; });
         },
         detailsInitgraph: function() {
-            graph.setGraph("#details");
+            graph.selectGraph("#details");
             var ms = graph.selectedMS();
             if (!ms) return;
             var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -3750,9 +3921,12 @@
                             .style("left", (event.pageX) + "px")
                             .style("top", (event.pageY - 8) + "px");
                         })
+                        .on("mousemove", function(d) {
+                            tooltip.style("left", (event.pageX) + "px");
+                            tooltip.style("top", (event.pageY - 50) + "px");
+                        })
                         .on("mouseout", function(d) {
                             tooltip.transition().duration(500).style("opacity", 0);
-                            // enter a second time = loop subgroup per subgroup to add all rectangles
                         })
                         .on("click", function(d) {
                             document.querySelector("#schedule").click();
@@ -4000,9 +4174,10 @@
                     .appendChild(project.checklists.make("Sprint Exit", checklist, sprint));
                 dordodScreen.querySelector("#checklist").innerText = "";
                 dordodScreen.querySelector("#checklist").appendChild(sprintFrame);
+                project.checklists.scheck.refreshGraphs(sprint);
+
             })
         });
-
         var currentChecklist = "#startDD";
         const projectEnd = project.dates.end();
         if (projectEnd && projectEnd < today) currentChecklist = "#stopDD";
