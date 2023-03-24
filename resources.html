@@ -23,44 +23,53 @@
 
 <div id="backlogScreen" class="toolScreen">
     <div id="backlogDiv">
-        <div id="backlog" class="projectComponent">
-            <div class="item task level1" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color:#ffd700;" class="postIt" draggable="true">
-                    <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg" title="Drag this">
-                    </span>
+        <div style="display: inline-block; width: 100%;">
+            <div id="backlog" class="backlog tray" data-dropzone="requirements">
+                <div class="item task level1" title="Drag and drop requirement to board below. Colours just for display.">
+                    <div style="background-color:#ffd700;" class="postIt" draggable="true">
+                        <span style="float: left; padding: 3px;">
+                            <img class="hand" src="img/dragable.svg" title="Drag this">
+                        </span>
+                    </div>
                 </div>
-            </div>
-            <div class="item task level2" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color:#ff69b4;" class="postIt" draggable="true">
-                    <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg" title="Drag this">
-                    </span>
+                <div class="item task level2" title="Drag and drop requirement to board below. Colours just for display.">
+                    <div style="background-color:#ff69b4;" class="postIt" draggable="true">
+                        <span style="float: left; padding: 3px;">
+                            <img class="hand" src="img/dragable.svg" title="Drag this">
+                        </span>
+                    </div>
                 </div>
-            </div>
-            <div class="item task level3" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color: #8e67c2;" class="postIt" draggable="true">
-                    <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg" title="Drag this">
-                    </span>
+                <div class="item task level3" title="Drag and drop requirement to board below. Colours just for display.">
+                    <div style="background-color: #8e67c2;" class="postIt" draggable="true">
+                        <span style="float: left; padding: 3px;">
+                            <img class="hand" src="img/dragable.svg" title="Drag this">
+                        </span>
+                    </div>
                 </div>
-            </div>
-            <div class="item task level4" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color:#9bee9b;" class="postIt" draggable="true">
-                    <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg" title="Drag this">
-                    </span>
+                <div class="item task level4" title="Drag and drop requirement to board below. Colours just for display.">
+                    <div style="background-color:#9bee9b;" class="postIt" draggable="true">
+                        <span style="float: left; padding: 3px;">
+                            <img class="hand" src="img/dragable.svg" title="Drag this">
+                        </span>
+                    </div>
                 </div>
-            </div>
-            <div class="item task level5" title="Drag and drop requirement to board below. Colours just for display.">
-                <div style="background-color: #847576;" class="postIt" draggable="true">
-                    <span style="float: left; padding: 3px;">
-                        <img class="hand" src="img/dragable.svg" title="Drag this">
-                    </span>
+                <div class="item task level5" title="Drag and drop requirement to board below. Colours just for display.">
+                    <div style="background-color: #847576;" class="postIt" draggable="true">
+                        <span style="float: left; padding: 3px;">
+                            <img class="hand" src="img/dragable.svg" title="Drag this">
+                        </span>
+                    </div>
                 </div>
+            </div>    
+            <div id="views">
+                <img class="undraggable" src="img/estimate.svg" data-tab="sizes" title="Set size estimates for backlog in bulk"/>
+                <img class="undraggable" src="img/priority.svg" data-tab="priorities" title="Set priority for backlog in bulk"/>
+                <img class="undraggable selected" src="img/backlog.svg" data-tab="requirements" title="Edit backlog items" class="selected"/>
             </div>
         </div>
-        <div id="requirements" class="dropzone backlog" title="Drop requirement notes above the box, and arrange them"></div>
+        <div id="requirements" class="dropzone backlog selected" title="Drop requirement notes above the box, and arrange them"></div>
+        <div id="priorities" class="backlog" title="Arrange backlog priorities"></div>
+        <div id="sizes" class="backlog" title="Arrange backlog sizes"></div>
     </div>
     <div id="requirementsForm" class="modal" style="display: none;">
         <div class="modal-container">
@@ -683,11 +692,11 @@
                     </tr>
                 </tr>
             </table>
-            <div class="itemName itemDescription"></div>
+            <div class="itemDescription"><p class="itemName"></p></div>
             <div id="data">{"name":"[Not Set]"}</div>
         </div>
     </div>
-</template>
+</template>s
 
 <template id="estimateTemplate">
     <input type="radio" name="size" class="teamData" value="1" id="dust"/>
@@ -803,7 +812,9 @@
             ],
             "backlogitem": [
                 { "target": "status", "handler": "dragdrop.add('backlogitem', ev.target, ev)" },
-                { "target": "taskbrief", "handler": "dragdrop.insertTask(dropzone, dropzone.closest('td'), ev)" }
+                { "target": "taskbrief", "handler": "dragdrop.insertTask(dropzone, dropzone.closest('td'), ev)" },
+                { "target": "priority", "handler": "project.ui.backlog.changePriority(dragdrop.dragged, ev.target)" },
+                { "target": "estimate", "handler": "project.ui.backlog.changeEstimate(dragdrop.dragged, ev.target)" }
             ],
             // Droping item on another item in bin or at end of bin
             "teamMember": [
@@ -959,10 +970,9 @@
             callFunction("oninsert_" + onCell.id, document.getElementById(id));
         },
         moveChildToEnd: function (child, list) {
-            var moved = list.removeChild(child);
-            list.appendChild(moved);
+            list.appendChild(child);
             var lastClass = child.classList.length - 1;
-            callFunction("onmovetoend_" + child.classList[lastClass], list);
+            callFunction("onmovetoend_" + child.classList[lastClass], { child: child, list: list });
         },
         moveChildBefore: function (child, droppedOn) {
             // Back up to the box with the person
@@ -1177,7 +1187,7 @@
         },
         backlog: { // Requirements defined but not yet added to a Sprint
             getAll: function() {
-                return Array.from(document.querySelectorAll("#backlogDiv #requirements .item"));
+                return Array.from(document.querySelectorAll("#backlogDiv #requirements .item.taskbrief"));
             },
             get: function(reqtId) {
                 return {
@@ -1789,19 +1799,17 @@
                     var backlog = project.backlog.getAll();
                     var backlogCount = backlog.length;
                     var data = [];
-                    if (backlogCount > 0)  data = [
-                        { type: "Tasks", count: project.tasks.getAll().length },
-                        { type: "Backlog", count: project.backlog.getAll().length }
-                    ];
                     if (backlogCount == 0) messages.push(warning("No requirements in backlog"));
                     if (backlogCount > 0) {
+                        data = [
+                            { type: "Tasks", count: project.tasks.getAll().length },
+                            { type: "Backlog", count: project.backlog.getAll().length }
+                        ];
                         var plannedReqts = backlog.filter(b => project.backlog.get(b.id).tasks.length > 0);
                         var plannedCount = plannedReqts.length;
                         data.push({ type: "Unscheduled", count: backlogCount - plannedCount });
                         if (plannedCount != backlogCount)
                             messages.push(warning(`${plannedCount} of ${backlogCount} backlog items scheduled`));
-                    }
-                    if (data.length > 0) {
                         const graph1 = graph.project.bargraph({
                             title: "Scope", width: 100 }, data);
                         var data = [];
@@ -2336,7 +2344,17 @@
                 },
                 hideOptions: function() {
                     document.querySelector("#backlogDiv #filters").style.visibility = "hidden";
-                }
+                },
+                changeBacklog: function(item, list, deleteEnum) {
+                    list.closest(".dropzone").appendChild(item);
+                    var data = getJSONData(item);
+                    delete data[deleteEnum().filter(p => data[p])[0]];
+                    data[list.id] = true;
+                    document.querySelectorAll("#" + item.id).forEach(backlogItem =>
+                        backlogItem.querySelector("#data").innerText = JSON.stringify(data));
+                },
+                changePriority: function(item, list) { this.changeBacklog(item, list, project.ui.priorities) },
+                changeEstimate: function(item, list) { this.changeBacklog(item, list, project.ui.sizes) },
             },
             clear: function() {
                 document.querySelectorAll("#projectInfo input").forEach(f => f.value = "");
@@ -4044,23 +4062,21 @@
         // Defaults
         d = new Date();
         d.setDate(d.getDate() + ((7 - d.getDay()) % 7 + 1) % 7); // Day of week as Monday
+        document.querySelectorAll("#backlogScreen #views img").forEach(img => {
+            img.addEventListener("click", (event) => {
+                event.target.parentNode.querySelectorAll("img")
+                    .forEach(i => i.classList.remove("selected"));
+                event.target.classList.add("selected");
+                event.target.closest("#backlogDiv").querySelectorAll(".backlog")
+                    .forEach(i => i.classList.remove("selected"));
+                const tab = event.target.dataset.tab;
+                event.target.closest("#backlogDiv").querySelector(`#${tab}`).classList.add("selected");
+                document.querySelectorAll("[data-dropzone]").forEach(d => d.style.display = d.dataset.dropzone == tab ? "" : "none");
+            });
+        });
         document.querySelector("#startDate").value = d.toISOString().split('T')[0];
         document.querySelectorAll("input.default").forEach(d => {
             d.value = eval(d.getAttribute("data-path"));
-        });
-        document.querySelector("#estimateTemplate").content.querySelectorAll("label").forEach(label => {
-            var size = label.parentNode.querySelector("input#" + label.id);
-            var row = document.createElement("tr");
-            var column = document.createElement("td");
-            column.appendChild(label.cloneNode(true));
-            row.appendChild(column);
-            column = document.createElement("td");
-            var input = document.createElement("input");
-            input.id = size.id;
-            input.value = size.value;
-            column.appendChild(input);
-            row.appendChild(column);
-            document.querySelector("#sizeSettingsForm #sizes").appendChild(row);
         });
         document.querySelector("#sizeSettingsForm #yes").click();
         document.querySelectorAll("div#estimate").forEach(d => {
@@ -4100,12 +4116,32 @@
                 dragdrop.add('dayOfWeek', d);
             }
         })
+        document.querySelector("#estimateTemplate").content.querySelectorAll("label").forEach(label => {
+            var size = label.parentNode.querySelector("input#" + label.id);
+            var row = document.createElement("tr");
+            var column = document.createElement("td");
+            column.appendChild(label.cloneNode(true));
+            row.appendChild(column);
+            column = document.createElement("td");
+            var input = document.createElement("input");
+            input.id = size.id;
+            input.value = size.value;
+            column.appendChild(input);
+            row.appendChild(column);
+            document.querySelector("#sizeSettingsForm #sizes").appendChild(row);
+        });
         document.querySelector("#estimateTemplate").content.querySelectorAll("input").forEach(d => {
             var label = d.parentNode.querySelector("label#" + d.id);
             var estimate = document.createElement("option");
             estimate.id = d.id;
             estimate.innerText = label.innerText;
             document.querySelector("select#size").appendChild(estimate);
+            estimate = document.createElement("div");
+            estimate.id = d.id;
+            estimate.classList.add("dropzone");
+            estimate.classList.add("estimate");
+            estimate.innerHTML = `<div class="label">${label.innerText}<div>`;
+            document.querySelector("#backlogScreen #sizes").appendChild(estimate);
         });
         document.querySelector("#defaultsDiv select#size option#" + defaults._size).selected = true;
         document.querySelector("#priorityTemplate").content.querySelectorAll("input").forEach(d => {
@@ -4114,6 +4150,12 @@
             priority.id = d.id;
             priority.innerText = label.innerText;
             document.querySelector("select#priority").appendChild(priority);
+            priority = document.createElement("div");
+            priority.id = d.id;
+            priority.classList.add("dropzone");
+            priority.classList.add("priority");
+            priority.innerHTML = `<div class="label">${label.innerText}</div>`;
+            document.querySelector("#backlogScreen #priorities").appendChild(priority);
         });
         document.querySelector("#defaultsDiv select#priority option#" + defaults._priority).selected = true;
         dordodInit();
@@ -4175,7 +4217,6 @@
                 dordodScreen.querySelector("#checklist").innerText = "";
                 dordodScreen.querySelector("#checklist").appendChild(sprintFrame);
                 project.checklists.scheck.refreshGraphs(sprint);
-
             })
         });
         var currentChecklist = "#startDD";
@@ -4401,19 +4442,24 @@
         params.querySelector("#data").innerText = JSON.stringify(data);
         dataDiv.innerText = JSON.stringify(data);
         requirements.appendChild(reqt);
+        document.querySelector("#backlogScreen #sizes #" + defaults.size)
+            .appendChild(reqt.cloneNode(true));
+        document.querySelector("#backlogScreen #priorities #" + defaults.priority)
+            .appendChild(reqt.cloneNode(true));
     }
     function onedit_requirements(params) {
         var data = getJSONData(params);
         if (!data.name) return;
-        var requirement = document.querySelector("#backlogScreen #" + params.id);
-        requirement.style.backgroundColor = data.noteColor;
-        var title = requirement.querySelector(".itemName");
-        title.innerText = data.name;
-        title.style.color = data.textColor;
-        var requirements = document.querySelector("#scheduleScreen #backlog #list #" + params.id);
-        requirements.querySelector(".summary").innerText = data.name;
-        requirements.style.backgroundColor = data.noteColor;
-        requirements.style.color = data.textColor;
+        document.querySelectorAll("#" + params.id).forEach(requirement => {
+            var title = requirement.querySelector(".itemName");
+            if (title == null) title = requirement.querySelector(".summary");
+            title.innerText = data.name;
+            title.style.color = data.textColor;
+            var summary = requirement.querySelector(".summary");
+            if (summary != null) summary.innerText = data.name;
+            requirement.style.backgroundColor = data.noteColor;
+            requirement.style.color = data.textColor;
+        });
         [...document.querySelectorAll("#scheduleEditor #sprints .taskbrief")].forEach(t => {
             var tdata = getJSONData(t);
             if (tdata.reference == params.id) {
@@ -4421,6 +4467,18 @@
                 t.style.color = data.textColor;
             }
         });
+        var requirement = document.querySelector("#backlogScreen #priorities #" + params.id);
+        var priority = requirement.closest(".dropzone").id;
+        if (!data[priority]) { // Priority was changed
+            var newPriority = project.backlog.get(params.id).priority();
+            document.querySelector("#backlogScreen #priorities #" + newPriority).appendChild(requirement);
+        }
+        requirement = document.querySelector("#backlogScreen #sizes #" + params.id);
+        var size = requirement.closest(".dropzone").id;
+        if (!data[size]) { // Size was changed
+            var newSize = project.backlog.get(params.id).size();
+            document.querySelector("#backlogScreen #sizes #" + newSize).appendChild(requirement);
+        }
     }
     function oninsert_task(params) { onadd_backlogitem(params); }
     function oninsert_team(params) { onadd_teamMember(params); }
@@ -4428,13 +4486,12 @@
         onadd_sprint(params);
         project.ui.sprint.syncTabs();
     }
-    function onmovetoend_development(params) {project.ui.sprint.syncTabs();}
+    function onmovetoend_development(params) { project.ui.sprint.syncTabs(); }
     function onmovetoend_sprint(params) {
-        console.log("onmovetoend_sprint", params);
-        var msno = 0;
+        var sprintNo = 0;
         document.querySelectorAll("#scheduleDiv #itemImage #development").forEach(img => {
             var msid1 = img.closest(".sprint").id;
-            var tr1 = document.querySelectorAll("#scheduleScreen .mslayout tr.msrequirements")[msno];
+            var tr1 = document.querySelectorAll("#scheduleScreen .mslayout tr.msrequirements")[sprintNo];
             var msid2 = tr1.querySelector(".sprint").id;
             if (msid2 != msid1) {
                 tr1 = document.querySelectorAll("#scheduleScreen #" + msid1)[0].closest("tr");
@@ -4443,7 +4500,7 @@
                 var parent = tr1.parentNode;
                 parent.insertBefore(tr1, tr2);
             }
-            msno++;
+            sprintNo++;
         });
     }
     function onmovetoend_testing(params) { project.ui.sprint.syncTabs(); }

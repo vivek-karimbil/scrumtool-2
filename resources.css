@@ -1,16 +1,17 @@
 #backlog #filterButton.filtered {
     background-color: yellow;
 }
+#backlog .item {
+    display: inline-block;
+}
 #backlogDiv #backlog {
     border: 0px solid #666;
     background-color: #aaaaaa59;
-    float: left;
-    display: flex;
-    width: 100%;
+    display: inline-block;
     padding-right: 6px;
     position: fixed;
+    /* width: 74%; */
     z-index: 10;
-    width: min-content;
 }
 #backlogDiv .divheader {
     text-align: center;
@@ -332,7 +333,7 @@ img#holiday {
     min-width: 90px;
 }
 .itemName {
-    width: 100px;
+    width: 150px;
     white-space: nowrap;
     overflow: hidden;
     text-align: center;
@@ -434,6 +435,10 @@ p.itemName {
     white-space: normal;
     width: auto;
 }
+#devtasklist p.itemName,
+#mslist p.itemName {
+    -webkit-line-clamp: 2;
+}
 .parameters {
     padding-left: 3px;
     padding-right: 3px;
@@ -449,6 +454,7 @@ p.itemName {
     width: 85px;
     height: 65px;
     margin: 10px;
+    display: inline-block;
 }
 .projectComponent {
     display: grid;
@@ -493,20 +499,60 @@ p.itemName {
     border: 3px solid #666;
     width: 25%;
 }
-#backlogScreen #requirements {
+#backlogScreen #views {
+    float: right;
+    margin: 5px;
+}
+#backlogScreen #views img {
+    height: 75px;
+    vertical-align: top;
+}
+#backlogScreen #views img.selected {
+    border: 2px solid black;
+}
+#backlogScreen .backlog {
+    display: none;
+}
+#backlogScreen .backlog.selected {
+    display: block;
+}
+#backlogScreen .backlog .estimate,
+#backlogScreen .backlog .priority {
+    display: inline-block;
+    border: 1px solid black;
+    height: 100%;
+    text-align: center;
+    font-family: Baskerville, "Times New Roman", serif;
+    font-size: 24px;
+    vertical-align: top;
+}
+#backlogScreen .backlog .estimate {
+    width: 14.1%;
+}
+#backlogScreen .backlog .priority {
+    width: 24.85%;
+}
+#backlogScreen .backlog .summary {
+    font: 18px sans-serif;
+}
+#backlogScreen .backlog .estimate:nth-child(odd),
+#backlogScreen .backlog .priority:nth-child(even) {
+    background-color: #ddd;
+}
+#backlogScreen .label {
+    background-color: #aaa;
+    border-bottom: 2px solid black;
+    margin-bottom: 10px;
+}
+#backlogScreen #backlogDiv > #requirements,
+#backlogScreen #backlogDiv > #priorities,
+#backlogScreen #backlogDiv > #sizes {
     position: relative;
     width: 100%;
-    height: 400%;
-    border: 3px solid #666;
-    top: 93px;
+    height: 10000px;
 }
 #backlogScreen #requirements.droptarget {
     border: 6px double #666;
-}
-#backlogScreen #requirements .item {
-    width: 175px;
-    margin: 0;
-    height: 130px;
 }
 .rightDiv {
     float: left;
@@ -656,6 +702,7 @@ p.itemName {
     margin-bottom: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: left;
     white-space: normal;
     width: auto;
 }
@@ -667,9 +714,20 @@ table#capacitytable .data {
     background-color: rosybrown;
     border-radius: 0;
     display: inline-block;
-    margin: 1.5%;
-    width: 121px;
+    height: 125px;
+    width: 150px;
     vertical-align: top;
+}
+#devtasklist .taskbrief,
+#mslist .taskbrief {
+    width: 45%;
+    height: 80px;
+    margin-left: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.taskcontrols {
+    height: 20px;
 }
 .taskcontrols img {
     height: 20px;
