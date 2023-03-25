@@ -1092,17 +1092,26 @@
                 return burndown;
             },
             getTarget: function() {
-                var capacityData = [];
-                project.dates.trackingDates().forEach(d => {
-                    var dt = "dt_" + (d.toISOString().slice(0,10).replace(/-/g,""));
-                    capacityData.push({
-                        date: dt,
-                        effort: [...project.sprints.getAll()]
-                            .map(m => project.sprints.get(m).capacity(d))
-                            .reduce((a, b) => a + b)
-                    });
+                devsprints = project.sprints.getDev().map(s => {
+                    var s = project.sprints.get(s);
+                    return {
+                        id: s.id,
+                        capacity: s.capacity(),
+                        start: s.startDate(),
+                        end: s.endDate()
+                    }
                 });
-                return capacityData;
+                capacity = [];
+                project.dates.trackingDates().forEach(d => {
+                    var sprint = devsprints.filter(s => s.start <= d && s.end >= d)[0];
+                    var remaining = project.sprints.get(sprint).capacity(d);
+                    var sprintRemaining = devsprints.filter(s => s.start > d).map(s => s.capacity).reduce((a, b) => a + b, 0);
+                    capacity.push({
+                        date: "dt_" + (d.toISOString().slice(0,10).replace(/-/g,"")),
+                        effort: remaining + sprintRemaining
+                    });
+                })
+                return capacity;
             },
             error: function (form, message) {
                 form.querySelector(".form").style.display = "none";
@@ -3186,16 +3195,12 @@
             graph.selectGraph("#sprint");
             var ms = graph.selectedMS();
             if (!ms) return;
-            var margin = {top: 20, right: 20, bottom: 30, left: 40},
-                width = "50%",
-                height = screen.height - 400;
+            var margin = {top: 20, right: 20, bottom: 30, left: 40};
             
             // Set up left and right screen halves
             var board = d3.select("#graph")
                 .html("")
-                .append("div")
-                .style("width", '100%')
-                .style("height", height);
+                .append("div");
             // Select MS dropdown
             board.select("#selectMS")
                 .selectAll("sprints")
@@ -3206,14 +3211,9 @@
                 .attr("value", d => project.sprints.get(d).id);
             d3.select('#selectMS').property('value', ms.id);
             var leftGraph = board.append("div")
-                .attr("id", "leftGraph")
-                .style("width", "50%")
-                .style("height", height)
-                .style("float", "left");
+                .attr("id", "leftGraph");
             var rightGraph = board.append("div")
-                .attr("id", "rightGraph")
-                .style("margin-left", "50%")
-                .style("height", height);
+                .attr("id", "rightGraph");
             d3.select("#selectMS").on("change", function(d) {
                 var ms = d3.select(this).property("value");
                 document.getElementById("leftGraph").textContent = '';
@@ -3261,9 +3261,7 @@
                     .rangeRound([height, 0])
                     .domain([0, ymax + 10]);
 
-                var svg = leftGraph.append("svg")
-                    .attr("width", "100%")
-                    .attr("height", height + margin.top + margin.bottom);
+                var svg = leftGraph.append("svg");
                 // Tooltip
                 var div = leftGraph.append("div")
                     .attr("class", "tooltip")
@@ -3273,16 +3271,11 @@
                     .append("text")
                     .attr("x", (width / 2))
                     .attr("y", margin.top)
-                    .attr("text-anchor", "middle")
-                    .style("font-size", "20px")
-                    .style("text-decoration", "underline")
                     .text("Sprint Burndown");
-                var g = svg.append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                var g = svg.append("g");
                 // height of axis-x from bottom of graph
                 g.append("g")
                     .attr("class", "axis axis--x")
-                    .attr("transform", "translate(0," + height + ")")
                     .call(d3.axisBottom(xScale));
                 // axis-y
                 g.append("g")
@@ -3290,7 +3283,9 @@
                     .call(d3.axisLeft(yScale));
                 var bar = g.selectAll("rect")
                     .data(burndown)
-                    .enter().append("g");
+                    .enter()
+                    .append("g")
+                    .attr("class", "plot");
 
                 // Bars
                 bar.append("rect")
@@ -3309,10 +3304,6 @@
                     .attr("dy", "1.3em")
                     .attr("x", d => xScale(d.week) + xScale.bandwidth() / 2)
                     .attr("y", d => yScale(d.total) - 20)
-                    .attr("text-anchor", "middle")
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", "11px")
-                    .attr("fill", "black")
                     .text(d => d.total > 0 ? d.total : '');
                 // line charts
                 var stretch = burndown.length == 0 ? 0
@@ -3342,10 +3333,6 @@
                     .attr("dy", "-0.3em")
                     .attr("x", (d, i) => xScale(d.week) + xScale.bandwidth() / 2)
                     .attr("y", d => yScale(d.target))
-                    .attr("text-anchor", "middle")
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", "11px")
-                    .attr("fill", "black")
                     .text(d => d.target > 0 ? d.target.toFixed(2) : '');
 
                 var redline = d3.line()
@@ -3373,10 +3360,6 @@
                     .attr("dy", "-0.3em")
                     .attr("x", (d, i) => xScale(d.week) + xScale.bandwidth() / 2)
                     .attr("y", d => yScale(d.target + stretch))
-                    .attr("text-anchor", "middle")
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", "11px")
-                    .attr("fill", "black")
                     .text(d => (d.target + stretch).toFixed(2));
 
         //--------------------------------------------------------------------------------------------
@@ -3417,7 +3400,7 @@
                 groupKey = data.columns[0];
 
                 xAxis = g => g
-                    .attr("transform", `translate(0,${height + margin.bottom -10})`)
+                    .attr("transform", `translate(0,${height})`)
                     .attr("id", "developerid")
                     .call(d3.axisBottom(x0).tickSizeOuter(0));
                 yAxis = g => g
@@ -3443,20 +3426,16 @@
                     .padding(0.05);
 
                 y = d3.scaleLinear()
-                    .rangeRound([height + margin.bottom - 10, margin.top])
+                    .rangeRound([height, 0])
                     .domain([0, d3.max(data, d => d3.max(keys, key => parseInt(d[key]))) + 2])
                     .nice();
 
                 legend = svg => {
                     const g = svg
-                        .attr("transform", `translate(250,40)`)
-                        .attr("text-anchor", "end")
-                        .attr("font-family", "sans-serif")
-                        .attr("font-size", 10)
                         .selectAll("g")
                         .data(color.domain().slice().reverse())
                         .join("g")
-                        .attr("transform", (d, i) => `translate(${i * 120}, 0)`);
+                        .attr("transform", (d, i) => `translate(0, ${i * 20})`);
 
                     g.append("rect")
                         .attr("x", -19)
@@ -3471,9 +3450,7 @@
                         .text(d => d);
                 }
 
-                svg = rightGraph.append("svg")
-                    .attr("width", "100%")
-                    .attr("height", height + margin.top + margin.bottom);
+                svg = rightGraph.append("svg");
                 div = rightGraph.append("div")
                     .attr("class", "tooltip devburndown")
                     .style("opacity", 0);
@@ -3482,17 +3459,14 @@
                     .append("text")
                     .attr("x", (width / 2))
                     .attr("y", margin.top)
-                    .attr("text-anchor", "middle")
-                    .style("font-size", "20px")
-                    .style("text-decoration", "underline")
                     .text("Developer Load");
-                g = svg.append("g") // Whole graph boundary
-                    .attr("transform", "translate(" + margin.left + ", 0)");
+                g = svg.append("g"); // Plot area boundary
 
                 bar = g.selectAll("rect")
                     .data(data)
                     .enter()
                     .append("g")
+                    .attr("class", "plot")
                     .attr("transform", d => `translate(${x0(d[groupKey])},0)`)
 
                 // Add bars
@@ -3538,10 +3512,6 @@
                     .attr("dy", "-0.3em")
                     .attr("x", d => x1(d.key))
                     .attr("y", d => y(d.value))
-                    .attr("text-anchor", "middle")
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", "11px")
-                    .attr("fill", "black")
                     .text(d => d.value);
 
                 g.append("g")
@@ -3555,6 +3525,7 @@
                     .call(yAxis);
 
                 g.append("g")
+                    .attr("class", "legend")
                     .call(legend);
             }
             drawGraphs();
@@ -3572,20 +3543,16 @@
             var board = d3.select("#graph")
                 .html("")
                 .append("div")
-                .style("width", '100%')
-                .style("height", 500);
+                .attr("id", "project")
+                .attr("class", "schedule");
 
-            var svg = board.append("svg")
-                .attr("width", "100%")
-                .attr("height", height + margin.top + margin.bottom);
+            var svg = board.append("svg");
 
             // Chart title
-            svg.append("text")
+            svg.append("g")
+                .append("text")
                 .attr("x", "50%")
                 .attr("y", margin.top)
-                .attr("text-anchor", "middle")
-                .style("font-size", "20px")
-                .style("text-decoration", "underline")
                 .text("Project Burndown");
 
             var projectBurndown = project.burndown.get();
@@ -3616,7 +3583,7 @@
             ymax = ymax.effort > ymax.target ? ymax.effort : ymax.target;
             
             var xScale = d3.scaleBand()
-                .rangeRound([0, width])
+                .rangeRound([0, width - 50])
                 .padding(0.2)
                 .domain(burndown.map(b => b.date));
             var yScale = d3.scaleLinear()
@@ -3628,18 +3595,14 @@
                 .attr("class", "tooltip")
                 .style("opacity", 0);
             
-            var g = svg.append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            var g = svg.append("g");
             // height of axis-x from bottom of graph
             g.append("g")
                 .attr("class", "axis axis--x")
-                .attr("transform", "translate(0," + height + ")")
                 .call(d3.axisBottom(xScale))
                 .selectAll("text")
-                .style("text-anchor", "end")
                 .attr("dx", "-1.0em")
-                .attr("dy", "-.5em")
-                .attr("transform", "rotate(-90)");
+                .attr("dy", "-.5em");
             // axis-y
             g.append("g")
                 .attr("class", "axis axis--y")
@@ -3719,19 +3682,12 @@
             // Set up left and right screen halves
             var board = d3.select("#graph")
                 .html("")
-                .append("div")
-                .style("width", '100%')
-                .style("height", 500);
+                .append("div");
             d3.select('#selectMS').property('value', ms.id);
             var leftGraph = board.append("div")
-                .attr("id", "leftGraph")
-                .style("width", "50%")
-                .style("height", "100%")
-                .style("float", "left");
+                .attr("id", "leftGraph");
             var rightGraph = board.append("div")
-                .attr("id", "rightGraph")
-                .style("margin-left", "50%")
-                .style("height", "100%");
+                .attr("id", "rightGraph");
             d3.select("#selectMS").on("change", function(d) {
                 var ms = d3.select(this).property("value");
                 document.getElementById("leftGraph").textContent = '';
@@ -3852,27 +3808,21 @@
                     .rangeRound([height, 0])
                     .domain([0, ymax * 1.2]);
 
-                svg = paper.append("svg")
-                    .attr("width", "100%")
-                    .attr("height", height + margin.top + margin.bottom);
+                svg = paper.append("svg");
                 // Tooltip
                 tooltip = paper.append("div")
                     .attr("class", "tooltip")
                     .style("opacity", 0);
                 // Chart title
-                svg.append("text")
+                svg.append("g")
+                    .append("text")
                     .attr("x", (width / 2))
                     .attr("y", margin.top)
-                    .attr("text-anchor", "middle")
-                    .style("font-size", "20px")
-                    .style("text-decoration", "underline")
                     .text(title);
-                g = svg.append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                g = svg.append("g");
                 // height of axis-x from bottom of graph
                 g.append("g")
                     .attr("class", "axis axis--x")
-                    .attr("transform", "translate(0," + height + ")")
                     .call(d3.axisBottom(xScale));
                 // axis-y
                 g.append("g")
@@ -3880,10 +3830,7 @@
                     .call(d3.axisLeft(yScale));
                 // Legend
                 var legend = g.append("g")
-                    .attr("transform", `translate(${width - 10},0)`)
-                    .attr("text-anchor", "end")
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", 10)
+                    .attr("class", "legend")
                     .selectAll("g")
                     .data(color.domain().slice())
                     .join("g")
