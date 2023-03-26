@@ -16,3 +16,18 @@ There is a row for each developer, and the tasks created would be below the tabl
 This is now a tiny project - one task to be done by the developer assigned, in the default time associated with a new task.
 
 Thats all it takes to get started - the rest comes in the what if wuestions that ought to follow that minimalistic set of instructions above.
+
+## Next Plans
+Since most projects are more complicated than the one task - one developer - one sprint project we created above, let us explore further usage. Projects can be save to files in your download folder, using the save icon in the top right corner of the page. The browser settings to save a file created by a local web page will apply, so the browser settings will apply to where the file would be saved, and overwriting of existing files with the same name. On windos, Chrome creates a new version of a file if the name has already been used. THese files can be loaded to continue editing, so different versions of the plan over time can be saved and restored. Save before exiting the tool, to keep your last edits.
+
+## Adding More Requirements
+Drag and drop requirements and physically arrage them in ways that make sense to you. Five colours are provided by default, with the ability to change the colors of a note in the requirement editor. The pencil icon on the note allows the details of the note to be editted, including its name, estimated size and priority. The backlog tab - the first tab on the left - has three views in which to work with the backlog. The main view on selecting the tab is the whiteboard view to physically arrange the requirements to make visual examination convenient. THe other views are the priority view and the size view, that make visual sorting by size and priority a drag and drop task.
+
+## Whiteboard
+The default view for this tab is the whiteboard, where requirements can be added and physically moved around. There is no significance to the grouping or colours.
+
+### Size View
+The non-quantitative sizing of requirements is supported. Estimates can be made with the relative sizes of dust, grain, pebble, stone, rock, boulder and mountain, being converted to numbers representing actual efforts that you can edit in the settings tab.
+
+## Priority View
+The priority view allows the sorting of tasks by priority to be done visually. Tasks already created from these tasks will not be effected by this change.
