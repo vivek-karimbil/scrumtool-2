@@ -571,6 +571,11 @@ p.itemName {
     font-size: 24px;
     vertical-align: top;
 }
+#backlogScreen #sizes,
+#backlogScreen #priorities {
+    border: none;
+    min-width: 1400px;
+}
 #backlogScreen .backlog .estimate {
     width: 14.1%;
 }
