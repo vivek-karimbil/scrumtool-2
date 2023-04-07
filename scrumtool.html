@@ -3946,7 +3946,8 @@
             callFunction("initForm_" + itemClass, [this.ui, id]);
             var data = getJSONData(item);
             Object.keys(data).filter(d => d != "").forEach(feildname => {
-                var input = this.ui.querySelector("input#" + feildname);
+                var input = this.ui.querySelector("input#" + feildname)
+                    || this.ui.querySelector("textarea#" + feildname);
                 if (!input) {
                     console.log("Warning: node input#" + feildname, "not found");
                     return;
