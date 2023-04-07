@@ -21,7 +21,8 @@
 </style>
 <div style="min-width: 900px;">
     <div>
-        <div id="header" class="help text">Select the section of the editor</div>
+        <div class="help" style="float: left;">Select the section of the editor</div>
+        <center><div class="help" style="font-size: 25px;">Sprint Tool Inline Help</div></center>
     </div>
     <button id="backlog" class="topmenu" title="Edit project backlog">
         <img class="menuButton undraggable" src="img/backlog.svg"/>
@@ -86,7 +87,14 @@
                     </div>
                 </div>
                 <div><div class="help">Drag and drop to scrumboard below</div></div>
-            </div>    
+            </div>
+            <div id="priorityhelp" style="display: none;" data-dropzone="priorities">
+                <div class="help">Drag and drop requirements to set/reset priorities</div>
+            </div>
+            <div id="sizehelp" style="display: none;" data-dropzone="sizes">
+                <div class="help">Drag and drop requirements to set/reset sizes</div>
+            </div>
+
             <div id="views" style="height: 150px;">
                 <div><div class="help" style="display: inline-block;">Requirement whiteboards</div></div>
                 <div style="display: inline-block;">
@@ -738,8 +746,372 @@
             </div>
         
         </div>
-        <div id="priorities" class="backlog" title="Arrange backlog priorities"></div>
-        <div id="sizes" class="backlog" title="Arrange backlog sizes"></div>
+        <div id="priorities" class="backlog" title="Arrange backlog priorities">
+            <div id="musthave" class="dropzone priority"><div class="label">Must have</div><div class="reqt backlogitem highlight" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344015" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Project Backlog</div>
+                <div id="data">{"name":"Project Backlog","level":"level4","left":"12px","top":"52.8px","noteColor":"#9bee9b","textColor":"#000000","musthave":true,"boulder":true,"description":"Add requirements to project backlog"}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344024" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add developer</div>
+                <div id="data">{"name":"Add developer","pebble":true,"level":"level2","left":"412px","top":"52.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344026" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add tech lead</div>
+                <div id="data">{"name":"Add tech lead","level":"level3","left":"612px","top":"52.8px","noteColor":"#8e67c2","textColor":"#000000","musthave":true,"rock":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344028" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add tester</div>
+                <div id="data">{"name":"Add tester","pebble":true,"level":"level1","left":"812px","top":"52.8px","noteColor":"#ffd700","textColor":"#000000","musthave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344030" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Delete team member</div>
+                <div id="data">{"name":"Delete team member","pebble":true,"level":"level3","left":"1012px","top":"52.8px","noteColor":"#8e67c2","textColor":"#000000","musthave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344032" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Edit team member details</div>
+                <div id="data">{"name":"Edit team member details","pebble":true,"level":"level2","left":"1212px","top":"52.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344034" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add project name</div>
+                <div id="data">{"name":"Add project name","pebble":true,"level":"level1","left":"12px","top":"252.8px","noteColor":"#ffd700","textColor":"#000000","musthave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344036" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add development sprint</div>
+                <div id="data">{"name":"Add development sprint","pebble":true,"level":"level4","left":"212px","top":"252.8px","noteColor":"#9bee9b","textColor":"#000000","musthave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344050" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add holiday week</div>
+                <div id="data">{"name":"Add holiday week","level":"level4","left":"12px","top":"452.8px","noteColor":"#9bee9b","textColor":"#000000","musthave":true,"boulder":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344052" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Delete holiday week</div>
+                <div id="data">{"name":"Delete holiday week","level":"level3","left":"212px","top":"452.8px","noteColor":"#8e67c2","textColor":"#000000","musthave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344059" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set default estimates</div>
+                <div id="data">{"name":"Set default estimates","level":"level2","left":"812px","top":"452.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"boulder":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344067" style="background-color: rgb(132, 117, 118); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Project editor view</div>
+                <div id="data">{"name":"Project editor view","level":"level5","left":"212px","top":"652.8px","noteColor":"#847576","textColor":"#000000","musthave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344079" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Tester view in sprint editor</div>
+                <div id="data">{"name":"Tester view in sprint editor","level":"level2","left":"12px","top":"852.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344082" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Sprint burndown graph</div>
+                <div id="data">{"name":"Sprint burndown graph","level":"level2","left":"212px","top":"852.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"rock":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344090" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Project entry checklist</div>
+                <div id="data">{"name":"Project entry checklist","level":"level3","left":"1012px","top":"852.8px","noteColor":"#8e67c2","textColor":"#000000","musthave":true,"mountain":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344095" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Click graph to edit object</div>
+                <div id="data">{"name":"Click graph to edit object","level":"level2","left":"12px","top":"1052.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344102" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Switch project to sprint view</div>
+                <div id="data">{"name":"Switch project to sprint view","level":"level1","left":"612px","top":"1052.8px","noteColor":"#ffd700","textColor":"#000000","musthave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344114" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Text color picker for sticky notes</div>
+                <div id="data">{"name":"Text color picker for sticky notes","level":"level2","left":"212px","top":"1252.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"stone":true,"description":""}</div>
+            </div></div><div id="shouldhave" class="dropzone priority"><div class="label">Should have</div><div class="reqt backlogitem highlight" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344022" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Sticky notes pallete</div>
+                <div id="data">{"name":"Sticky notes pallete","shouldhave":true,"pebble":true,"level":"level1","left":"212px","top":"52.8px","noteColor":"#ffd700","textColor":"#000000","description":"Create pallete to allow user to chode the color of the note."}</div>
+            </div><div class="reqt backlogitem highlight" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344037" style="background-color: rgb(132, 117, 118); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add hardening sprint</div>
+                <div id="data">{"name":"Add hardening sprint","shouldhave":true,"pebble":true,"level":"level5","left":"412px","top":"252.8px","noteColor":"#847576","textColor":"#000000","description":""}</div>
+            </div><div class="reqt backlogitem highlight" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344039" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Edit hardening sprint</div>
+                <div id="data">{"name":"Edit hardening sprint","shouldhave":true,"level":"level2","left":"612px","top":"252.8px","noteColor":"#ff69b4","textColor":"#000000","rock":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344042" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Edit project name</div>
+                <div id="data">{"name":"Edit project name","shouldhave":true,"level":"level4","left":"812px","top":"252.8px","noteColor":"#9bee9b","textColor":"#000000","dust":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344045" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set project start date</div>
+                <div id="data">{"name":"Set project start date","shouldhave":true,"level":"level2","left":"1012px","top":"252.8px","noteColor":"#ff69b4","textColor":"#000000","dust":true,"description":""}</div>
+            </div><div class="reqt backlogitem highlight" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344048" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Delete sprint</div>
+                <div id="data">{"name":"Delete sprint","shouldhave":true,"pebble":true,"level":"level3","left":"1212px","top":"252.8px","noteColor":"#8e67c2","textColor":"#000000","description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344063" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set default priority</div>
+                <div id="data">{"name":"Set default priority","shouldhave":true,"level":"level3","left":"1212px","top":"452.8px","noteColor":"#8e67c2","textColor":"#000000","grain":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344069" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Sprint editor view</div>
+                <div id="data">{"name":"Sprint editor view","shouldhave":true,"level":"level1","left":"412px","top":"652.8px","noteColor":"#ffd700","textColor":"#000000","boulder":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344073" style="background-color: rgb(132, 117, 118); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Create new tasks for sprints</div>
+                <div id="data">{"name":"Create new tasks for sprints","shouldhave":true,"level":"level5","left":"812px","top":"652.8px","noteColor":"#847576","textColor":"#000000","rock":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344084" style="background-color: rgb(132, 117, 118); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Project burndown graph</div>
+                <div id="data">{"name":"Project burndown graph","shouldhave":true,"pebble":true,"level":"level5","left":"412px","top":"852.8px","noteColor":"#847576","textColor":"#000000","description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344086" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Task allocation to developer</div>
+                <div id="data">{"name":"Task allocation to developer","shouldhave":true,"pebble":true,"level":"level2","left":"612px","top":"852.8px","noteColor":"#ff69b4","textColor":"#000000","description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344099" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Edit object from graph view</div>
+                <div id="data">{"name":"Edit object from graph view","shouldhave":true,"pebble":true,"level":"level3","left":"412px","top":"1052.8px","noteColor":"#8e67c2","textColor":"#000000","description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344111" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Color picker for sticky notes</div>
+                <div id="data">{"name":"Color picker for sticky notes","shouldhave":true,"level":"level1","left":"12px","top":"1252.8px","noteColor":"#ffd700","textColor":"#000000","stone":true,"description":""}</div>
+            </div></div><div id="nicetohave" class="dropzone priority"><div class="label">Nice to have</div><div class="reqt backlogitem highlight" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344055" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set burndown recording days of week</div>
+                <div id="data">{"name":"Set burndown recording days of week","pebble":true,"level":"level1","left":"412px","top":"452.8px","noteColor":"#ffd700","textColor":"#000000","nicetohave":true,"description":""}</div>
+            </div><div class="reqt backlogitem highlight" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344057" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set defult capacity</div>
+                <div id="data">{"name":"Set defult capacity","level":"level3","left":"612px","top":"452.8px","noteColor":"#8e67c2","textColor":"#000000","nicetohave":true,"grain":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344061" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set default time off per week</div>
+                <div id="data">{"name":"Set default time off per week","level":"level4","left":"1012px","top":"452.8px","noteColor":"#9bee9b","textColor":"#000000","nicetohave":true,"rock":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344065" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set default estimate</div>
+                <div id="data">{"name":"Set default estimate","level":"level3","left":"12px","top":"652.8px","noteColor":"#8e67c2","textColor":"#000000","nicetohave":true,"grain":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344075" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add requirements in sprint editor</div>
+                <div id="data">{"name":"Add requirements in sprint editor","level":"level2","left":"1012px","top":"652.8px","noteColor":"#ff69b4","textColor":"#000000","nicetohave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344088" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Task burndown view</div>
+                <div id="data">{"name":"Task burndown view","level":"level4","left":"812px","top":"852.8px","noteColor":"#9bee9b","textColor":"#000000","nicetohave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344092" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Project exit review checklist</div>
+                <div id="data">{"name":"Project exit review checklist","pebble":true,"level":"level4","left":"1212px","top":"852.8px","noteColor":"#9bee9b","textColor":"#000000","nicetohave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344097" style="background-color: rgb(132, 117, 118); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Graphical display for checklists</div>
+                <div id="data">{"name":"Graphical display for checklists","level":"level5","left":"212px","top":"1052.8px","noteColor":"#847576","textColor":"#000000","nicetohave":true,"rock":true,"description":""}</div>
+            </div></div><div id="optional" class="dropzone priority"><div class="label">Optional</div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344071" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Assign requirements to sprints</div>
+                <div id="data">{"name":"Assign requirements to sprints","pebble":true,"level":"level3","left":"612px","top":"652.8px","noteColor":"#8e67c2","textColor":"#000000","optional":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344077" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Developer view in sprint editor</div>
+                <div id="data">{"name":"Developer view in sprint editor","pebble":true,"level":"level3","left":"1212px","top":"652.8px","noteColor":"#8e67c2","textColor":"#000000","optional":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344104" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Switch dev to test view</div>
+                <div id="data">{"name":"Switch dev to test view","pebble":true,"level":"level1","left":"812px","top":"1052.8px","noteColor":"#ffd700","textColor":"#000000","optional":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344106" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Syncronise task movement across statuses in project, dev sprint and test sprint screens</div>
+                <div id="data">{"name":"Syncronise task movement across statuses in project, dev sprint and test sprint screens","pebble":true,"level":"level2","left":"1012px","top":"1052.8px","noteColor":"#ff69b4","textColor":"#000000","optional":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344109" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Save project as JSON</div>
+                <div id="data">{"name":"Save project as JSON","pebble":true,"level":"level2","left":"1212px","top":"1052.8px","noteColor":"#ff69b4","textColor":"#000000","optional":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344118" style="background-color: rgb(132, 117, 118); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Auto complete tasks dragged to done</div>
+                <div id="data">{"name":"Auto complete tasks dragged to done","pebble":true,"level":"level5","left":"412px","top":"1252.8px","noteColor":"#847576","textColor":"#000000","optional":true,"description":""}</div>
+            </div></div>
+        </div>
+        <div id="sizes" class="backlog" title="Arrange backlog sizes">
+            <div id="dust" class="dropzone estimate"><div class="label">Dust<div></div></div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344042" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Edit project name</div>
+                <div id="data">{"name":"Edit project name","shouldhave":true,"level":"level4","left":"812px","top":"252.8px","noteColor":"#9bee9b","textColor":"#000000","dust":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344045" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set project start date</div>
+                <div id="data">{"name":"Set project start date","shouldhave":true,"level":"level2","left":"1012px","top":"252.8px","noteColor":"#ff69b4","textColor":"#000000","dust":true,"description":""}</div>
+            </div></div><div id="grain" class="dropzone estimate"><div class="label">Grain<div></div></div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344057" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set defult capacity</div>
+                <div id="data">{"name":"Set defult capacity","level":"level3","left":"612px","top":"452.8px","noteColor":"#8e67c2","textColor":"#000000","nicetohave":true,"grain":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344063" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set default priority</div>
+                <div id="data">{"name":"Set default priority","shouldhave":true,"level":"level3","left":"1212px","top":"452.8px","noteColor":"#8e67c2","textColor":"#000000","grain":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344065" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set default estimate</div>
+                <div id="data">{"name":"Set default estimate","level":"level3","left":"12px","top":"652.8px","noteColor":"#8e67c2","textColor":"#000000","nicetohave":true,"grain":true,"description":""}</div>
+            </div></div><div id="pebble" class="dropzone estimate"><div class="label">Pebble<div></div></div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344022" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Sticky notes pallete</div>
+                <div id="data">{"name":"Sticky notes pallete","shouldhave":true,"pebble":true,"level":"level1","left":"212px","top":"52.8px","noteColor":"#ffd700","textColor":"#000000","description":"Create pallete to allow user to chode the color of the note."}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344024" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add developer</div>
+                <div id="data">{"name":"Add developer","pebble":true,"level":"level2","left":"412px","top":"52.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344028" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add tester</div>
+                <div id="data">{"name":"Add tester","pebble":true,"level":"level1","left":"812px","top":"52.8px","noteColor":"#ffd700","textColor":"#000000","musthave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344030" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Delete team member</div>
+                <div id="data">{"name":"Delete team member","pebble":true,"level":"level3","left":"1012px","top":"52.8px","noteColor":"#8e67c2","textColor":"#000000","musthave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344032" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Edit team member details</div>
+                <div id="data">{"name":"Edit team member details","pebble":true,"level":"level2","left":"1212px","top":"52.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344034" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add project name</div>
+                <div id="data">{"name":"Add project name","pebble":true,"level":"level1","left":"12px","top":"252.8px","noteColor":"#ffd700","textColor":"#000000","musthave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344036" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add development sprint</div>
+                <div id="data">{"name":"Add development sprint","pebble":true,"level":"level4","left":"212px","top":"252.8px","noteColor":"#9bee9b","textColor":"#000000","musthave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344037" style="background-color: rgb(132, 117, 118); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add hardening sprint</div>
+                <div id="data">{"name":"Add hardening sprint","shouldhave":true,"pebble":true,"level":"level5","left":"412px","top":"252.8px","noteColor":"#847576","textColor":"#000000","description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344048" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Delete sprint</div>
+                <div id="data">{"name":"Delete sprint","shouldhave":true,"pebble":true,"level":"level3","left":"1212px","top":"252.8px","noteColor":"#8e67c2","textColor":"#000000","description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344055" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set burndown recording days of week</div>
+                <div id="data">{"name":"Set burndown recording days of week","pebble":true,"level":"level1","left":"412px","top":"452.8px","noteColor":"#ffd700","textColor":"#000000","nicetohave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344071" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Assign requirements to sprints</div>
+                <div id="data">{"name":"Assign requirements to sprints","pebble":true,"level":"level3","left":"612px","top":"652.8px","noteColor":"#8e67c2","textColor":"#000000","optional":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344077" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Developer view in sprint editor</div>
+                <div id="data">{"name":"Developer view in sprint editor","pebble":true,"level":"level3","left":"1212px","top":"652.8px","noteColor":"#8e67c2","textColor":"#000000","optional":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344084" style="background-color: rgb(132, 117, 118); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Project burndown graph</div>
+                <div id="data">{"name":"Project burndown graph","shouldhave":true,"pebble":true,"level":"level5","left":"412px","top":"852.8px","noteColor":"#847576","textColor":"#000000","description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344086" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Task allocation to developer</div>
+                <div id="data">{"name":"Task allocation to developer","shouldhave":true,"pebble":true,"level":"level2","left":"612px","top":"852.8px","noteColor":"#ff69b4","textColor":"#000000","description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344092" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Project exit review checklist</div>
+                <div id="data">{"name":"Project exit review checklist","pebble":true,"level":"level4","left":"1212px","top":"852.8px","noteColor":"#9bee9b","textColor":"#000000","nicetohave":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344099" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Edit object from graph view</div>
+                <div id="data">{"name":"Edit object from graph view","shouldhave":true,"pebble":true,"level":"level3","left":"412px","top":"1052.8px","noteColor":"#8e67c2","textColor":"#000000","description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344104" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Switch dev to test view</div>
+                <div id="data">{"name":"Switch dev to test view","pebble":true,"level":"level1","left":"812px","top":"1052.8px","noteColor":"#ffd700","textColor":"#000000","optional":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344106" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Syncronise task movement across statuses in project, dev sprint and test sprint screens</div>
+                <div id="data">{"name":"Syncronise task movement across statuses in project, dev sprint and test sprint screens","pebble":true,"level":"level2","left":"1012px","top":"1052.8px","noteColor":"#ff69b4","textColor":"#000000","optional":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344109" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Save project as JSON</div>
+                <div id="data">{"name":"Save project as JSON","pebble":true,"level":"level2","left":"1212px","top":"1052.8px","noteColor":"#ff69b4","textColor":"#000000","optional":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344118" style="background-color: rgb(132, 117, 118); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Auto complete tasks dragged to done</div>
+                <div id="data">{"name":"Auto complete tasks dragged to done","pebble":true,"level":"level5","left":"412px","top":"1252.8px","noteColor":"#847576","textColor":"#000000","optional":true,"description":""}</div>
+            </div></div><div id="stone" class="dropzone estimate"><div class="label">Stone<div></div></div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344052" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Delete holiday week</div>
+                <div id="data">{"name":"Delete holiday week","level":"level3","left":"212px","top":"452.8px","noteColor":"#8e67c2","textColor":"#000000","musthave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344067" style="background-color: rgb(132, 117, 118); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Project editor view</div>
+                <div id="data">{"name":"Project editor view","level":"level5","left":"212px","top":"652.8px","noteColor":"#847576","textColor":"#000000","musthave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344075" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add requirements in sprint editor</div>
+                <div id="data">{"name":"Add requirements in sprint editor","level":"level2","left":"1012px","top":"652.8px","noteColor":"#ff69b4","textColor":"#000000","nicetohave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344079" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Tester view in sprint editor</div>
+                <div id="data">{"name":"Tester view in sprint editor","level":"level2","left":"12px","top":"852.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344088" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Task burndown view</div>
+                <div id="data">{"name":"Task burndown view","level":"level4","left":"812px","top":"852.8px","noteColor":"#9bee9b","textColor":"#000000","nicetohave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344095" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Click graph to edit object</div>
+                <div id="data">{"name":"Click graph to edit object","level":"level2","left":"12px","top":"1052.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344102" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Switch project to sprint view</div>
+                <div id="data">{"name":"Switch project to sprint view","level":"level1","left":"612px","top":"1052.8px","noteColor":"#ffd700","textColor":"#000000","musthave":true,"stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344111" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Color picker for sticky notes</div>
+                <div id="data">{"name":"Color picker for sticky notes","shouldhave":true,"level":"level1","left":"12px","top":"1252.8px","noteColor":"#ffd700","textColor":"#000000","stone":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344114" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Text color picker for sticky notes</div>
+                <div id="data">{"name":"Text color picker for sticky notes","level":"level2","left":"212px","top":"1252.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"stone":true,"description":""}</div>
+            </div></div><div id="rock" class="dropzone estimate"><div class="label">Rock<div></div></div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344026" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add tech lead</div>
+                <div id="data">{"name":"Add tech lead","level":"level3","left":"612px","top":"52.8px","noteColor":"#8e67c2","textColor":"#000000","musthave":true,"rock":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344039" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Edit hardening sprint</div>
+                <div id="data">{"name":"Edit hardening sprint","shouldhave":true,"level":"level2","left":"612px","top":"252.8px","noteColor":"#ff69b4","textColor":"#000000","rock":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344061" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set default time off per week</div>
+                <div id="data">{"name":"Set default time off per week","level":"level4","left":"1012px","top":"452.8px","noteColor":"#9bee9b","textColor":"#000000","nicetohave":true,"rock":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344073" style="background-color: rgb(132, 117, 118); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Create new tasks for sprints</div>
+                <div id="data">{"name":"Create new tasks for sprints","shouldhave":true,"level":"level5","left":"812px","top":"652.8px","noteColor":"#847576","textColor":"#000000","rock":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344082" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Sprint burndown graph</div>
+                <div id="data">{"name":"Sprint burndown graph","level":"level2","left":"212px","top":"852.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"rock":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344097" style="background-color: rgb(132, 117, 118); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Graphical display for checklists</div>
+                <div id="data">{"name":"Graphical display for checklists","level":"level5","left":"212px","top":"1052.8px","noteColor":"#847576","textColor":"#000000","nicetohave":true,"rock":true,"description":""}</div>
+            </div></div><div id="boulder" class="dropzone estimate"><div class="label">Boulder<div></div></div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344015" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Project Backlog</div>
+                <div id="data">{"name":"Project Backlog","level":"level4","left":"12px","top":"52.8px","noteColor":"#9bee9b","textColor":"#000000","musthave":true,"boulder":true,"description":"Add requirements to project backlog"}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344050" style="background-color: rgb(155, 238, 155); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Add holiday week</div>
+                <div id="data">{"name":"Add holiday week","level":"level4","left":"12px","top":"452.8px","noteColor":"#9bee9b","textColor":"#000000","musthave":true,"boulder":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344059" style="background-color: rgb(255, 105, 180); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Set default estimates</div>
+                <div id="data">{"name":"Set default estimates","level":"level2","left":"812px","top":"452.8px","noteColor":"#ff69b4","textColor":"#000000","musthave":true,"boulder":true,"description":""}</div>
+            </div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344069" style="background-color: rgb(255, 215, 0); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Sprint editor view</div>
+                <div id="data">{"name":"Sprint editor view","shouldhave":true,"level":"level1","left":"412px","top":"652.8px","noteColor":"#ffd700","textColor":"#000000","boulder":true,"description":""}</div>
+            </div></div><div id="mountain" class="dropzone estimate"><div class="label">Mountain<div></div></div><div class="reqt backlogitem" draggable="true" onmouseover="project.ui.schedule.highlight(this)" onmouseout="project.ui.schedule.lowlight(this)" id="requirements_1680152344090" style="background-color: rgb(142, 103, 194); color: rgb(0, 0, 0);">
+                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                <div class="summary" style="color: rgb(0, 0, 0);">Project entry checklist</div>
+                <div id="data">{"name":"Project entry checklist","level":"level3","left":"1012px","top":"852.8px","noteColor":"#8e67c2","textColor":"#000000","musthave":true,"mountain":true,"description":""}</div>
+            </div></div>
+        </div>
     </div>
     <div id="requirementsForm" class="modal" style="display: none;">
         <div class="modal-container">
@@ -1654,8 +2026,8 @@
                                 <img class="togglerow displayed" src="img/arrowright.svg" onclick="project.ui.sprint.show(event.target)" style="display: none;" title="Inflate row">
                                 <img class="togglerow hidden" src="img/arrowdown.svg" onclick="project.ui.sprint.hide(event.target)" title="Collapse row">
                             </div>
+                            <div class="help" style="margin-top: 15px;">Switch to sprint editor</div>
                             <div class="msicon" onclick="project.ui.sprint.edit(event.target.closest('.sprint'))">
-                                <div class="help" style="margin-top: 15px;">Switch to sprint editor</div>
                                 <div class="item dropzone sprint development" id="sprints_1680012596198" draggable="false">
                             <div class="icons">
                                 <div id="itemImage" class="control"><div id="development" class="item newSprint" draggable="false" title="Click to edit this sprint">
@@ -1669,13 +2041,13 @@
                             <div id="schedule">16 Jan - 29 Jan</div>
                         </td>
                         <td id="task" class="status task dropzone">
-                            <div class="help">Drag tasks for development in this sprint here.</div>
+                            <div class="help">Drag tasks for development without an assigned tester.</div>
                         </td>
                         <td id="task" class="status inprogress dropzone">
-                            <div class="help">Drag task being worked upon here.</div>
+                            <div class="help">Drag tasks in development but with no tester assigned here.</div>
                         </td>
                         <td id="task" class="status totest dropzone">
-                            <div class="help">Drag tasks ready for testing here.</div>
+                            <div class="help">Drag complete tasks without a tester assigned here. Maybe someone else tested this or no testing was required?</div>
                         </td>
                         <td id="task" class="status done dropzone">
                             <div class="help">Drag completed tasks here.</div>
@@ -4598,79 +4970,47 @@
                             }
                         });
                     });
-
-                    var node = document.querySelector("#devtasklist tbody tr:nth-child(1) td");
-                    var helptext = "Collapse";
-                    var help = document.createElement("div");
-                    help.classList.add("help");
+//=============================================================================================================
+                    function addHint(selector, helptext) {
+                        var node = document.querySelector(selector);
+                        var help = document.createElement("div");
+                        help.classList.add("help");
+                        help.appendChild(document.createTextNode(helptext));
+                        node.insertBefore(help, node.firstChild);
+                        return help;
+                    }
+                    var qs = "#devtasklist tbody tr:nth-child(1) td";
+                    var help = addHint(qs, "Collapse")
                     help.style.float = "right";
-                    help.appendChild(document.createTextNode(helptext));
+                    var node = document.querySelector(qs);
                     node.insertBefore(help, node.firstChild);
                     
-                    node = document.querySelector("#devtasklist tbody tr:nth-child(1) #task.task");
-                    helptext = "Drag tasks for this developer here";
-                    help = document.createElement("div");
-                    help.classList.add("help");
-                    help.appendChild(document.createTextNode(helptext));
-                    if (node.childElementCount == 0) node.appendChild(help);
-                    else node.insertBefore(help, node.firstChild);
-                    
-                    node = document.querySelector("#devtasklist tbody tr:nth-child(1) #task.inprogress");
-                    helptext = "Drag tasks for this developer to work on immediately";
-                    help = document.createElement("div");
-                    help.classList.add("help");
-                    help.appendChild(document.createTextNode(helptext));
-                    if (node.childElementCount == 0) node.appendChild(help);
-                    else node.insertBefore(help, node.firstChild);
-
-                    node = document.querySelector("#devtasklist tbody tr:nth-child(1) #task.totest");
-                    helptext = "Drag tasks ready for testing here";
-                    help = document.createElement("div");
-                    help.classList.add("help");
-                    help.appendChild(document.createTextNode(helptext));
-                    if (node.childElementCount == 0) node.appendChild(help);
-                    else node.insertBefore(help, node.firstChild);
-
-                    node = document.querySelector("#devtasklist tbody tr:nth-child(1) #task.done");
-                    helptext = "Drag completed tasks here";
-                    help = document.createElement("div");
-                    help.classList.add("help");
-                    help.appendChild(document.createTextNode(helptext));
-                    if (node.childElementCount == 0) node.appendChild(help);
-                    else node.insertBefore(help, node.firstChild);
-
-                    node = document.querySelector("#msbacklog td:nth-child(2)");
-                    helptext = "Unassigned unstarted backlog tasks here";
-                    help = document.createElement("div");
-                    help.classList.add("help");
-                    help.appendChild(document.createTextNode(helptext));
-                    if (node.childElementCount == 0) node.appendChild(help);
-                    else node.insertBefore(help, node.firstChild);
-
-                    node = document.querySelector("#msbacklog td:nth-child(3)");
-                    helptext = "Unassigned started backlog tasks here";
-                    help = document.createElement("div");
-                    help.classList.add("help");
-                    help.appendChild(document.createTextNode(helptext));
-                    if (node.childElementCount == 0) node.appendChild(help);
-                    else node.insertBefore(help, node.firstChild);
-
-                    node = document.querySelector("#msbacklog td:nth-child(4)");
-                    helptext = "Unassigned test ready backlog tasks here";
-                    help = document.createElement("div");
-                    help.classList.add("help");
-                    help.appendChild(document.createTextNode(helptext));
-                    if (node.childElementCount == 0) node.appendChild(help);
-                    else node.insertBefore(help, node.firstChild);
-
-                    node = document.querySelector("#msbacklog td:nth-child(5)");
-                    helptext = "Unassigned complete backlog tasks here";
-                    help = document.createElement("div");
-                    help.classList.add("help");
-                    help.appendChild(document.createTextNode(helptext));
-                    if (node.childElementCount == 0) node.appendChild(help);
-                    else node.insertBefore(help, node.firstChild);
-
+                    addHint("#devtasklist tbody tr:nth-child(1) #task.task",
+                        "Drag tasks for this developer here");
+                    addHint("#devtasklist tbody tr:nth-child(1) #task.inprogress",
+                        "Drag tasks for this developer to work on immediately");
+                    addHint("#devtasklist tbody tr:nth-child(1) #task.totest",
+                        "Drag tasks ready for testing here");
+                    addHint("#devtasklist tbody tr:nth-child(1) #task.done",
+                        "Drag completed tasks here");
+                    addHint("#msbacklog td:nth-child(2)",
+                        "Unassigned unstarted backlog tasks. Drag a requirenent here to remove from the assigned developers pending tasks.");
+                    addHint("#msbacklog td:nth-child(3)",
+                        "Unassigned started backlog tasks here. Drag when work did start, but has been suspended.");
+                    addHint("#msbacklog td:nth-child(4)",
+                        "Unassigned test ready backlog tasks here. The development is complete, but there is no support to fix bugs.");
+                    addHint("#msbacklog td:nth-child(5)",
+                        "Unassigned complete backlog tasks here. Probably the rame case that work is complete but no developer is there.");
+//=============================================================================================================
+                    addHint("#devtasklist tbody#tester tr:nth-child(1) #task.task",
+                    "Drag tasks for this developer here");
+                    addHint("#devtasklist tbody#tester tr:nth-child(1) #task.inprogress",
+                    "Drag tasks for this developer to work on immediately");
+                    addHint("#devtasklist tbody#tester tr:nth-child(1) #task.totest",
+                    "Drag tasks ready for testing here");
+                    addHint("#devtasklist tbody#tester tr:nth-child(1) #task.done",
+                    "Drag completed tasks here");
+//=============================================================================================================
 
                     document.querySelectorAll("#qabacklog td:not(.msicon)").forEach(status => {
                         // Get the column status to search for the right column in the table above
@@ -6114,7 +6454,7 @@
         d.setDate(d.getDate() + ((7 - d.getDay()) % 7 + 1) % 7); // Day of week as Monday
         document.querySelectorAll("#backlogScreen #views img").forEach(img => {
             img.addEventListener("click", (event) => {
-                event.target.parentNode.querySelectorAll("img")
+                event.target.closest("#views").querySelectorAll("img")
                     .forEach(i => i.classList.remove("selected"));
                 event.target.classList.add("selected");
                 event.target.closest("#backlogDiv").querySelectorAll(".backlog")
